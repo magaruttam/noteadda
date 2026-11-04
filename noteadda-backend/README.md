@@ -14,7 +14,7 @@ the development server:
 
 ```bash
 uv sync
-uv run fastapi dev
+uv run fastapi dev src/main.py
 ```
 
 The server starts at <http://127.0.0.1:8000>. Interactive API documentation is
