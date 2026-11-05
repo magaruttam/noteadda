@@ -1,8 +1,4 @@
-from fastapi import FastAPI
+"""Entry point proxy forwarding to app.main:app."""
+from app.main import app
 
-app = FastAPI()
-
-
-@app.get("/")
-def read_root():
-    return {"message": "Hello World!"}
+__all__ = ["app"]

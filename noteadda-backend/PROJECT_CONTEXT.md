@@ -39,59 +39,53 @@
 
 ## 3. Directory & Folder Architecture
 
-The project strictly follows the **`src` layout** with a modular, layered separation of concerns:
+The project strictly follows the **Feature-Based MVC (Modular) `src` layout**:
 
 ```text
 noteadda-backend/
-├── .venv/                         # Managed by uv (do not commit)
-├── alembic/                       # Alembic migration scripts
-│   ├── versions/                  # Individual timestamped migration revisions
-│   └── env.py                     # Alembic async configuration connecting models to DB
-├── alembic.ini                    # Alembic CLI configuration
+├── .venv/                         # Managed by uv
 ├── src/
-│   └── noteadda_backend/          # Main application package
-│       ├── __init__.py
-│       ├── main.py                # FastAPI app creation, middleware (CORS), router registration
-│       │
+│   ├── main.py                    # Root entry point proxy
+│   └── app/                       # Main application package
 │       ├── core/                  # Global foundations & core logic
-│       │   ├── __init__.py
 │       │   ├── config.py          # Settings class reading .env via pydantic-settings
-│       │   ├── database.py        # Async engine, async_sessionmaker, get_db dependency
-│       │   └── security.py        # Password hashing, JWT creation & verification
+│       │   ├── security.py        # Argon2 password hashing, JWT creation & verification
+│       │   └── dependencies.py    # Common dependencies (get_current_user, etc.)
 │       │
-│       ├── models/                # SQLAlchemy ORM database models
-│       │   ├── __init__.py        # Exposes all models for Alembic auto-discovery
-│       │   ├── base.py            # DeclarativeBase, shared mixins (ID, timestamps)
-│       │   ├── user.py            # User entity (auth, roles)
-│       │   └── note.py            # Note entity (title, content, tags, ownership)
+│       ├── database/              # Database infrastructure
+│       │   ├── base.py            # DeclarativeBase, shared mixins (TimestampMixin)
+│       │   └── session.py         # Async engine, sessionmaker, get_db dependency
 │       │
-│       ├── schemas/               # Pydantic models (data transfer objects / DTOs)
-│       │   ├── __init__.py
-│       │   ├── user.py            # UserCreate, UserUpdate, UserResponse, Token
-│       │   └── note.py            # NoteCreate, NoteUpdate, NoteResponse, NoteFilter
+│       ├── modules/               # Self-contained feature modules (Feature-Based MVC)
+│       │   ├── auth/              # Authentication module
+│       │   │   ├── router.py      # HTTP endpoints (/login, /register, /me)
+│       │   │   ├── service.py     # Business logic & authentication service
+│       │   │   ├── repository.py  # Data access queries for auth
+│       │   │   └── schemas.py     # Pydantic schemas (Token, LoginRequest)
+│       │   │
+│       │   ├── users/             # User management module
+│       │   │   ├── router.py      # HTTP endpoints (/users)
+│       │   │   ├── service.py     # User domain & business operations
+│       │   │   ├── repository.py  # Pure SQLAlchemy queries for users
+│       │   │   ├── models.py      # User SQLAlchemy entity
+│       │   │   └── schemas.py     # UserCreate, UserResponse, UserUpdate
+│       │   │
+│       │   └── notes/             # Notes management module (future)
+│       │       ├── router.py
+│       │       ├── service.py
+│       │       ├── repository.py
+│       │       ├── models.py
+│       │       └── schemas.py
 │       │
-│       ├── crud/ (or services/)   # Repository & business logic layer
-│       │   ├── __init__.py
-│       │   ├── crud_user.py       # User DB queries & domain operations
-│       │   └── crud_note.py       # Note DB queries & domain operations
+│       ├── api/                   # API Aggregator
+│       │   └── router.py          # Merges all module routers into /api/v1
 │       │
-│       └── api/                   # HTTP Route handlers (Controllers)
-│           ├── __init__.py
-│           ├── router.py          # Main API router merging v1 routes
-│           └── v1/
-│               ├── __init__.py
-│               ├── auth.py        # Login, registration, token refresh
-│               ├── users.py       # User profile & account management
-│               └── notes.py       # Note CRUD endpoints
+│       └── main.py                # FastAPI app creation & lifespan setup
 │
+├── alembic/                       # Alembic migration scripts
 ├── tests/                         # Automated test suite
-│   ├── conftest.py                # Pytest fixtures (test DB session, async HTTP client)
-│   ├── api/
-│   └── crud/
-│
+├── .env                           # Local environment configuration
 ├── .env.example                   # Sample environment configuration template
-├── .gitignore                     # Git ignore rules
-├── .python-version                # Python version specifier
 ├── pyproject.toml                 # Project metadata & dependencies
 ├── README.md                      # Quickstart documentation
 └── uv.lock                        # Lockfile generated by uv
@@ -158,7 +152,7 @@ uv sync
 uv add <package-name>
 
 # Run local development server
-uv run fastapi dev src/noteadda_backend/main.py
+uv run fastapi dev src/app/main.py
 
 # Run database migrations with Alembic
 uv run alembic revision --autogenerate -m "create users and notes tables"
