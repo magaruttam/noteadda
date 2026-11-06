@@ -4,26 +4,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.security import create_access_token, verify_password
-from app.modules.auth.repository import auth_repository
 from app.modules.auth.schemas import Token
 from app.modules.users.models import User
-from app.modules.users.schemas import UserCreate, UserResponse
+from app.modules.users.schemas import UserCreate
 from app.modules.users.service import user_service
 
 
 class AuthService:
-    """Business logic / Controller service for Authentication."""
+    """Business logic and authentication service."""
 
-    def __init__(self, repo=auth_repository, user_svc=user_service):
-        self.repo = repo
+    def __init__(self, user_svc=user_service):
         self.user_svc = user_svc
 
-    async def register(self, db: AsyncSession, user_in: UserCreate) -> UserResponse:
-        user = await self.user_svc.register_user(db, user_in)
-        return UserResponse.model_validate(user)
+    async def register(self, db: AsyncSession, user_in: UserCreate) -> User:
+        return await self.user_svc.register_user(db, user_in)
 
     async def authenticate(self, db: AsyncSession, identifier: str, password: str) -> User:
-        user = await self.repo.get_user_by_identifier(db, identifier)
+        user = await self.user_svc.get_by_email_or_username(db, identifier)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -52,4 +49,3 @@ class AuthService:
 
 
 auth_service = AuthService()
-

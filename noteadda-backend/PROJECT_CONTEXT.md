@@ -60,20 +60,17 @@ noteadda-backend/
 │       │   ├── auth/              # Authentication module
 │       │   │   ├── router.py      # HTTP endpoints (/login, /register, /me)
 │       │   │   ├── service.py     # Business logic & authentication service
-│       │   │   ├── repository.py  # Data access queries for auth
 │       │   │   └── schemas.py     # Pydantic schemas (Token, LoginRequest)
 │       │   │
 │       │   ├── users/             # User management module
 │       │   │   ├── router.py      # HTTP endpoints (/users)
-│       │   │   ├── service.py     # User domain & business operations
-│       │   │   ├── repository.py  # Pure SQLAlchemy queries for users
+│       │   │   ├── service.py     # User business logic & database queries
 │       │   │   ├── models.py      # User SQLAlchemy entity
 │       │   │   └── schemas.py     # UserCreate, UserResponse, UserUpdate
 │       │   │
 │       │   └── notes/             # Notes management module (future)
 │       │       ├── router.py
 │       │       ├── service.py
-│       │       ├── repository.py
 │       │       ├── models.py
 │       │       └── schemas.py
 │       │

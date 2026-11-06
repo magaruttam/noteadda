@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import decode_access_token
 from app.database.session import get_db
 from app.modules.users.models import User
-from app.modules.users.repository import user_repository
+from app.modules.users.service import user_service
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
@@ -33,7 +33,7 @@ async def get_current_user(
     except ValueError:
         raise credentials_exception
 
-    user = await user_repository.get_by_id(db, user_id=user_id)
+    user = await user_service.get_by_id(db, user_id=user_id)
     if not user:
         raise credentials_exception
     if not user.is_active:
