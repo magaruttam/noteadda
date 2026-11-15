@@ -11,6 +11,16 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     API_V1_STR: str = "/api/v1"
 
+    # CORS
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:4200",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:4200",
+        "http://127.0.0.1:5173",
+    ]
+
     # Security & JWT
     SECRET_KEY: str = "supersecretjwtkey_change_in_production_noteadda_2026"
     ALGORITHM: str = "HS256"
@@ -21,9 +31,9 @@ class Settings(BaseSettings):
     DB_PORT: int = 3306
     DB_USER: str = "root"
     DB_PASSWORD: str = "root"
-    DB_NAME: str = "post"
+    DB_NAME: str = "noteadda"
 
-    DATABASE_URL: str = "mysql+asyncmy://root:root@localhost:3306/post"
+    DATABASE_URL: str = "mysql+asyncmy://root:root@localhost:3306/noteadda"
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,

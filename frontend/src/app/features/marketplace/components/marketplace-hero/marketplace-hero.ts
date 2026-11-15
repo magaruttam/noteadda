@@ -1,17 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-site-header',
+  selector: 'app-marketplace-hero',
   standalone: true,
-  templateUrl: './site-header.html',
+  templateUrl: './marketplace-hero.html',
+  styleUrl: './marketplace-hero.css',
 })
-export class SiteHeaderComponent {
+export class MarketplaceHeroComponent {
   @Input() searchQuery = '';
   @Output() searchChange = new EventEmitter<string>();
-  @Output() sellClick = new EventEmitter<void>();
-
-  menuOpen = false;
-  profileOpen = false;
+  @Output() browse = new EventEmitter<void>();
 
   onSearchInput(event: Event): void {
     this.searchChange.emit((event.target as HTMLInputElement).value);

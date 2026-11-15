@@ -1,7 +1,14 @@
 import { Routes } from '@angular/router';
-import { MarketplaceHomeComponent } from './features/marketplace/pages/marketplace-home';
 
 export const routes: Routes = [
-  { path: '', component: MarketplaceHomeComponent },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./features/marketplace/marketplace.routes').then((m) => m.MARKETPLACE_ROUTES),
+  },
+  {
+    path: '',
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+  },
   { path: '**', redirectTo: '' },
 ];

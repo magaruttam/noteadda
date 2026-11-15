@@ -1,0 +1,91 @@
+<div class="auth-page">
+  <div class="auth-glow" aria-hidden="true"></div>
+  <div class="auth-grid" aria-hidden="true"></div>
+
+  <header class="auth-topbar">
+    <a class="brand" routerLink="/" aria-label="NoteAdda home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z" />
+          <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10h8" />
+        </svg>
+      </span>
+      <span>Note<span class="brand-accent">Adda</span></span>
+    </a>
+    <a class="back-link" routerLink="/">← Back to library</a>
+  </header>
+
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="login-title">
+      <div class="auth-header">
+        <span class="auth-kicker">Welcome back</span>
+        <h1 id="login-title">Sign in to NoteAdda</h1>
+        <p>Access your saved study notes and continue revising.</p>
+      </div>
+
+      @if (successMessage) {
+        <div class="status-banner success" role="status">{{ successMessage }}</div>
+      }
+
+      @if (errorMessage) {
+        <div class="status-banner error" role="alert">{{ errorMessage }}</div>
+      }
+
+      <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="field" [class.has-error]="hasError('emailOrUsername')">
+          <label for="login-identifier">Email or username</label>
+          <input
+            id="login-identifier"
+            type="text"
+            formControlName="emailOrUsername"
+            placeholder="user@example.com or uttam"
+            autocomplete="username"
+          />
+          @if (hasError('emailOrUsername')) {
+            <span class="field-error">Please enter your email or username.</span>
+          }
+        </div>
+
+        <div class="field" [class.has-error]="hasError('password')">
+          <label for="login-password">Password</label>
+          <div class="input-wrap">
+            <input
+              id="login-password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          @if (hasError('password')) {
+            <span class="field-error">Password must be 6–128 characters.</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="remember" />
+            <span>Keep me signed in</span>
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Signing in...' : 'Sign in' }}
+          @if (!isSubmitting) { <span>→</span> }
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Don't have an account? <a routerLink="/register">Create one</a>
+      </div>
+    </section>
+  </main>
+</div>

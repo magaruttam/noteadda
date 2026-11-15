@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
 import { routes } from './app.routes';
-import { MarketplaceHomeComponent } from './features/marketplace/pages/marketplace-home';
+import { MarketplaceHomeComponent } from './features/marketplace/pages/marketplace-home/marketplace-home';
 
 describe('App', () => {
   beforeEach(async () => {

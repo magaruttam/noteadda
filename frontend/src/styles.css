@@ -1,8 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap');
-@import './app/features/marketplace/components/site-header.css';
-@import './app/features/marketplace/components/marketplace-hero.css';
-@import './app/features/marketplace/components/note-card.css';
-@import './app/features/marketplace/pages/marketplace-home.css';
 
 * { box-sizing: border-box; }
 html { min-width: 320px; scroll-behavior: smooth; }

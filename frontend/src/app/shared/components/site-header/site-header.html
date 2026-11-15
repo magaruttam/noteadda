@@ -1,0 +1,44 @@
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#" aria-label="NoteAdda home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z" />
+          <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10h8" />
+        </svg>
+      </span>
+      <span>Note<span class="brand-accent">Adda</span></span>
+    </a>
+
+    <label class="header-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>
+      <input [value]="searchQuery" (input)="onSearchInput($event)" placeholder="Search notes, subjects, or universities..." aria-label="Search study notes" />
+    </label>
+
+    <div class="header-actions">
+      @if (authService.isAuthenticated()) {
+        <button type="button" class="logout-button" (click)="onLogout()">Log out</button>
+      } @else {
+        <a class="login-link" routerLink="/login">Log in</a>
+        <a class="browse-link" routerLink="/register">Sign up <span>→</span></a>
+      }
+      <button type="button" class="mobile-toggle" (click)="menuOpen = !menuOpen" [attr.aria-expanded]="menuOpen" aria-label="Toggle navigation">
+        {{ menuOpen ? '×' : '☰' }}
+      </button>
+    </div>
+  </div>
+  @if (menuOpen) {
+    <div class="mobile-menu">
+      <label class="mobile-search">
+        <input [value]="searchQuery" (input)="onSearchInput($event)" placeholder="Search notes..." aria-label="Search study notes" />
+      </label>
+      <a href="#marketplace" (click)="menuOpen = false">Browse notes</a>
+      @if (authService.isAuthenticated()) {
+        <button type="button" class="mobile-logout" (click)="onLogout()">Log out</button>
+      } @else {
+        <a routerLink="/login" (click)="menuOpen = false">Log in</a>
+        <a routerLink="/register" (click)="menuOpen = false">Sign up</a>
+      }
+    </div>
+  }
+</header>

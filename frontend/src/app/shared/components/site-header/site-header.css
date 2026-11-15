@@ -1,0 +1,235 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.site-header {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid #eaecf4;
+  backdrop-filter: blur(16px);
+}
+
+.header-inner {
+  width: min(1120px, calc(100% - 48px));
+  height: 68px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  color: #171d2e;
+  text-decoration: none;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #5146e5 0%, #6b61f5 100%);
+  box-shadow: 0 4px 12px rgba(81, 70, 229, 0.28);
+}
+
+.brand-mark svg {
+  width: 20px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.brand-accent {
+  color: #5146e5;
+}
+
+.header-search {
+  height: 42px;
+  flex: 1;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid #e4e7f0;
+  border-radius: 12px;
+  background: #f7f8fc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.header-search:focus-within {
+  border-color: #8f88f2;
+  box-shadow: 0 0 0 3px rgba(81, 70, 229, 0.1);
+  background: #ffffff;
+}
+
+.header-search svg {
+  width: 17px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: #8e95a8;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+
+.header-search input,
+.mobile-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1f2538;
+  font: inherit;
+  font-size: 13.5px;
+}
+
+.header-search input::placeholder,
+.mobile-search input::placeholder {
+  color: #969daf;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-link {
+  padding: 9px 14px;
+  border-radius: 10px;
+  color: #3d4457;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.login-link:hover {
+  color: #5146e5;
+  background: #f4f3ff;
+}
+
+.logout-button {
+  padding: 9px 15px;
+  border: 1px solid #dfe3ee;
+  border-radius: 10px;
+  color: #3d4457;
+  background: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.logout-button:hover {
+  border-color: #c7c3fa;
+  color: #5146e5;
+  background: #fafaff;
+}
+
+.browse-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #181f32;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.browse-link:hover {
+  background: #5146e5;
+  transform: translateY(-1px);
+}
+
+.browse-link span {
+  color: #c9c6ff;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.mobile-toggle,
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    width: calc(100% - 34px);
+    height: 62px;
+    gap: 12px;
+  }
+
+  .brand {
+    font-size: 19px;
+  }
+
+  .header-search,
+  .login-link,
+  .browse-link,
+  .logout-button {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2538;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .mobile-menu {
+    padding: 14px 17px 18px;
+    border-top: 1px solid #eef0f5;
+    display: grid;
+    gap: 12px;
+    background: #ffffff;
+  }
+
+  .mobile-search {
+    padding: 10px 12px;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    background: #f7f8fc;
+  }
+
+  .mobile-menu a,
+  .mobile-logout {
+    padding: 6px 2px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    color: #1f2538;
+    text-decoration: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+}

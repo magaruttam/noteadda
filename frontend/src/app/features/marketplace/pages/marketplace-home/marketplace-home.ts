@@ -1,24 +1,22 @@
 import { Component } from '@angular/core';
-import { NoteCardComponent } from '../components/note-card';
-import { MarketplaceHeroComponent } from '../components/marketplace-hero';
-import { SiteHeaderComponent } from '../components/site-header';
-import { categories, faqs, notes, testimonials } from '../data/marketplace.data';
-import { Note } from '../models/marketplace.model';
+import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
+import { MarketplaceHeroComponent } from '../../components/marketplace-hero/marketplace-hero';
+import { NoteCardComponent } from '../../components/note-card/note-card';
+import { categories, notes } from '../../data/marketplace.data';
+import { Note } from '../../models/marketplace.model';
 
 type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
-type CalculatorField = 'sets' | 'price' | 'downloads';
 
 @Component({
   selector: 'app-marketplace-home',
   standalone: true,
   imports: [SiteHeaderComponent, MarketplaceHeroComponent, NoteCardComponent],
   templateUrl: './marketplace-home.html',
+  styleUrl: './marketplace-home.css',
 })
 export class MarketplaceHomeComponent {
   readonly categories = categories;
   readonly notes = notes;
-  readonly testimonials = testimonials;
-  readonly faqs = faqs;
   readonly sortOptions: { value: SortOption; label: string }[] = [
     { value: 'popular', label: 'Most popular' },
     { value: 'rating', label: 'Highest rated' },
@@ -30,10 +28,6 @@ export class MarketplaceHomeComponent {
   activeCategory = 'all';
   sortBy: SortOption = 'popular';
   selectedNote: Note | null = null;
-  openFaq = 0;
-  calculatorSets = 4;
-  calculatorPrice = 199;
-  calculatorDownloads = 40;
 
   get filteredNotes(): Note[] {
     const query = this.searchQuery.trim().toLowerCase();
@@ -61,10 +55,6 @@ export class MarketplaceHomeComponent {
     });
   }
 
-  get estimatedEarnings(): number {
-    return this.calculatorSets * this.calculatorPrice * this.calculatorDownloads;
-  }
-
   onSearchChange(query: string): void {
     this.searchQuery = query;
   }
@@ -77,13 +67,6 @@ export class MarketplaceHomeComponent {
     this.sortBy = (event.target as HTMLSelectElement).value as SortOption;
   }
 
-  updateCalculator(field: CalculatorField, event: Event): void {
-    const value = Number((event.target as HTMLInputElement).value);
-    if (field === 'sets') this.calculatorSets = value;
-    if (field === 'price') this.calculatorPrice = value;
-    if (field === 'downloads') this.calculatorDownloads = value;
-  }
-
   scrollToSection(sectionId: string): void {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   }
@@ -91,10 +74,6 @@ export class MarketplaceHomeComponent {
   clearFilters(): void {
     this.searchQuery = '';
     this.activeCategory = 'all';
-  }
-
-  toggleFaq(index: number): void {
-    this.openFaq = this.openFaq === index ? -1 : index;
   }
 
   closePreview(): void {
