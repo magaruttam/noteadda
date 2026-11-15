@@ -1,0 +1,22 @@
+<article class="note-card">
+  <button class="note-cover" [class]="'note-cover cover-' + note.color" (click)="preview.emit(note)" [attr.aria-label]="'Preview ' + note.title">
+    <span class="cover-spine" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+    <span class="cover-sheet">
+      <span class="cover-top"><span>{{ note.course }} <b>·</b> {{ note.semester }}</span><span class="file-tag">{{ note.pages }}p PDF</span></span>
+      <span class="cover-copy"><strong>{{ note.title }}</strong><small>{{ note.university }}</small></span>
+      <span class="cover-bottom"><span>VERIFIED STUDY NOTES</span><span>NOTEADDA</span></span>
+    </span>
+    @if (note.badge) { <span class="cover-badge">{{ note.badge }}</span> }
+    <span class="cover-hover">◉ &nbsp; Preview sample</span>
+  </button>
+  <div class="card-content">
+    <div class="card-meta"><span>{{ note.university }}</span><span>Recently added</span></div>
+    <button class="note-title" (click)="preview.emit(note)">{{ note.title }}</button>
+    <div class="creator"><span class="creator-avatar">{{ note.seller.charAt(0) }}</span><span>{{ note.seller }}</span><b aria-label="Verified creator">✓</b></div>
+    <div class="rating-row"><span class="stars">★★★★★</span><strong>{{ note.rating }}</strong><span class="review-count">({{ note.reviews }})</span><span class="sold-count">{{ note.downloads }} sold</span></div>
+    <div class="card-footer">
+      <div class="price"><small>Rs.</small><strong>{{ note.price }}</strong>@if (note.originalPrice) { <del>Rs. {{ note.originalPrice }}</del> }</div>
+      <button class="get-notes" (click)="preview.emit(note)">Get notes <span>→</span></button>
+    </div>
+  </div>
+</article>

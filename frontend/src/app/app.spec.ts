@@ -1,10 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
+import { routes } from './app.routes';
+import { MarketplaceHomeComponent } from './features/marketplace/pages/marketplace-home';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, MarketplaceHomeComponent],
+      providers: [provideRouter(routes)],
     })
       .compileComponents();
   });
@@ -15,10 +19,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
+  it('should render the marketplace homepage', async () => {
+    const fixture = TestBed.createComponent(MarketplaceHomeComponent);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Better notes.');
   });
 });

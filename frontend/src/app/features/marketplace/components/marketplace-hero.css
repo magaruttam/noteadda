@@ -1,0 +1,48 @@
+.hero { position: relative; overflow: hidden; background: linear-gradient(180deg, #f3f4ff 0%, #fbfbff 47%, #fff 100%); border-bottom: 1px solid #e8ebf2; }
+.hero-glow { position: absolute; width: 720px; height: 480px; left: 50%; top: -225px; transform: translateX(-50%); background: radial-gradient(ellipse, #b9b5ff55 0%, #ecebff45 45%, transparent 72%); pointer-events: none; }
+.hero-content { position: relative; max-width: 1000px; margin: auto; padding: 45px 24px 39px; text-align: center; }
+.live-pill { width: fit-content; max-width: 100%; margin: 0 auto 29px; padding: 8px 13px; display: flex; align-items: center; gap: 7px; color: #606a7d; background: #ffffffc9; border: 1px solid #e3e3f7; border-radius: 999px; box-shadow: 0 4px 14px #35309d0b; font-size: 10px; font-weight: 600; }
+.live-pill strong { color: #5146e5; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #1cbd83; box-shadow: 0 0 0 4px #1cbd831a; }
+.pill-divider { color: #b4b8c5; }
+.eyebrow { margin: 0 0 14px; display: inline-flex; align-items: center; gap: 10px; color: #797e93; font-size: 9px; font-weight: 800; letter-spacing: 1.7px; text-transform: uppercase; }
+.eyebrow-line { width: 19px; height: 1px; background: #b5b1f5; }
+h1 { margin: 0; color: #1b2032; font-size: clamp(42px, 6.4vw, 72px); font-weight: 850; line-height: .99; letter-spacing: -4px; }
+h1 span { color: #5146e5; }
+.hero-copy { max-width: 590px; margin: 18px auto 23px; color: #6d7487; font-size: 14px; line-height: 1.75; }
+.hero-search { max-width: 650px; height: 59px; margin: auto; padding: 7px 8px 7px 18px; display: flex; align-items: center; gap: 12px; text-align: left; border: 1px solid #e5e6ef; border-radius: 15px; background: #fff; box-shadow: 0 12px 35px #25244a12; }
+.hero-search:focus-within { border-color: #9b95f4; box-shadow: 0 0 0 4px #5146e513, 0 12px 35px #25244a12; }
+.hero-search svg { width: 19px; flex: 0 0 auto; fill: none; stroke: #9299aa; stroke-width: 1.8; stroke-linecap: round; }
+.hero-search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #252b3e; font: inherit; font-size: 12px; }
+.hero-search input::placeholder { color: #a0a5b3; }
+.find-button { min-width: 130px; align-self: stretch; padding: 0 14px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; color: white; background: #5146e5; text-decoration: none; font-size: 11px; font-weight: 750; transition: background .2s; }
+.find-button:hover { background: #4035d5; }
+.find-button span { font-size: 16px; }
+.trending { margin: 13px auto 19px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 7px; }
+.trending-label { margin-right: 2px; color: #9096a6; font-size: 10px; font-weight: 700; }
+.trending-label span { color: #f0a533; margin-right: 3px; }
+.trending button { padding: 5px 9px; border: 1px solid transparent; border-radius: 999px; background: #f0f1f8; color: #646c80; font: inherit; font-size: 9px; font-weight: 650; cursor: pointer; transition: .2s; }
+.trending button:hover { border-color: #d7d4ff; color: #5146e5; background: #f5f4ff; }
+.faculty-row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 7px; }
+.faculty-label { margin-right: 3px; color: #9a9eae; font-size: 9px; font-weight: 800; letter-spacing: .9px; text-transform: uppercase; }
+.faculty-row button { padding: 7px 12px; border: 1px solid #e6e7ef; border-radius: 8px; background: #ffffffc9; color: #626a7d; font: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: .2s; }
+.faculty-row button:hover, .faculty-row button.active { border-color: #5146e5; color: white; background: #5146e5; }
+.hero-actions { margin-top: 21px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 9px; }
+.primary-action, .secondary-action, .text-action { min-height: 42px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; text-decoration: none; font-size: 10px; font-weight: 750; transition: .2s; }
+.primary-action { color: white; background: #1b2032; box-shadow: 0 7px 15px #1b203222; }
+.primary-action:hover { background: #30374b; transform: translateY(-1px); }
+.action-arrow { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: #ffffff20; }
+.secondary-action { color: #3e4659; background: #fff; border: 1px solid #e3e5ed; }
+.secondary-action:hover, .text-action:hover { color: #5146e5; border-color: #d6d3ff; }
+.upload-icon { font-size: 17px; color: #5146e5; }
+.text-action { color: #747b8d; border: 1px solid transparent; }
+.text-action span { color: #5146e5; }
+.trust-row { margin: 25px auto 0; padding-top: 17px; display: flex; justify-content: center; flex-wrap: wrap; gap: 22px; border-top: 1px solid #e9e9f2; color: #747c8e; font-size: 9px; font-weight: 650; }
+.trust-row span { display: flex; align-items: center; gap: 6px; }
+.trust-row b { color: #16a77a; font-size: 13px; }
+.hero-bottom { min-height: 58px; padding: 12px 20px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 24px; border-top: 1px solid #ececf4; background: #ffffff8c; color: #a0a3b2; }
+.hero-bottom > span { font-size: 8px; font-weight: 800; letter-spacing: 1.4px; }
+.university-list { display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 20px; color: #747b8d; font-size: 10px; }
+.university-list b { font-weight: 750; }
+.university-list i { width: 3px; height: 3px; border-radius: 50%; background: #c3c6d1; }
+@media (max-width: 640px) { .hero-content { padding: 32px 18px 28px; } .live-pill { margin-bottom: 22px; padding: 7px 10px; font-size: 8px; } h1 { font-size: 46px; letter-spacing: -2.7px; } .hero-copy { max-width: 400px; margin: 15px auto 19px; font-size: 12px; } .hero-search { height: 54px; padding-left: 13px; gap: 8px; } .hero-search input { font-size: 10px; } .find-button { min-width: auto; padding: 0 11px; font-size: 9px; } .faculty-label { flex-basis: 100%; margin: 3px 0 1px; } .faculty-row { gap: 6px; } .faculty-row button { padding: 7px 9px; font-size: 9px; } .hero-actions { gap: 7px; } .primary-action, .secondary-action, .text-action { min-height: 39px; padding: 0 12px; font-size: 9px; } .trust-row { gap: 10px 15px; font-size: 8px; } .hero-bottom { gap: 9px; } .university-list { gap: 8px; font-size: 8px; } }

@@ -1,0 +1,191 @@
+<app-site-header [searchQuery]="searchQuery" (searchChange)="onSearchChange($event)" (sellClick)="scrollToSection('sell-cta')" />
+
+<main>
+  <app-marketplace-hero
+    [searchQuery]="searchQuery"
+    [activeCategory]="activeCategory"
+    (searchChange)="onSearchChange($event)"
+    (categorySelect)="onCategorySelect($event)"
+    (browse)="scrollToSection('marketplace')"
+  />
+
+  <section class="how-section" id="how-it-works">
+    <div class="section-shell">
+      <div class="section-heading centered">
+        <span class="section-kicker">A BETTER WAY TO STUDY</span>
+        <h2>Good notes make <span>great semesters.</span></h2>
+        <p>Find the right material for your next big class, exam or idea.</p>
+      </div>
+      <div class="how-grid">
+        <article class="how-card buyer-card">
+          <div class="how-card-top"><span class="step-icon purple">01</span><span class="how-tag">FOR STUDENTS</span></div>
+          <h3>Get exam-ready in three easy steps</h3>
+          <div class="step-list">
+            <div class="step-row"><span>1</span><div><strong>Find your exact course</strong><p>Browse by faculty, subject or university syllabus.</p></div></div>
+            <div class="step-row"><span>2</span><div><strong>Preview before you choose</strong><p>Explore a sample and check the topics that matter.</p></div></div>
+            <div class="step-row"><span>3</span><div><strong>Study on your schedule</strong><p>Choose helpful material from students who know the course.</p></div></div>
+          </div>
+          <a href="#marketplace" class="how-link">Explore study notes <span>→</span></a>
+        </article>
+        <article class="how-card creator-card">
+          <div class="how-card-top"><span class="step-icon green">02</span><span class="how-tag">FOR NOTE CREATORS</span></div>
+          <h3>Your hard work can help someone else</h3>
+          <div class="step-list">
+            <div class="step-row"><span>1</span><div><strong>Share your study materials</strong><p>Turn useful lecture notes and solved papers into listings.</p></div></div>
+            <div class="step-row"><span>2</span><div><strong>Choose your own price</strong><p>Set a fair price that reflects the time you put in.</p></div></div>
+            <div class="step-row"><span>3</span><div><strong>Help the next student</strong><p>Make high-quality notes easier for others to find.</p></div></div>
+          </div>
+          <a href="#sell-cta" class="how-link">Become a creator <span>→</span></a>
+        </article>
+      </div>
+      <div class="trust-strip">
+        <div><strong>3,400+</strong><span>students in the community</span></div>
+        <i></i><div><strong>1,200+</strong><span>helpful study resources</span></div>
+        <i></i><div><strong>8 faculties</strong><span>and growing every day</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog-section" id="marketplace">
+    <div class="section-shell">
+      <div class="catalog-heading">
+        <div>
+          <span class="section-kicker">THE NOTEADDA LIBRARY</span>
+          <h2>Find your next <span>study shortcut.</span></h2>
+          <p>Thoughtful notes and solved papers, shared by students like you.</p>
+        </div>
+        <label class="sort-control"><span>Sort by</span><select [value]="sortBy" (change)="onSortChange($event)">@for (option of sortOptions; track option.value) { <option [value]="option.value">{{ option.label }}</option> }</select></label>
+      </div>
+
+      <div class="category-pills">
+        @for (category of categories; track category.id) {
+          <button [class.active]="activeCategory === category.id" (click)="onCategorySelect(category.id)">
+            {{ category.label }} <span>{{ category.count }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="results-bar">
+        <span>Showing <strong>{{ filteredNotes.length }}</strong> curated materials @if (searchQuery) { <span class="query-label">for “{{ searchQuery }}”</span> }</span>
+        @if (searchQuery || activeCategory !== 'all') { <button (click)="clearFilters()">Clear filters <span>×</span></button> }
+      </div>
+
+      @if (filteredNotes.length) {
+        <div class="notes-grid">
+          @for (note of filteredNotes; track note.id) {
+            <app-note-card [note]="note" (preview)="selectedNote = $event" />
+          }
+        </div>
+      } @else {
+        <div class="empty-state"><span>⌕</span><h3>No notes found just yet</h3><p>Try a different search or browse all study materials.</p><button class="button button-dark" (click)="clearFilters()">Show all notes</button></div>
+      }
+      <div class="catalog-bottom"><span>Showing a small preview of the NoteAdda library</span><a href="#marketplace">Explore more notes <span>→</span></a></div>
+    </div>
+  </section>
+
+  <section class="seller-section" id="sell-cta">
+    <div class="seller-glow" aria-hidden="true"></div>
+    <div class="section-shell seller-layout">
+      <div class="seller-copy">
+        <span class="seller-kicker"><span>✦</span> SHARE WHAT YOU KNOW</span>
+        <h2>Your notes could be<br />someone's <span>aha moment.</span></h2>
+        <p>Turn your semester's work into a resource that helps other students learn with confidence.</p>
+        <div class="seller-benefits">
+          <div><span>01</span><p><strong>Upload your study notes</strong><small>Share clear notes, summaries or solved questions.</small></p></div>
+          <div><span>02</span><p><strong>Choose your own price</strong><small>Decide what your time and effort are worth.</small></p></div>
+          <div><span>03</span><p><strong>Support your student community</strong><small>Help classmates and future students get ahead.</small></p></div>
+        </div>
+        <button class="seller-cta" (click)="scrollToSection('how-it-works')">Get started as a creator <span>→</span></button>
+        <small class="seller-note">No backend connected — creator flow is a design preview.</small>
+      </div>
+
+      <div class="calculator-card">
+        <div class="calculator-title"><span class="calculator-icon">⌗</span><div><strong>Creator earnings calculator</strong><small>A little inspiration for your next semester</small></div><span class="calculator-badge">ESTIMATE</span></div>
+        <div class="slider-group">
+          <div class="slider-label"><span>Note sets you share</span><strong>{{ calculatorSets }} sets</strong></div>
+          <input type="range" min="1" max="15" [value]="calculatorSets" (input)="updateCalculator('sets', $event)" aria-label="Note sets you share" />
+          <div class="slider-scale"><span>1 set</span><span>15 sets</span></div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>Price per note set</span><strong>Rs. {{ calculatorPrice }}</strong></div>
+          <input type="range" min="49" max="499" step="10" [value]="calculatorPrice" (input)="updateCalculator('price', $event)" aria-label="Price per note set" />
+          <div class="slider-scale"><span>Rs. 49</span><span>Rs. 499</span></div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>Estimated downloads each</span><strong>{{ calculatorDownloads }} students</strong></div>
+          <input type="range" min="10" max="150" step="5" [value]="calculatorDownloads" (input)="updateCalculator('downloads', $event)" aria-label="Estimated downloads each" />
+          <div class="slider-scale"><span>10 students</span><span>150 students</span></div>
+        </div>
+        <div class="estimate-box"><span>ILLUSTRATIVE SEMESTER TOTAL</span><strong>Rs. {{ estimatedEarnings.toLocaleString() }}</strong><div><span>Based on your selections</span><span class="estimate-mark">✦ NoteAdda creator</span></div></div>
+        <p class="calculator-disclaimer">This estimate is for illustration only and isn't a guarantee of earnings.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stories-section">
+    <div class="section-shell">
+      <div class="section-heading centered">
+        <span class="section-kicker">STUDENT STORIES</span>
+        <h2>Built around the <span>student experience.</span></h2>
+        <p>Real study moments, shared by a community that gets it.</p>
+      </div>
+      <div class="stories-grid">
+        @for (story of testimonials; track story.name) {
+          <article class="story-card">
+            <div class="story-institution"><span class="institution-mark">N</span><div><strong>{{ story.institution }}</strong><small>{{ story.program }}</small></div><span class="quote-mark">“</span></div>
+            <div class="story-stars">★★★★★</div>
+            <p>“{{ story.quote }}”</p>
+            <div class="story-author"><span [class]="'story-avatar ' + story.color">{{ story.initials }}</span><div><strong>{{ story.name }}</strong><small>{{ story.role }}</small></div><span class="verified-mark">✓</span></div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section" id="faq">
+    <div class="section-shell faq-layout">
+      <div class="faq-intro">
+        <span class="section-kicker">A FEW QUICK ANSWERS</span>
+        <h2>Good questions.<br /><span>Clear answers.</span></h2>
+        <p>New to NoteAdda? Here's what students usually want to know.</p>
+        <a href="mailto:hello@noteadda.com">Still curious? Get in touch <span>↗</span></a>
+      </div>
+      <div class="faq-list">
+        @for (faq of faqs; track faq.question; let index = $index) {
+          <article class="faq-item" [class.expanded]="openFaq === index">
+            <button (click)="toggleFaq(index)" [attr.aria-expanded]="openFaq === index"><span>{{ faq.question }}</span><span class="faq-toggle">{{ openFaq === index ? '−' : '+' }}</span></button>
+            @if (openFaq === index) { <p>{{ faq.answer }}</p> }
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="section-shell">
+    <div class="footer-main">
+      <div class="footer-brand"><a class="brand" href="#"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z" /><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10h8" /></svg></span><span>Note<span class="brand-accent">Adda</span></span></a><p>Nepal's student-powered home for helpful study notes, solved papers and shared knowledge.</p></div>
+      <div class="footer-column"><strong>EXPLORE</strong><a href="#marketplace">Browse all notes</a><a href="#marketplace">Popular faculties</a><a href="#how-it-works">How it works</a></div>
+      <div class="footer-column"><strong>FOR CREATORS</strong><a href="#sell-cta">Share your notes</a><a href="#sell-cta">Creator guide</a><a href="#sell-cta">Earnings calculator</a></div>
+      <div class="footer-column"><strong>NOTEADDA</strong><a href="#how-it-works">About the community</a><a href="mailto:hello@noteadda.com">Help & support</a><a href="#faq">FAQs</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 NoteAdda. Made for students, by students.</span><span><b>●</b> A student-first learning community <i>·</i> Nepal</span></div>
+  </div>
+</footer>
+
+@if (selectedNote) {
+  <div class="preview-backdrop" (click)="closePreview()">
+    <section class="preview-modal" role="dialog" aria-modal="true" [attr.aria-label]="selectedNote.title" (click)="$event.stopPropagation()">
+      <div class="preview-header"><span>{{ selectedNote.course }} <i>·</i> {{ selectedNote.semester }}</span><button (click)="closePreview()" aria-label="Close preview">×</button></div>
+      <div class="preview-body">
+        <span class="preview-label">NOTEADDA SAMPLE PREVIEW</span>
+        <h2>{{ selectedNote.title }}</h2>
+        <p class="preview-subtitle">{{ selectedNote.university }} <span>·</span> {{ selectedNote.pages }} pages <span>·</span> shared by {{ selectedNote.seller }}</p>
+        <div class="sample-page"><div class="sample-lines"><span></span><span></span><span></span><span></span></div><span class="sample-watermark">SAMPLE</span><strong>What's inside</strong><p>{{ selectedNote.summary }}</p><ul><li>Course-focused explanations and key topics</li><li>Revision-friendly notes for your next exam</li><li>Shared by a student familiar with the syllabus</li></ul></div>
+        <div class="preview-footer"><div><small>PREVIEW PRICE</small><strong>Rs. {{ selectedNote.price }}</strong></div><button (click)="closePreview()">Got it, keep browsing <span>→</span></button></div>
+        <p class="preview-disclaimer">This is a visual preview only. Purchases and downloads are not connected.</p>
+      </div>
+    </section>
+  </div>
+}

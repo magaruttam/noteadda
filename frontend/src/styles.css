@@ -1,3 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap');
+@import './app/features/marketplace/components/site-header.css';
+@import './app/features/marketplace/components/marketplace-hero.css';
+@import './app/features/marketplace/components/note-card.css';
+@import './app/features/marketplace/pages/marketplace-home.css';
 
-@import 'tailwindcss';
+* { box-sizing: border-box; }
+html { min-width: 320px; scroll-behavior: smooth; }
+body { margin: 0; color: #202638; background: #fff; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; }
+h1, h2, h3, p { margin-top: 0; }
+h1, h2, h3, strong { font-family: 'Manrope', 'DM Sans', sans-serif; }
+::selection { color: #312a9e; background: #e3e1ff; }
