@@ -8,6 +8,8 @@ import { Note } from '../../models/marketplace.model';
   styleUrl: './note-card.css',
 })
 export class NoteCardComponent {
+  protected readonly Math = Math;
+
   @Input({ required: true }) note!: Note;
   @Output() preview = new EventEmitter<Note>();
 }

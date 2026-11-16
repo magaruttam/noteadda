@@ -11,36 +11,71 @@
     <div class="section-shell">
       <div class="catalog-heading">
         <div>
-          <span class="section-kicker">THE NOTEADDA LIBRARY</span>
-          <h2>Find your next <span>study shortcut.</span></h2>
-          <p>Thoughtful notes and solved papers, shared by students like you.</p>
+          <h2>Browse Study Notes</h2>
+          <p>{{ filteredNotes.length }} notes available @if (searchQuery) { for “{{ searchQuery }}” }</p>
         </div>
-        <div class="catalog-meta">
-          <span class="results-count">
-            <strong>{{ filteredNotes.length }}</strong> curated materials
-            @if (searchQuery) { <span class="query-label">for “{{ searchQuery }}”</span> }
-          </span>
+
+        <div class="catalog-controls">
           @if (searchQuery || activeCategory !== 'all') {
-            <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters <span>×</span></button>
+            <button type="button" class="clear-filters" (click)="clearFilters()">
+              Clear filters
+            </button>
           }
+
+          <div class="sort-dropdown" [class.open]="sortMenuOpen">
+            <button
+              type="button"
+              class="sort-trigger"
+              (click)="toggleSortMenu()"
+              aria-haspopup="listbox"
+              [attr.aria-expanded]="sortMenuOpen"
+              aria-label="Sort study notes"
+            >
+              <span class="sort-prefix">Sort:</span>
+              <span class="sort-value">{{ activeSortLabel }}</span>
+              <svg class="sort-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+
+            @if (sortMenuOpen) {
+              <div class="sort-menu" role="listbox" aria-label="Sort options">
+                @for (option of sortOptions; track option.value) {
+                  <button
+                    type="button"
+                    role="option"
+                    class="sort-option"
+                    [class.selected]="sortBy === option.value"
+                    [attr.aria-selected]="sortBy === option.value"
+                    (click)="onSortSelect(option.value)"
+                  >
+                    <span>{{ option.label }}</span>
+                    @if (sortBy === option.value) {
+                      <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                      </svg>
+                    }
+                  </button>
+                }
+              </div>
+            }
+          </div>
         </div>
       </div>
 
-      <div class="catalog-toolbar">
-        <div class="category-pills">
-          @for (category of categories; track category.id) {
-            <button type="button" [class.active]="activeCategory === category.id" (click)="onCategorySelect(category.id)">
-              {{ category.label }} <span>{{ category.count }}</span>
-            </button>
-          }
-        </div>
-        <label class="sort-control">
-          <select [value]="sortBy" (change)="onSortChange($event)" aria-label="Sort notes">
-            @for (option of sortOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
-        </label>
+      <div class="category-pills" role="tablist" aria-label="Filter by faculty">
+        @for (category of categories; track category.id) {
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="activeCategory === category.id"
+            [class.active]="activeCategory === category.id"
+            (click)="onCategorySelect(category.id)"
+          >
+            {{ category.label }}
+            <span>{{ category.count }}</span>
+          </button>
+        }
       </div>
 
       @if (filteredNotes.length) {
@@ -50,36 +85,73 @@
           }
         </div>
       } @else {
-        <div class="empty-state"><span>⌕</span><h3>No notes found just yet</h3><p>Try a different search or browse all study materials.</p><button class="button button-dark" (click)="clearFilters()">Show all notes</button></div>
+        <div class="empty-state">
+          <h3>No notes found</h3>
+          <p>Try a different keyword or reset your filters to view all study notes.</p>
+          <button type="button" class="reset-btn" (click)="clearFilters()">Show all notes</button>
+        </div>
       }
-      <div class="catalog-bottom"><span>Showing a small preview of the NoteAdda library</span><a href="#marketplace">Explore more notes <span>→</span></a></div>
     </div>
   </section>
 </main>
 
 <footer class="site-footer">
-  <div class="section-shell">
-    <div class="footer-main">
-      <div class="footer-brand"><a class="brand" href="#"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z" /><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10h8" /></svg></span><span>Note<span class="brand-accent">Adda</span></span></a><p>Nepal's student-powered home for helpful study notes, solved papers and shared knowledge.</p></div>
-      <div class="footer-column"><strong>EXPLORE</strong><a href="#marketplace">Browse all notes</a><a href="#marketplace">Popular faculties</a><a href="#how-it-works">How it works</a></div>
-      <div class="footer-column"><strong>FOR CREATORS</strong><a href="#sell-cta">Share your notes</a><a href="#sell-cta">Creator guide</a><a href="#sell-cta">Earnings calculator</a></div>
-      <div class="footer-column"><strong>NOTEADDA</strong><a href="#how-it-works">About the community</a><a href="mailto:hello@noteadda.com">Help & support</a><a href="#faq">FAQs</a></div>
+  <div class="section-shell footer-inner">
+    <div class="footer-brand">
+      <strong>NoteAdda</strong>
+      <span>Study notes and solved papers for students across Nepal.</span>
     </div>
-    <div class="footer-bottom"><span>© 2026 NoteAdda. Made for students, by students.</span><span><b>●</b> A student-first learning community <i>·</i> Nepal</span></div>
+    <div class="footer-links">
+      <a href="#marketplace">Browse notes</a>
+      <a href="mailto:hello@noteadda.com">Support</a>
+      <span>© 2026 NoteAdda</span>
+    </div>
   </div>
 </footer>
 
 @if (selectedNote) {
   <div class="preview-backdrop" (click)="closePreview()">
-    <section class="preview-modal" role="dialog" aria-modal="true" [attr.aria-label]="selectedNote.title" (click)="$event.stopPropagation()">
-      <div class="preview-header"><span>{{ selectedNote.course }} <i>·</i> {{ selectedNote.semester }}</span><button (click)="closePreview()" aria-label="Close preview">×</button></div>
+    <section
+      class="preview-modal"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="selectedNote.title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="preview-header">
+        <span>{{ selectedNote.course }} · {{ selectedNote.semester }} · {{ selectedNote.university }}</span>
+        <button type="button" class="close-btn" (click)="closePreview()" aria-label="Close preview">
+          ×
+        </button>
+      </div>
+
       <div class="preview-body">
-        <span class="preview-label">NOTEADDA SAMPLE PREVIEW</span>
         <h2>{{ selectedNote.title }}</h2>
-        <p class="preview-subtitle">{{ selectedNote.university }} <span>·</span> {{ selectedNote.pages }} pages <span>·</span> shared by {{ selectedNote.seller }}</p>
-        <div class="sample-page"><div class="sample-lines"><span></span><span></span><span></span><span></span></div><span class="sample-watermark">SAMPLE</span><strong>What's inside</strong><p>{{ selectedNote.summary }}</p><ul><li>Course-focused explanations and key topics</li><li>Revision-friendly notes for your next exam</li><li>Shared by a student familiar with the syllabus</li></ul></div>
-        <div class="preview-footer"><div><small>PREVIEW PRICE</small><strong>Rs. {{ selectedNote.price }}</strong></div><button (click)="closePreview()">Got it, keep browsing <span>→</span></button></div>
-        <p class="preview-disclaimer">This is a visual preview only. Purchases and downloads are not connected.</p>
+        <p class="preview-meta">
+          By {{ selectedNote.seller }} · {{ selectedNote.pages }} pages · ★ {{ selectedNote.rating }} ({{ selectedNote.reviews }} reviews)
+        </p>
+
+        <div class="sample-box">
+          <strong>What's included</strong>
+          <p>{{ selectedNote.summary }}</p>
+          <ul>
+            <li>Syllabus-aligned notes and key exam topics</li>
+            <li>Clear, revision-ready PDF format ({{ selectedNote.pages }} pages)</li>
+            <li>Shared by a student who completed this course</li>
+          </ul>
+        </div>
+
+        <div class="preview-footer">
+          <div class="preview-price">
+            <strong>Rs. {{ selectedNote.price }}</strong>
+            @if (selectedNote.originalPrice) {
+              <del>Rs. {{ selectedNote.originalPrice }}</del>
+            }
+          </div>
+          <button type="button" class="preview-close-btn" (click)="closePreview()">
+            Close preview
+          </button>
+        </div>
       </div>
     </section>
   </div>

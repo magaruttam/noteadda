@@ -1,15 +1,30 @@
 <section class="hero">
-  <div class="hero-glow" aria-hidden="true"></div>
-  <div class="hero-grid" aria-hidden="true"></div>
   <div class="hero-content">
-    <p class="eyebrow"><span class="eyebrow-line"></span> Nepal's student-powered knowledge market <span class="eyebrow-line"></span></p>
-    <h1>Better notes.<br /><span>Brighter semesters.</span></h1>
-    <p class="hero-copy">Find trusted study notes, solved papers and course guides shared by university students across Nepal.</p>
+    <h1>Better notes. Easier exam prep.</h1>
+    <p class="hero-copy">
+      Find clear study notes, solved past papers, and semester guides shared by students across Nepal.
+    </p>
 
-    <div class="hero-search">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>
-      <input [value]="searchQuery" (input)="onSearchInput($event)" (keyup.enter)="browse.emit()" placeholder="Search subject, university or course..." aria-label="Search notes" />
-      <a href="#marketplace" class="find-button">Find notes <span>→</span></a>
+    <div class="hero-search" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.8" cy="10.8" r="6.8" />
+        <path d="m16 16 4.5 4.5" />
+      </svg>
+      <input
+        [value]="searchQuery"
+        (input)="onSearchInput($event)"
+        (keyup.enter)="browse.emit()"
+        placeholder="Search subject, course, or university (e.g. DSA, TU, MBBS)..."
+        aria-label="Search notes"
+      />
+      <button type="button" class="find-button" (click)="browse.emit()">Find notes</button>
+    </div>
+
+    <div class="quick-tags">
+      <span class="quick-label">Popular:</span>
+      @for (tag of quickTags; track tag) {
+        <button type="button" (click)="onQuickTag(tag)">{{ tag }}</button>
+      }
     </div>
   </div>
 </section>

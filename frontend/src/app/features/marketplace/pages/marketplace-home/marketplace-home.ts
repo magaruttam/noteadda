@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
 import { MarketplaceHeroComponent } from '../../components/marketplace-hero/marketplace-hero';
 import { NoteCardComponent } from '../../components/note-card/note-card';
@@ -15,8 +15,11 @@ type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
   styleUrl: './marketplace-home.css',
 })
 export class MarketplaceHomeComponent {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+
   readonly categories = categories;
   readonly notes = notes;
+
   readonly sortOptions: { value: SortOption; label: string }[] = [
     { value: 'popular', label: 'Most popular' },
     { value: 'rating', label: 'Highest rated' },
@@ -27,7 +30,12 @@ export class MarketplaceHomeComponent {
   searchQuery = '';
   activeCategory = 'all';
   sortBy: SortOption = 'popular';
+  sortMenuOpen = false;
   selectedNote: Note | null = null;
+
+  get activeSortLabel(): string {
+    return this.sortOptions.find((option) => option.value === this.sortBy)?.label ?? 'Most popular';
+  }
 
   get filteredNotes(): Note[] {
     const query = this.searchQuery.trim().toLowerCase();
@@ -35,7 +43,7 @@ export class MarketplaceHomeComponent {
       const matchesCategory = this.activeCategory === 'all' || note.category === this.activeCategory;
       const matchesQuery =
         !query ||
-        [note.title, note.course, note.university, note.seller].some((value) =>
+        [note.title, note.course, note.university, note.seller, note.semester].some((value) =>
           value.toLowerCase().includes(query),
         );
       return matchesCategory && matchesQuery;
@@ -63,8 +71,13 @@ export class MarketplaceHomeComponent {
     this.activeCategory = category;
   }
 
-  onSortChange(event: Event): void {
-    this.sortBy = (event.target as HTMLSelectElement).value as SortOption;
+  toggleSortMenu(): void {
+    this.sortMenuOpen = !this.sortMenuOpen;
+  }
+
+  onSortSelect(value: SortOption): void {
+    this.sortBy = value;
+    this.sortMenuOpen = false;
   }
 
   scrollToSection(sectionId: string): void {
@@ -78,5 +91,24 @@ export class MarketplaceHomeComponent {
 
   closePreview(): void {
     this.selectedNote = null;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.sortMenuOpen) return;
+    const sortDropdown = this.elementRef.nativeElement.querySelector('.sort-dropdown');
+    if (sortDropdown && !sortDropdown.contains(event.target as Node)) {
+      this.sortMenuOpen = false;
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.sortMenuOpen) {
+      this.sortMenuOpen = false;
+    }
+    if (this.selectedNote) {
+      this.closePreview();
+    }
   }
 }

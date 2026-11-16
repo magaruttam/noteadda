@@ -11,7 +11,21 @@ export class MarketplaceHeroComponent {
   @Output() searchChange = new EventEmitter<string>();
   @Output() browse = new EventEmitter<void>();
 
+  readonly quickTags = [
+    'BSc CSIT',
+    'Data Structures',
+    'IOE Pulchowk',
+    'Tribhuvan University',
+    'MBBS',
+    'Accounting',
+  ];
+
   onSearchInput(event: Event): void {
     this.searchChange.emit((event.target as HTMLInputElement).value);
+  }
+
+  onQuickTag(tag: string): void {
+    this.searchChange.emit(tag);
+    this.browse.emit();
   }
 }
