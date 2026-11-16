@@ -1,0 +1,147 @@
+<app-site-header />
+
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 dark:bg-slate-950">
+  <!-- Hero Banner -->
+  <section class="border-b border-slate-200 bg-white py-14 dark:border-slate-800 dark:bg-slate-900 sm:py-16">
+    <div class="mx-auto max-w-4xl px-4 text-center sm:px-6">
+      <span class="mb-3 inline-block rounded-full bg-indigo-50 px-3.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+        Seller Guide · Step-by-Step
+      </span>
+      <h1 class="mb-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+        Turn Your Study Notes Into Income
+      </h1>
+      <p class="mx-auto mb-7 max-w-2xl text-base text-slate-600 dark:text-slate-300">
+        Everything you need to know to prepare, upload, publish, and earn from your study notes on NoteAdda—from start to finish.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a
+          class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          routerLink="/seller"
+        >
+          Start selling in Seller Studio →
+        </a>
+        @if (!authService.isAuthenticated()) {
+          <a
+            class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600"
+            routerLink="/register"
+          >
+            Create free account
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 6-Step Selling Flow -->
+  <section class="py-12 sm:py-14">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <div class="mb-8 text-center">
+        <h2 class="m-0 text-2xl font-bold text-slate-900 dark:text-white">How Selling Works (6 Simple Steps)</h2>
+        <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+          Go from raw PDF notes to a published listing in just a few minutes.
+        </p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-2">
+        @for (item of steps; track item.step) {
+          <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <div class="mb-3 flex items-center gap-3">
+              <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">
+                {{ item.step }}
+              </span>
+              <div>
+                <span class="block text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  {{ item.subtitle }}
+                </span>
+                <h3 class="m-0 text-lg font-bold text-slate-900 dark:text-white">{{ item.title }}</h3>
+              </div>
+            </div>
+
+            <p class="mb-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              {{ item.description }}
+            </p>
+
+            <ul class="m-0 mb-4 flex list-none flex-col gap-2 p-0 text-xs text-slate-600 dark:text-slate-300">
+              @for (point of item.checklist; track point) {
+                <li class="flex items-start gap-2">
+                  <span class="mt-0.5 text-emerald-600 dark:text-emerald-400" aria-hidden="true">✓</span>
+                  <span>{{ point }}</span>
+                </li>
+              }
+            </ul>
+
+            @if (item.ctaLabel && item.ctaLink) {
+              <div class="mt-auto pt-2">
+                <a
+                  class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+                  [routerLink]="item.ctaLink"
+                >
+                  {{ item.ctaLabel }} →
+                </a>
+              </div>
+            }
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Tips for Higher Sales -->
+  <section class="border-y border-slate-200 bg-white py-12 dark:border-slate-800 dark:bg-slate-900">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <div class="mb-7">
+        <h2 class="m-0 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">Tips to Sell More Notes</h2>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Best practices from top-earning student sellers across Nepal.</p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-3">
+        @for (tip of tips; track tip.title) {
+          <article class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-800/50">
+            <h3 class="mb-2 text-base font-bold text-slate-900 dark:text-white">{{ tip.title }}</h3>
+            <p class="m-0 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ tip.body }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-12 sm:py-14">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <h2 class="mb-6 text-center text-2xl font-bold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        @for (faq of faqs; track faq.question) {
+          <article class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+            <h3 class="mb-2 text-sm font-bold text-slate-900 dark:text-white">{{ faq.question }}</h3>
+            <p class="m-0 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ faq.answer }}</p>
+          </article>
+        }
+      </div>
+
+      <!-- Final CTA -->
+      <div class="mt-10 rounded-2xl border border-indigo-200 bg-indigo-50 px-6 py-8 text-center dark:border-indigo-900 dark:bg-indigo-950/50">
+        <h3 class="mb-2 text-xl font-bold text-indigo-950 dark:text-white">Ready to publish your first study book?</h3>
+        <p class="mx-auto mb-5 max-w-lg text-sm text-indigo-800 dark:text-indigo-200">
+          Upload your PDF in Seller Studio, preview how it looks in the store, and share it with students across Nepal.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a
+            class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+            routerLink="/seller"
+          >
+            Go to Seller Studio
+          </a>
+          <a
+            class="rounded-xl border border-indigo-200 bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100/60 dark:border-indigo-800 dark:bg-slate-900 dark:text-indigo-300 dark:hover:bg-slate-800"
+            routerLink="/notes"
+          >
+            Browse existing notes
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-site-footer />

@@ -14,6 +14,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'how-to-sell',
+    loadComponent: () =>
+      import('./features/seller/pages/how-to-sell/how-to-sell').then(
+        (m) => m.HowToSellComponent,
+      ),
+  },
+  {
     path: 'account',
     loadComponent: () =>
       import('./features/account/pages/my-account/my-account').then(
