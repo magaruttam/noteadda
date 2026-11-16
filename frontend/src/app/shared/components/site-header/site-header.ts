@@ -7,7 +7,6 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './site-header.html',
-  styleUrl: './site-header.css',
 })
 export class SiteHeaderComponent {
   readonly authService = inject(AuthService);

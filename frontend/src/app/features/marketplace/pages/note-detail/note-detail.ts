@@ -14,7 +14,6 @@ const COVER_COLORS = ['indigo', 'emerald', 'blue', 'slate', 'amber', 'rose', 'vi
   standalone: true,
   imports: [RouterLink, DatePipe, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './note-detail.html',
-  styleUrl: './note-detail.css',
 })
 export class NoteDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

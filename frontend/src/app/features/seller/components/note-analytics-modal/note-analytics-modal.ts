@@ -5,7 +5,6 @@ import { SellerNote } from '../../pages/seller-dashboard/seller-dashboard';
   selector: 'app-note-analytics-modal',
   standalone: true,
   templateUrl: './note-analytics-modal.html',
-  styleUrl: './note-analytics-modal.css',
 })
 export class NoteAnalyticsModalComponent {
   @Input({ required: true }) note!: SellerNote;

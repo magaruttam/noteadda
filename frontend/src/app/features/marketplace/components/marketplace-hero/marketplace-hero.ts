@@ -4,7 +4,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'app-marketplace-hero',
   standalone: true,
   templateUrl: './marketplace-hero.html',
-  styleUrl: './marketplace-hero.css',
 })
 export class MarketplaceHeroComponent {
   @Input() searchQuery = '';

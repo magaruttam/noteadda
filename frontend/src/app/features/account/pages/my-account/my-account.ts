@@ -11,7 +11,6 @@ import { SiteHeaderComponent } from '../../../../shared/components/site-header/s
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './my-account.html',
-  styleUrl: './my-account.css',
 })
 export class MyAccountComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

@@ -15,7 +15,6 @@ type DropdownKey = 'institute' | 'course' | 'sort';
   standalone: true,
   imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent, NoteCardComponent],
   templateUrl: './notes-catalog.html',
-  styleUrl: './notes-catalog.css',
 })
 export class NotesCatalogComponent implements OnInit {
   private readonly elementRef = inject(ElementRef<HTMLElement>);

@@ -16,7 +16,6 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
-  styleUrl: '../../styles/auth.css',
 })
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);

@@ -1,60 +1,61 @@
 <app-site-header [searchQuery]="searchQuery" (searchChange)="searchQuery = $event" />
 
-<main class="seller-page">
-  <div class="section-shell">
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 py-8 pb-16">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
     <!-- Dashboard Header -->
-    <header class="dashboard-header">
+    <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
       <div>
-        <span class="role-badge">Seller Studio</span>
-        <h1>Manage &amp; Sell Your Notes</h1>
-        <p>Create new study books, track copies sold, and monitor your earnings.</p>
+        <span class="mb-2 inline-block rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Seller Studio</span>
+        <h1 class="m-0 text-2xl font-bold text-slate-900 sm:text-3xl">Manage &amp; Sell Your Notes</h1>
+        <p class="mt-1 text-sm text-slate-500">Create new study books, track copies sold, and monitor your earnings.</p>
       </div>
 
-      <div class="header-actions">
-        <a class="browse-store-btn" routerLink="/notes">View public store</a>
-        <button type="button" class="create-btn" (click)="openCreateTab()">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <a class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900" routerLink="/notes">View public store</a>
+        <button type="button" class="cursor-pointer rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700" (click)="openCreateTab()">
           + Create new note
         </button>
       </div>
     </header>
 
     @if (toastMessage) {
-      <div class="toast-banner" role="status">
+      <div class="mb-5 flex items-center justify-between gap-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-900" role="status">
         <span>{{ toastMessage }}</span>
-        <button type="button" (click)="toastMessage = ''" aria-label="Dismiss">×</button>
+        <button type="button" class="cursor-pointer text-lg leading-none text-indigo-700 hover:text-indigo-950" (click)="toastMessage = ''" aria-label="Dismiss">×</button>
       </div>
     }
 
     <!-- Stats Summary -->
-    <section class="stats-grid" aria-label="Seller performance">
-      <article class="stat-card">
-        <span class="stat-label">Published Books</span>
-        <strong class="stat-value">{{ publishedCount }}</strong>
-        <span class="stat-sub">{{ sellerNotes.length }} total created</span>
+    <section class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Seller performance">
+      <article class="rounded-2xl border border-slate-200 bg-white p-5">
+        <span class="block text-xs font-medium text-slate-500">Published Books</span>
+        <strong class="mt-1 block text-2xl font-bold text-slate-900">{{ publishedCount }}</strong>
+        <span class="mt-1 block text-xs text-slate-400">{{ sellerNotes.length }} total created</span>
       </article>
-      <article class="stat-card">
-        <span class="stat-label">Copies Sold</span>
-        <strong class="stat-value">{{ totalSales }}</strong>
-        <span class="stat-sub">Across all listings</span>
+      <article class="rounded-2xl border border-slate-200 bg-white p-5">
+        <span class="block text-xs font-medium text-slate-500">Copies Sold</span>
+        <strong class="mt-1 block text-2xl font-bold text-slate-900">{{ totalSales }}</strong>
+        <span class="mt-1 block text-xs text-slate-400">Across all listings</span>
       </article>
-      <article class="stat-card highlight">
-        <span class="stat-label">Total Revenue</span>
-        <strong class="stat-value">Rs. {{ totalRevenue.toLocaleString() }}</strong>
-        <span class="stat-sub">Gross book sales</span>
+      <article class="rounded-2xl border border-indigo-200 bg-indigo-50/70 p-5">
+        <span class="block text-xs font-medium text-indigo-700">Total Revenue</span>
+        <strong class="mt-1 block text-2xl font-bold text-indigo-950">Rs. {{ totalRevenue.toLocaleString() }}</strong>
+        <span class="mt-1 block text-xs text-indigo-600">Gross book sales</span>
       </article>
-      <article class="stat-card">
-        <span class="stat-label">Avg. Rating</span>
-        <strong class="stat-value">{{ averageRating }} ★</strong>
-        <span class="stat-sub">Student feedback</span>
+      <article class="rounded-2xl border border-slate-200 bg-white p-5">
+        <span class="block text-xs font-medium text-slate-500">Avg. Rating</span>
+        <strong class="mt-1 block text-2xl font-bold text-slate-900">{{ averageRating }} ★</strong>
+        <span class="mt-1 block text-xs text-slate-400">Student feedback</span>
       </article>
     </section>
 
     <!-- View Tabs -->
-    <div class="dashboard-tabs" role="tablist">
+    <div class="mb-6 flex gap-6 border-b border-slate-200" role="tablist">
       <button
         type="button"
         role="tab"
-        [class.active]="activeTab === 'overview'"
+        class="-mb-px cursor-pointer border-b-2 pb-3 text-sm font-semibold transition"
+        [class]="activeTab === 'overview' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800'"
         [attr.aria-selected]="activeTab === 'overview'"
         (click)="activeTab = 'overview'"
       >
@@ -63,7 +64,8 @@
       <button
         type="button"
         role="tab"
-        [class.active]="activeTab === 'create'"
+        class="-mb-px cursor-pointer border-b-2 pb-3 text-sm font-semibold transition"
+        [class]="activeTab === 'create' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800'"
         [attr.aria-selected]="activeTab === 'create'"
         (click)="activeTab = 'create'"
       >
@@ -73,26 +75,29 @@
 
     <!-- TAB 1: Track Created Notes -->
     @if (activeTab === 'overview') {
-      <section class="notes-panel">
-        <div class="panel-toolbar">
-          <div class="status-filters">
+      <section class="rounded-2xl border border-slate-200 bg-white p-5">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex gap-2">
             <button
               type="button"
-              [class.active]="statusFilter === 'all'"
+              class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+              [class]="statusFilter === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
               (click)="statusFilter = 'all'"
             >
               All
             </button>
             <button
               type="button"
-              [class.active]="statusFilter === 'published'"
+              class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+              [class]="statusFilter === 'published' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
               (click)="statusFilter = 'published'"
             >
               Published
             </button>
             <button
               type="button"
-              [class.active]="statusFilter === 'draft'"
+              class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+              [class]="statusFilter === 'draft' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
               (click)="statusFilter = 'draft'"
             >
               Drafts
@@ -101,7 +106,7 @@
 
           <input
             type="search"
-            class="table-search"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white sm:w-64"
             [value]="searchQuery"
             (input)="searchQuery = $any($event.target).value"
             placeholder="Filter your notes..."
@@ -110,50 +115,53 @@
         </div>
 
         @if (filteredSellerNotes.length) {
-          <div class="notes-table-wrap">
-            <table class="notes-table">
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-left text-sm">
               <thead>
-                <tr>
-                  <th>Book / Note</th>
-                  <th>Status</th>
-                  <th>Price</th>
-                  <th>Sold</th>
-                  <th>Revenue</th>
-                  <th>Actions</th>
+                <tr class="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-400">
+                  <th class="py-3 pr-4 font-semibold">Book / Note</th>
+                  <th class="px-3 py-3 font-semibold">Status</th>
+                  <th class="px-3 py-3 font-semibold">Price</th>
+                  <th class="px-3 py-3 font-semibold">Sold</th>
+                  <th class="px-3 py-3 font-semibold">Revenue</th>
+                  <th class="py-3 pl-3 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="divide-y divide-slate-100">
                 @for (note of filteredSellerNotes; track note.id) {
-                  <tr class="note-row" (click)="openAnalytics(note)">
-                    <td>
-                      <div class="note-cell">
-                        <span class="mini-cover" [class]="'mini-cover cover-' + note.color"></span>
+                  <tr class="cursor-pointer transition hover:bg-slate-50" (click)="openAnalytics(note)">
+                    <td class="py-3.5 pr-4">
+                      <div class="flex items-center gap-3">
+                        <span class="h-11 w-8 shrink-0 rounded-md" [class]="'cover-' + note.color"></span>
                         <div>
-                          <strong>{{ note.title }}</strong>
-                          <small>{{ note.course }} · {{ note.semester }} · {{ note.university }} · {{ note.pages }}p</small>
+                          <strong class="block font-semibold text-slate-900">{{ note.title }}</strong>
+                          <small class="text-xs text-slate-500">{{ note.course }} · {{ note.semester }} · {{ note.university }} · {{ note.pages }}p</small>
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span class="status-pill" [class]="note.status">
+                    <td class="px-3 py-3.5">
+                      <span
+                        class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                        [class]="note.status === 'published' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+                      >
                         {{ note.status === 'published' ? 'Published' : 'Draft' }}
                       </span>
                     </td>
-                    <td class="num-cell">Rs. {{ note.price }}</td>
-                    <td class="num-cell">{{ note.downloads }}</td>
-                    <td class="num-cell strong">Rs. {{ (note.price * note.downloads).toLocaleString() }}</td>
-                    <td (click)="$event.stopPropagation()">
-                      <div class="row-actions">
-                        <button type="button" class="action-btn" (click)="openAnalytics(note)">
+                    <td class="px-3 py-3.5 font-medium text-slate-700">Rs. {{ note.price }}</td>
+                    <td class="px-3 py-3.5 text-slate-600">{{ note.downloads }}</td>
+                    <td class="px-3 py-3.5 font-semibold text-slate-900">Rs. {{ (note.price * note.downloads).toLocaleString() }}</td>
+                    <td class="py-3.5 pl-3 text-right" (click)="$event.stopPropagation()">
+                      <div class="inline-flex flex-wrap justify-end gap-1.5">
+                        <button type="button" class="cursor-pointer rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50" (click)="openAnalytics(note)">
                           Analytics
                         </button>
-                        <button type="button" class="action-btn" (click)="editNote(note)">
+                        <button type="button" class="cursor-pointer rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50" (click)="editNote(note)">
                           Edit
                         </button>
-                        <button type="button" class="action-btn" (click)="toggleStatus(note)">
+                        <button type="button" class="cursor-pointer rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50" (click)="toggleStatus(note)">
                           {{ note.status === 'published' ? 'Unpublish' : 'Publish' }}
                         </button>
-                        <button type="button" class="action-btn danger" (click)="deleteNote(note)">
+                        <button type="button" class="cursor-pointer rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 hover:bg-rose-100" (click)="deleteNote(note)">
                           Delete
                         </button>
                       </div>
@@ -164,10 +172,10 @@
             </table>
           </div>
         } @else {
-          <div class="empty-panel">
-            <h3>No notes match your filter</h3>
-            <p>Create a new note or clear the filter to view all your listings.</p>
-            <button type="button" class="create-btn" (click)="openCreateTab()">+ Create new note</button>
+          <div class="py-12 text-center">
+            <h3 class="mb-1 text-base font-bold text-slate-900">No notes match your filter</h3>
+            <p class="mb-4 text-sm text-slate-500">Create a new note or clear the filter to view all your listings.</p>
+            <button type="button" class="cursor-pointer rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700" (click)="openCreateTab()">+ Create new note</button>
           </div>
         }
       </section>
@@ -175,35 +183,36 @@
 
     <!-- TAB 2: Create / Edit Note Form + Live Preview -->
     @if (activeTab === 'create') {
-      <section class="create-layout">
-        <form class="create-form" [formGroup]="noteForm" (ngSubmit)="onSubmitNote()">
-          <div class="form-header">
-            <h2>{{ editingNoteId ? 'Edit Your Note' : 'Create a New Study Note' }}</h2>
-            <p>Fill in the course details, upload your PDF, and set your price.</p>
+      <section class="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <form class="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6" [formGroup]="noteForm" (ngSubmit)="onSubmitNote()">
+          <div class="border-b border-slate-100 pb-4">
+            <h2 class="m-0 text-xl font-bold text-slate-900">{{ editingNoteId ? 'Edit Your Note' : 'Create a New Study Note' }}</h2>
+            <p class="mt-1 text-sm text-slate-500">Fill in the course details, upload your PDF, and set your price.</p>
           </div>
 
-          <div class="field">
-            <label for="note-title">Book / Note Title *</label>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-slate-700" for="note-title">Book / Note Title *</label>
             <input
               id="note-title"
               type="text"
+              class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
               formControlName="title"
               placeholder="e.g. Data Structures & Algorithms — Complete Semester Notes"
             />
             @if (noteForm.controls.title.touched && noteForm.controls.title.invalid) {
-              <span class="field-error">Please enter a title (at least 5 characters).</span>
+              <span class="text-xs font-medium text-rose-600">Please enter a title (at least 5 characters).</span>
             }
           </div>
 
-          <div class="form-grid-2">
-            <div class="field">
-              <label for="note-course">Course / Program (Optional)</label>
-              <input id="note-course" type="text" formControlName="course" placeholder="e.g. BSc CSIT" />
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-course">Course / Program (Optional)</label>
+              <input id="note-course" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="course" placeholder="e.g. BSc CSIT" />
             </div>
 
-            <div class="field">
-              <label for="note-category">Category *</label>
-              <select id="note-category" formControlName="categoryId">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-category">Category *</label>
+              <select id="note-category" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="categoryId">
                 @if (categories.length === 0) {
                   <option [ngValue]="0" disabled>No categories found</option>
                 }
@@ -212,25 +221,26 @@
                 }
               </select>
               @if (noteForm.controls.categoryId.touched && noteForm.controls.categoryId.invalid) {
-                <span class="field-error">Please select a category.</span>
+                <span class="text-xs font-medium text-rose-600">Please select a category.</span>
               }
             </div>
           </div>
 
-          <div class="form-grid-2">
-            <div class="field">
-              <label for="note-university">Institute / University (Optional)</label>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-university">Institute / University (Optional)</label>
               <input
                 id="note-university"
                 type="text"
+                class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
                 formControlName="university"
                 placeholder="e.g. Tribhuvan University"
               />
             </div>
 
-            <div class="field">
-              <label for="note-semester">Semester (Optional)</label>
-              <select id="note-semester" formControlName="semester">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-semester">Semester (Optional)</label>
+              <select id="note-semester" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="semester">
                 <option value="">Select semester (optional)</option>
                 @for (sem of semesters; track sem) {
                   <option [value]="sem">{{ sem }}</option>
@@ -239,47 +249,46 @@
             </div>
           </div>
 
-          <div class="form-grid-3">
-            <div class="field">
-              <label for="note-price">Selling Price (Rs.) *</label>
-              <input id="note-price" type="number" formControlName="price" min="20" placeholder="e.g. 199" />
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-price">Selling Price (Rs.) *</label>
+              <input id="note-price" type="number" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="price" min="20" placeholder="e.g. 199" />
             </div>
 
-            <div class="field">
-              <label for="note-original">Original Price (Optional)</label>
-              <input id="note-original" type="number" formControlName="originalPrice" min="0" placeholder="e.g. 299" />
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-original">Original Price (Optional)</label>
+              <input id="note-original" type="number" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="originalPrice" min="0" placeholder="e.g. 299" />
             </div>
 
-            <div class="field">
-              <label for="note-pages">Total Pages *</label>
-              <input id="note-pages" type="number" formControlName="pages" min="1" placeholder="e.g. 45" />
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-pages">Total Pages *</label>
+              <input id="note-pages" type="number" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="pages" min="1" placeholder="e.g. 45" />
             </div>
           </div>
 
-          <div class="form-grid-2">
-            <div class="field">
-              <label for="note-badge">Achievement Badge (Optional)</label>
-              <input id="note-badge" type="text" formControlName="badge" placeholder="e.g. TU Board Rank 2" />
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-badge">Achievement Badge (Optional)</label>
+              <input id="note-badge" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="badge" placeholder="e.g. TU Board Rank 2" />
             </div>
 
-            <div class="field">
-              <label for="note-status">Listing Status</label>
-              <select id="note-status" formControlName="status">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700" for="note-status">Listing Status</label>
+              <select id="note-status" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="status">
                 <option value="published">Publish immediately</option>
                 <option value="draft">Save as draft</option>
               </select>
             </div>
           </div>
 
-          <div class="field">
-            <label>Book Cover Color</label>
-            <div class="color-swatches">
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-semibold text-slate-700">Book Cover Color</label>
+            <div class="flex flex-wrap gap-2.5">
               @for (c of coverColors; track c.id) {
                 <button
                   type="button"
-                  class="swatch"
-                  [class]="'swatch cover-' + c.id"
-                  [class.selected]="noteForm.controls.color.value === c.id"
+                  class="h-8 w-8 cursor-pointer rounded-lg transition"
+                  [class]="'cover-' + c.id + (noteForm.controls.color.value === c.id ? ' ring-2 ring-indigo-600 ring-offset-2' : '')"
                   (click)="noteForm.controls.color.setValue(c.id)"
                   [attr.aria-label]="c.label"
                   [title]="c.label"
@@ -288,44 +297,45 @@
             </div>
           </div>
 
-          <div class="field">
-            <label for="note-summary">Description / What's Included *</label>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-slate-700" for="note-summary">Description / What's Included *</label>
             <textarea
               id="note-summary"
               rows="3"
+              class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
               formControlName="summary"
               placeholder="Briefly describe chapters, solved papers, or diagrams included..."
             ></textarea>
             @if (noteForm.controls.summary.touched && noteForm.controls.summary.invalid) {
-              <span class="field-error">Please add a short description (at least 15 characters).</span>
+              <span class="text-xs font-medium text-rose-600">Please add a short description (at least 15 characters).</span>
             }
           </div>
 
-          <div class="field">
-            <label for="note-pdf">Upload Study Note PDF</label>
-            <label class="file-drop" for="note-pdf">
-              <input id="note-pdf" type="file" accept=".pdf" (change)="onFileSelected($event)" />
-              <span class="file-title">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-slate-700" for="note-pdf">Upload Study Note PDF</label>
+            <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center transition hover:border-indigo-400 hover:bg-indigo-50/40" for="note-pdf">
+              <input id="note-pdf" type="file" class="hidden" accept=".pdf" (change)="onFileSelected($event)" />
+              <span class="text-sm font-semibold text-indigo-600">
                 {{ selectedFileName || 'Click to choose a PDF file (up to 50 MB)' }}
               </span>
-              <span class="file-hint">Students will see a watermarked preview before buying.</span>
+              <span class="mt-1 text-xs text-slate-500">Students will see a watermarked preview before buying.</span>
             </label>
           </div>
 
-          <div class="form-actions">
-            <button type="button" class="cancel-btn" (click)="activeTab = 'overview'">
+          <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <button type="button" class="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50" (click)="activeTab = 'overview'">
               Cancel
             </button>
-            <button type="submit" class="submit-btn">
+            <button type="submit" class="cursor-pointer rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700">
               {{ editingNoteId ? 'Save changes' : 'Create & publish note' }}
             </button>
           </div>
         </form>
 
         <!-- Live Book Card Preview -->
-        <aside class="preview-sidebar">
-          <div class="preview-sticky">
-            <span class="preview-kicker">Live Store Preview</span>
+        <aside class="lg:sticky lg:top-22">
+          <div>
+            <span class="mb-2.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Live Store Preview</span>
             <app-note-card [note]="previewNote" />
           </div>
         </aside>

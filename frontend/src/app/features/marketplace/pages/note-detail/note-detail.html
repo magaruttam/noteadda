@@ -1,170 +1,170 @@
 <app-site-header />
 
-<main class="detail-page">
-  <div class="section-shell">
-    <div class="breadcrumb-row">
-      <a class="back-link" routerLink="/notes">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path
-            d="m12.5 5-5 5 5 5"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 pb-16 pt-7">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="mb-5">
+      <a class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600" routerLink="/notes">
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="m12.5 5-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         Back to all notes
       </a>
     </div>
 
     @if (loading) {
-      <section class="state-card">
-        <p>Loading note details...</p>
+      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600">
+        <p class="m-0">Loading note details...</p>
       </section>
     } @else if (errorMessage || !note) {
-      <section class="state-card error">
-        <h2>Note not found</h2>
-        <p>{{ errorMessage || 'This study note could not be found.' }}</p>
-        <a class="primary-btn" routerLink="/notes">Browse available notes</a>
+      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600">
+        <h2 class="mb-2 text-xl font-bold text-slate-900">Note not found</h2>
+        <p class="mb-5">{{ errorMessage || 'This study note could not be found.' }}</p>
+        <a class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700" routerLink="/notes">
+          Browse available notes
+        </a>
       </section>
     } @else {
-      <section class="detail-grid">
-        <!-- Left Column: Cover & Main Info -->
-        <div class="detail-main">
-          <div class="hero-card">
-            <div class="cover-stage">
+      <section class="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div class="flex flex-col gap-5">
+          <div class="grid gap-7 rounded-2xl border border-slate-200 bg-white p-6 md:grid-cols-[230px_minmax(0,1fr)]">
+            <div class="relative flex items-center justify-center rounded-xl bg-slate-100 px-4 py-6">
               @if (discountPercent > 0) {
-                <span class="discount-badge">Save {{ discountPercent }}%</span>
+                <span class="absolute right-3 top-3 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                  Save {{ discountPercent }}%
+                </span>
               }
-              <div class="book-cover" [class]="'book-cover cover-' + coverColor">
-                <div class="book-spine" aria-hidden="true"></div>
-                <div class="book-cover-inner">
-                  <span class="book-kicker">{{ categoryName }}</span>
-                  <strong class="book-cover-title">{{ note.title }}</strong>
-                  <span class="book-cover-meta">
-                    {{ note.semester || 'All Semesters' }} · {{ note.pages }}p
-                  </span>
+              <div class="relative flex h-52 w-40 overflow-hidden rounded-l-md rounded-r-xl py-4 pl-5 pr-3.5 text-white shadow-xl" [class]="'cover-' + coverColor">
+                <div class="absolute inset-y-0 left-0 w-2.5 bg-slate-900/25" aria-hidden="true"></div>
+                <div class="flex w-full flex-col justify-between">
+                  <span class="text-[10px] uppercase tracking-wider opacity-85">{{ categoryName }}</span>
+                  <strong class="text-sm font-semibold leading-snug">{{ note.title }}</strong>
+                  <span class="text-xs opacity-85">{{ note.semester || 'All Semesters' }} · {{ note.pages }}p</span>
                 </div>
               </div>
             </div>
 
-            <div class="hero-info">
-              <div class="meta-pills">
-                <span class="pill">{{ categoryName }}</span>
+            <div>
+              <div class="mb-3 flex flex-wrap gap-2">
+                <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">{{ categoryName }}</span>
                 @if (note.semester) {
-                  <span class="pill subtle">{{ note.semester }}</span>
+                  <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{{ note.semester }}</span>
                 }
-                <span class="pill subtle">{{ note.pages }} pages</span>
+                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{{ note.pages }} pages</span>
               </div>
 
-              <h1>{{ note.title }}</h1>
+              <h1 class="mb-2 text-2xl font-bold leading-tight text-slate-900">{{ note.title }}</h1>
 
-              <p class="seller-line">
-                Uploaded by <strong>{{ sellerDisplayName }}</strong>
+              <p class="mb-3.5 text-sm text-slate-600">
+                Uploaded by <strong class="text-slate-900">{{ sellerDisplayName }}</strong>
                 @if (note.seller?.full_name && note.seller?.full_name !== sellerDisplayName) {
-                  <span>({{ note.seller?.full_name }})</span>
+                  <span> ({{ note.seller?.full_name }})</span>
                 }
               </p>
 
-              <div class="stats-row">
-                <span class="stat-chip">
-                  <span class="star" aria-hidden="true">★</span>
-                  <strong>{{ note.rating }}</strong>
+              <div class="mb-4 flex flex-wrap gap-4 border-y border-slate-100 py-3 text-sm text-slate-600">
+                <span class="inline-flex items-center gap-1">
+                  <span class="text-amber-500" aria-hidden="true">★</span>
+                  <strong class="text-slate-900">{{ note.rating }}</strong>
                   <span>({{ note.reviews_count }} reviews)</span>
                 </span>
-                <span class="stat-chip">{{ note.downloads_count }} downloads</span>
-                <span class="stat-chip">{{ note.views_count }} views</span>
+                <span>{{ note.downloads_count }} downloads</span>
+                <span>{{ note.views_count }} views</span>
               </div>
 
-              <div class="summary-block">
-                <h2>Overview</h2>
-                <p>{{ note.summary }}</p>
+              <div>
+                <h2 class="mb-2 text-base font-bold text-slate-900">Overview</h2>
+                <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ note.summary }}</p>
               </div>
             </div>
           </div>
 
           @if (note.description && note.description !== note.summary) {
-            <section class="content-card">
-              <h2>Detailed Description</h2>
-              <p class="description-text">{{ note.description }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 class="mb-2.5 text-base font-bold text-slate-900">Detailed Description</h2>
+              <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ note.description }}</p>
             </section>
           }
 
-          <section class="content-card">
-            <h2>Note Specifications</h2>
-            <dl class="specs-grid">
+          <section class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h2 class="mb-4 text-base font-bold text-slate-900">Note Specifications</h2>
+            <dl class="m-0 grid grid-cols-2 gap-4">
               <div>
-                <dt>Category</dt>
-                <dd>{{ categoryName }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500">Category</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900">{{ categoryName }}</dd>
               </div>
               <div>
-                <dt>Seller</dt>
-                <dd>{{ sellerDisplayName }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500">Seller</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900">{{ sellerDisplayName }}</dd>
               </div>
               <div>
-                <dt>Semester</dt>
-                <dd>{{ note.semester || 'Not specified' }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500">Semester</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900">{{ note.semester || 'Not specified' }}</dd>
               </div>
               <div>
-                <dt>Total Pages</dt>
-                <dd>{{ note.pages }} pages</dd>
+                <dt class="mb-0.5 text-xs text-slate-500">Total Pages</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900">{{ note.pages }} pages</dd>
               </div>
               <div>
-                <dt>Status</dt>
-                <dd class="status-text">{{ note.status }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500">Status</dt>
+                <dd class="m-0 text-sm font-semibold capitalize text-slate-900">{{ note.status }}</dd>
               </div>
               <div>
-                <dt>Last Updated</dt>
-                <dd>{{ note.updated_at | date: 'mediumDate' }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500">Last Updated</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900">{{ note.updated_at | date: 'mediumDate' }}</dd>
               </div>
             </dl>
           </section>
 
-          <section class="content-card">
-            <h2>Included Files ({{ note.files.length }})</h2>
+          <section class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h2 class="mb-3 text-base font-bold text-slate-900">Included Files ({{ note.files.length }})</h2>
             @if (note.files.length > 0) {
-              <ul class="files-list">
+              <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
                 @for (file of note.files; track file.id) {
-                  <li class="file-item">
+                  <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
                     <div>
-                      <strong>{{ file.file_name }}</strong>
-                      <small>{{ file.file_type }} · {{ formatFileSize(file.file_size) }}</small>
+                      <strong class="block text-sm text-slate-900">{{ file.file_name }}</strong>
+                      <small class="text-xs text-slate-500">{{ file.file_type }} · {{ formatFileSize(file.file_size) }}</small>
                     </div>
                     @if (file.is_primary) {
-                      <span class="primary-tag">Primary PDF</span>
+                      <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">Primary PDF</span>
                     }
                   </li>
                 }
               </ul>
             } @else {
-              <p class="muted-text">No downloadable files attached yet.</p>
+              <p class="m-0 text-sm text-slate-500">No downloadable files attached yet.</p>
             }
           </section>
         </div>
 
-        <!-- Right Column: Purchase Card -->
-        <aside class="purchase-sidebar">
-          <div class="purchase-card">
-            <span class="price-kicker">Instant Digital Access</span>
-            <div class="price-row">
-              <strong>{{ note.currency }} {{ note.price }}</strong>
+        <aside class="lg:sticky lg:top-22">
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <span class="mb-2 block text-xs font-semibold uppercase tracking-wider text-indigo-600">Instant Digital Access</span>
+            <div class="mb-4 flex items-baseline gap-2.5">
+              <strong class="text-3xl font-bold text-slate-900">{{ note.currency }} {{ note.price }}</strong>
               @if (note.original_price && note.original_price > note.price) {
-                <del>{{ note.currency }} {{ note.original_price }}</del>
+                <del class="text-base text-slate-400">{{ note.currency }} {{ note.original_price }}</del>
               }
             </div>
 
-            <ul class="perks-list">
+            <ul class="mb-5 flex list-disc flex-col gap-2 pl-5 text-sm text-slate-600">
               <li>{{ note.pages }} pages of structured study material</li>
               <li>Instant access after purchase</li>
               <li>Prepared by {{ sellerDisplayName }}</li>
             </ul>
 
-            <button type="button" class="primary-btn full" (click)="onGetBook()">
+            <button
+              type="button"
+              class="w-full cursor-pointer rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+              (click)="onGetBook()"
+            >
               {{ note.price === 0 ? 'Download Free Note' : 'Get This Note' }}
             </button>
 
             @if (purchaseMessage) {
-              <p class="purchase-notice" role="status">{{ purchaseMessage }}</p>
+              <p class="mt-3.5 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs text-indigo-900" role="status">
+                {{ purchaseMessage }}
+              </p>
             }
           </div>
         </aside>

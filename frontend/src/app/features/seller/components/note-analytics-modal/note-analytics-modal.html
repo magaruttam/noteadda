@@ -1,101 +1,105 @@
-<div class="modal-backdrop" (click)="close.emit()">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-xs" (click)="close.emit()">
   <section
-    class="analytics-modal"
+    class="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
     role="dialog"
     aria-modal="true"
     [attr.aria-label]="'Analytics for ' + note.title"
     (click)="$event.stopPropagation()"
   >
-    <header class="modal-header">
-      <div class="header-meta">
-        <span class="mini-cover" [class]="'mini-cover cover-' + note.color"></span>
+    <header class="flex items-start justify-between gap-4 border-b border-slate-100 p-5">
+      <div class="flex items-center gap-3.5">
+        <span class="h-12 w-9 shrink-0 rounded-md" [class]="'cover-' + note.color"></span>
         <div>
-          <div class="meta-top">
-            <span class="status-pill" [class]="note.status">
+          <div class="mb-1 flex flex-wrap items-center gap-2">
+            <span
+              class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
+              [class]="note.status === 'published' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+            >
               {{ note.status === 'published' ? 'Published' : 'Draft' }}
             </span>
-            <span class="meta-course">{{ note.course }} · {{ note.semester }} · {{ note.university }}</span>
+            <span class="text-xs text-slate-500">{{ note.course }} · {{ note.semester }} · {{ note.university }}</span>
           </div>
-          <h2>{{ note.title }}</h2>
+          <h2 class="m-0 text-lg font-bold text-slate-900">{{ note.title }}</h2>
         </div>
       </div>
 
-      <button type="button" class="close-btn" (click)="close.emit()" aria-label="Close analytics">
+      <button type="button" class="cursor-pointer rounded-lg p-1 text-xl leading-none text-slate-400 hover:bg-slate-100 hover:text-slate-700" (click)="close.emit()" aria-label="Close analytics">
         ×
       </button>
     </header>
 
-    <div class="modal-body">
-      <!-- KPI Row -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <span>Page Views</span>
-          <strong>{{ estimatedViews.toLocaleString() }}</strong>
+    <div class="space-y-5 p-5">
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <span class="block text-xs text-slate-500">Page Views</span>
+          <strong class="mt-1 block text-lg font-bold text-slate-900">{{ estimatedViews.toLocaleString() }}</strong>
         </div>
-        <div class="kpi-card">
-          <span>Conversion</span>
-          <strong>{{ conversionRate }}</strong>
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <span class="block text-xs text-slate-500">Conversion</span>
+          <strong class="mt-1 block text-lg font-bold text-slate-900">{{ conversionRate }}</strong>
         </div>
-        <div class="kpi-card">
-          <span>Copies Sold</span>
-          <strong>{{ note.downloads }}</strong>
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <span class="block text-xs text-slate-500">Copies Sold</span>
+          <strong class="mt-1 block text-lg font-bold text-slate-900">{{ note.downloads }}</strong>
         </div>
-        <div class="kpi-card highlight">
-          <span>Net Earnings (85%)</span>
-          <strong>Rs. {{ netEarnings.toLocaleString() }}</strong>
+        <div class="rounded-xl border border-indigo-200 bg-indigo-50 p-3.5">
+          <span class="block text-xs text-indigo-700">Net Earnings (85%)</span>
+          <strong class="mt-1 block text-lg font-bold text-indigo-950">Rs. {{ netEarnings.toLocaleString() }}</strong>
         </div>
       </div>
 
-      <!-- Trend + Rating Breakdown -->
-      <div class="analytics-split">
-        <div class="panel-box">
-          <div class="panel-title">
-            <strong>Sales Trend (6 Months)</strong>
-            <span>{{ note.downloads }} total sold</span>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-slate-200 p-4">
+          <div class="mb-3 flex items-center justify-between text-xs">
+            <strong class="text-slate-900">Sales Trend (6 Months)</strong>
+            <span class="text-slate-500">{{ note.downloads }} total sold</span>
           </div>
-          <div class="bar-chart" aria-label="Monthly sales bar chart">
+          <div class="flex h-32 items-end justify-between gap-2 pt-2" aria-label="Monthly sales bar chart">
             @for (bar of monthlyTrend; track bar.label) {
-              <div class="bar-col">
-                <span class="bar-val">{{ bar.sales }}</span>
-                <div class="bar-track">
-                  <div class="bar-fill" [style.height.%]="bar.heightPct"></div>
+              <div class="flex flex-1 flex-col items-center gap-1">
+                <span class="text-[10px] font-medium text-slate-500">{{ bar.sales }}</span>
+                <div class="flex h-20 w-full items-end rounded-md bg-slate-100 p-0.5">
+                  <div class="w-full rounded-sm bg-indigo-500" [style.height.%]="bar.heightPct"></div>
                 </div>
-                <span class="bar-label">{{ bar.label }}</span>
+                <span class="text-[10px] text-slate-500">{{ bar.label }}</span>
               </div>
             }
           </div>
         </div>
 
-        <div class="panel-box">
-          <div class="panel-title">
-            <strong>Student Rating</strong>
-            <span>{{ note.rating > 0 ? note.rating + ' ★ (' + note.reviews + ')' : 'No reviews yet' }}</span>
-          </div>
-          <div class="rating-bars">
-            @for (row of ratingBreakdown; track row.stars) {
-              <div class="rating-row">
-                <span>{{ row.stars }} ★</span>
-                <div class="rating-track">
-                  <div class="rating-fill" [style.width.%]="row.pct"></div>
+        <div class="flex flex-col justify-between rounded-xl border border-slate-200 p-4">
+          <div>
+            <div class="mb-3 flex items-center justify-between text-xs">
+              <strong class="text-slate-900">Student Rating</strong>
+              <span class="text-slate-500">{{ note.rating > 0 ? note.rating + ' ★ (' + note.reviews + ')' : 'No reviews yet' }}</span>
+            </div>
+            <div class="space-y-2">
+              @for (row of ratingBreakdown; track row.stars) {
+                <div class="flex items-center gap-2 text-xs text-slate-600">
+                  <span class="w-7">{{ row.stars }} ★</span>
+                  <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+                    <div class="h-full rounded-full bg-amber-400" [style.width.%]="row.pct"></div>
+                  </div>
+                  <span class="w-8 text-right">{{ row.pct }}%</span>
                 </div>
-                <span class="rating-pct">{{ row.pct }}%</span>
-              </div>
-            }
+              }
+            </div>
           </div>
-          <div class="file-meta">
-            <div><span>File:</span> <strong>{{ note.fileName }}</strong></div>
-            <div><span>Pages:</span> <strong>{{ note.pages }} pages</strong></div>
-            <div><span>Updated:</span> <strong>{{ note.updatedAt }}</strong></div>
+
+          <div class="mt-4 space-y-1 border-t border-slate-100 pt-3 text-xs text-slate-500">
+            <div>File: <strong class="text-slate-800">{{ note.fileName }}</strong></div>
+            <div>Pages: <strong class="text-slate-800">{{ note.pages }} pages</strong></div>
+            <div>Updated: <strong class="text-slate-800">{{ note.updatedAt }}</strong></div>
           </div>
         </div>
       </div>
     </div>
 
-    <footer class="modal-footer">
-      <span class="gross-note">Gross sales: Rs. {{ grossRevenue.toLocaleString() }} (Rs. {{ note.price }}/copy)</span>
-      <div class="footer-actions">
-        <button type="button" class="secondary-btn" (click)="edit.emit(note)">Edit note</button>
-        <button type="button" class="primary-btn" (click)="close.emit()">Done</button>
+    <footer class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-5 py-3.5">
+      <span class="text-xs text-slate-500">Gross sales: Rs. {{ grossRevenue.toLocaleString() }} (Rs. {{ note.price }}/copy)</span>
+      <div class="flex gap-2">
+        <button type="button" class="cursor-pointer rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50" (click)="edit.emit(note)">Edit note</button>
+        <button type="button" class="cursor-pointer rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700" (click)="close.emit()">Done</button>
       </div>
     </footer>
   </section>

@@ -5,7 +5,6 @@ import { Note } from '../../models/marketplace.model';
   selector: 'app-note-card',
   standalone: true,
   templateUrl: './note-card.html',
-  styleUrl: './note-card.css',
 })
 export class NoteCardComponent {
   protected readonly Math = Math;

@@ -36,7 +36,6 @@ export interface SellerNote extends Note {
     NoteAnalyticsModalComponent,
   ],
   templateUrl: './seller-dashboard.html',
-  styleUrl: './seller-dashboard.css',
 })
 export class SellerDashboardComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

@@ -15,7 +15,6 @@ type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
   standalone: true,
   imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent, MarketplaceHeroComponent, NoteCardComponent],
   templateUrl: './marketplace-home.html',
-  styleUrl: './marketplace-home.css',
 })
 export class MarketplaceHomeComponent implements OnInit {
   private readonly elementRef = inject(ElementRef<HTMLElement>);

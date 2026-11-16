@@ -1,21 +1,22 @@
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" routerLink="/" aria-label="NoteAdda home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+    <a class="inline-flex items-center gap-2.5 text-lg font-bold tracking-tight text-slate-900 no-underline" routerLink="/" aria-label="NoteAdda home">
+      <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white" aria-hidden="true">
+        <svg class="h-4 w-4 stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z" />
           <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10.5h5" />
         </svg>
       </span>
-      <span>Note<span class="brand-accent">Adda</span></span>
+      <span>Note<span class="text-indigo-600">Adda</span></span>
     </a>
 
-    <label class="header-search">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
+    <label class="hidden max-w-md flex-1 items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 focus-within:border-indigo-500 focus-within:bg-white md:flex">
+      <svg class="h-4 w-4 shrink-0 stroke-slate-400" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="10.8" cy="10.8" r="6.8" />
         <path d="m16 16 4.5 4.5" />
       </svg>
       <input
+        class="w-full border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
         [value]="searchQuery"
         (input)="onSearchInput($event)"
         placeholder="Search notes, subjects, or universities..."
@@ -23,67 +24,65 @@
       />
     </label>
 
-    <div class="header-actions">
-      <a class="login-link" routerLink="/seller">Sell notes</a>
+    <div class="flex items-center gap-3">
+      <a class="hidden text-sm font-medium text-slate-600 transition hover:text-indigo-600 sm:inline-block" routerLink="/seller">Sell notes</a>
 
       @if (authService.isAuthenticated()) {
-        <div class="profile-dropdown" [class.open]="profileMenuOpen">
+        <div class="profile-dropdown relative" [class.open]="profileMenuOpen">
           <button
             type="button"
-            class="profile-trigger"
+            class="inline-flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-indigo-50 text-sm font-bold text-indigo-700 transition hover:border-indigo-300"
             (click)="toggleProfileMenu()"
             aria-haspopup="menu"
             [attr.aria-expanded]="profileMenuOpen"
             [attr.aria-label]="'Account menu for ' + authService.userProfile().username"
           >
-            <span class="profile-avatar" aria-hidden="true">
-              @if (authService.userProfile().avatarUrl) {
-                <img [src]="authService.userProfile().avatarUrl" alt="" />
-              } @else {
-                <span>{{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}</span>
-              }
-            </span>
+            @if (authService.userProfile().avatarUrl) {
+              <img class="h-full w-full object-cover" [src]="authService.userProfile().avatarUrl" alt="" />
+            } @else {
+              <span>{{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}</span>
+            }
           </button>
 
           @if (profileMenuOpen) {
-            <div class="profile-menu" role="menu">
-              <div class="profile-menu-header">
-                <span class="menu-avatar" aria-hidden="true">
+            <div class="absolute right-0 mt-2 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg" role="menu">
+              <div class="flex items-center gap-3 border-b border-slate-100 px-3 py-2.5">
+                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-sm font-bold text-indigo-700" aria-hidden="true">
                   @if (authService.userProfile().avatarUrl) {
-                    <img [src]="authService.userProfile().avatarUrl" alt="" />
+                    <img class="h-full w-full object-cover" [src]="authService.userProfile().avatarUrl" alt="" />
                   } @else {
                     <span>{{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}</span>
                   }
                 </span>
-                <div>
-                  <strong>{{ authService.userProfile().fullName }}</strong>
-                  <span>{{ '@' + authService.userProfile().username }}</span>
+                <div class="min-w-0">
+                  <strong class="block truncate text-sm font-semibold text-slate-900">{{ authService.userProfile().fullName }}</strong>
+                  <span class="block truncate text-xs text-slate-500">{{ '@' + authService.userProfile().username }}</span>
                 </div>
               </div>
-              <a routerLink="/account" role="menuitem" (click)="profileMenuOpen = false">
+              <a class="mt-1 block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50" routerLink="/account" role="menuitem" (click)="profileMenuOpen = false">
                 My account
               </a>
-              <a routerLink="/seller" role="menuitem" (click)="profileMenuOpen = false">
+              <a class="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50" routerLink="/seller" role="menuitem" (click)="profileMenuOpen = false">
                 Seller dashboard
               </a>
-              <a routerLink="/notes" role="menuitem" (click)="profileMenuOpen = false">
+              <a class="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50" routerLink="/notes" role="menuitem" (click)="profileMenuOpen = false">
                 Browse all notes
               </a>
-              <div class="menu-divider"></div>
-              <button type="button" class="menu-logout" role="menuitem" (click)="onLogout()">
+              <div class="my-1 border-t border-slate-100"></div>
+              <button type="button" class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50" role="menuitem" (click)="onLogout()">
                 Log out
               </button>
             </div>
           }
         </div>
       } @else {
-        <a class="login-link" routerLink="/login">Log in</a>
-        <a class="signup-link" routerLink="/register">Sign up</a>
+        <a class="hidden text-sm font-medium text-slate-600 transition hover:text-indigo-600 sm:inline-block" routerLink="/login">Log in</a>
+        <a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700" routerLink="/register">Sign up</a>
       }
 
       <button
         type="button"
-        class="mobile-toggle"
+        class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 text-lg text-slate-700 md:hidden"
         (click)="menuOpen = !menuOpen"
         [attr.aria-expanded]="menuOpen"
         aria-label="Toggle menu"
@@ -94,24 +93,27 @@
   </div>
 
   @if (menuOpen) {
-    <div class="mobile-menu">
-      <label class="mobile-search">
+    <div class="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+      <label class="mb-3 block">
         <input
+          class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500"
           [value]="searchQuery"
           (input)="onSearchInput($event)"
           placeholder="Search notes..."
           aria-label="Search study notes"
         />
       </label>
-      <a routerLink="/notes" (click)="menuOpen = false">Browse all notes</a>
-      <a routerLink="/seller" (click)="menuOpen = false">Seller dashboard</a>
-      @if (authService.isAuthenticated()) {
-        <a routerLink="/account" (click)="menuOpen = false">My account</a>
-        <button type="button" class="mobile-logout" (click)="onLogout()">Log out</button>
-      } @else {
-        <a routerLink="/login" (click)="menuOpen = false">Log in</a>
-        <a routerLink="/register" (click)="menuOpen = false">Sign up</a>
-      }
+      <div class="flex flex-col gap-1">
+        <a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" routerLink="/notes" (click)="menuOpen = false">Browse all notes</a>
+        <a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" routerLink="/seller" (click)="menuOpen = false">Seller dashboard</a>
+        @if (authService.isAuthenticated()) {
+          <a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" routerLink="/account" (click)="menuOpen = false">My account</a>
+          <button type="button" class="rounded-lg px-3 py-2 text-left text-sm font-medium text-rose-600 hover:bg-rose-50" (click)="onLogout()">Log out</button>
+        } @else {
+          <a class="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50" routerLink="/login" (click)="menuOpen = false">Log in</a>
+          <a class="rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50" routerLink="/register" (click)="menuOpen = false">Sign up</a>
+        }
+      </div>
     </div>
   }
 </header>
