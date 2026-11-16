@@ -9,7 +9,10 @@ from app.core.config import settings
 from app.database.base import Base
 from app.database.session import engine, get_db
 # Import models to ensure they are registered with Base.metadata
-from app.modules.users.models import User
+from app.modules.categories.models import Category  # noqa: F401
+from app.modules.institutions.models import Course, Institution  # noqa: F401
+from app.modules.notes.models import Note, NoteFile, NoteImage  # noqa: F401
+from app.modules.users.models import User  # noqa: F401
 
 
 @asynccontextmanager
