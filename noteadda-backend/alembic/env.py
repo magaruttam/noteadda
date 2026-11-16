@@ -11,7 +11,7 @@ from app.database.base import Base
 # Import all models here so Alembic autogenerate can detect all tables
 from app.modules.categories.models import Category  # noqa: F401
 from app.modules.institutions.models import Course, Institution  # noqa: F401
-from app.modules.notes.models import Note, NoteFile, NoteImage  # noqa: F401
+from app.modules.notes.models import Note, NoteFile, NoteImage, NoteReview  # noqa: F401
 from app.modules.users.models import User  # noqa: F401
 
 # Alembic Config object

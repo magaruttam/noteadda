@@ -13,6 +13,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
     func,
     text,
 )
@@ -220,3 +221,30 @@ class NoteImage(Base):
     )
 
     note: Mapped["Note"] = relationship("Note", back_populates="images")
+
+
+class NoteReview(Base, TimestampMixin):
+    """Student rating and review for a note."""
+
+    __tablename__ = "note_reviews"
+    __table_args__ = (
+        CheckConstraint("rating >= 1 AND rating <= 5", name="chk_note_reviews_rating"),
+        UniqueConstraint("note_id", "user_id", name="uq_note_review_user"),
+        Index("idx_note_reviews_note", "note_id"),
+    )
+
+    id: Mapped[int] = mapped_column(BIGINT(unsigned=True), primary_key=True, autoincrement=True)
+    note_id: Mapped[int] = mapped_column(
+        BIGINT(unsigned=True),
+        ForeignKey("notes.id", name="fk_note_reviews_note", ondelete="CASCADE"),
+        nullable=False,
+    )
+    user_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("users.id", name="fk_note_reviews_user", ondelete="CASCADE"),
+        nullable=False,
+    )
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)
+    comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    user: Mapped["User"] = relationship("User")

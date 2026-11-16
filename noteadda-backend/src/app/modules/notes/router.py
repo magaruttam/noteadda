@@ -4,7 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.dependencies import get_current_user
 from app.database.session import get_db
 from app.modules.notes.models import NoteStatus
-from app.modules.notes.schemas import NoteCreate, NoteResponse, NoteUpdate
+from app.modules.notes.schemas import (
+    NoteCreate,
+    NoteResponse,
+    NoteReviewCreate,
+    NoteReviewResponse,
+    NoteUpdate,
+)
 from app.modules.notes.service import note_service
 from app.modules.users.models import User
 
@@ -80,3 +86,32 @@ async def delete_note(
 ):
     """Delete a note (seller/owner only)."""
     await note_service.delete_note(db, note_id=note_id, current_user=current_user)
+
+
+@router.get("/{note_id}/reviews", response_model=list[NoteReviewResponse])
+async def list_note_reviews(
+    note_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    """List all ratings and reviews for a note."""
+    return await note_service.list_reviews(db, note_id=note_id)
+
+
+@router.post(
+    "/{note_id}/reviews",
+    response_model=NoteReviewResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_or_update_note_review(
+    note_id: int,
+    review_in: NoteReviewCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Submit or update a rating and review for a note (authenticated users)."""
+    return await note_service.upsert_review(
+        db,
+        note_id=note_id,
+        review_in=review_in,
+        current_user=current_user,
+    )

@@ -1,11 +1,12 @@
 from collections.abc import Sequence
-from sqlalchemy import or_, select
+from decimal import Decimal
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.modules.categories.models import Category
 from app.modules.institutions.models import Course, Institution
-from app.modules.notes.models import Note, NoteFile, NoteImage, NoteStatus
+from app.modules.notes.models import Note, NoteFile, NoteImage, NoteReview, NoteStatus
 
 
 class NoteRepository:
@@ -105,6 +106,49 @@ class NoteRepository:
     async def course_exists(self, db: AsyncSession, course_id: int) -> bool:
         result = await db.execute(select(Course.id).where(Course.id == course_id))
         return result.scalar_one_or_none() is not None
+
+    async def list_reviews(self, db: AsyncSession, note_id: int) -> Sequence[NoteReview]:
+        stmt = (
+            select(NoteReview)
+            .options(selectinload(NoteReview.user))
+            .where(NoteReview.note_id == note_id)
+            .order_by(NoteReview.created_at.desc())
+        )
+        result = await db.execute(stmt)
+        return result.scalars().all()
+
+    async def get_review_by_user(
+        self, db: AsyncSession, note_id: int, user_id: int
+    ) -> NoteReview | None:
+        stmt = (
+            select(NoteReview)
+            .options(selectinload(NoteReview.user))
+            .where(NoteReview.note_id == note_id, NoteReview.user_id == user_id)
+        )
+        result = await db.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def save_review_and_recalculate(
+        self, db: AsyncSession, note: Note, review: NoteReview
+    ) -> NoteReview:
+        db.add(review)
+        await db.flush()
+
+        stats = await db.execute(
+            select(func.avg(NoteReview.rating), func.count(NoteReview.id)).where(
+                NoteReview.note_id == note.id
+            )
+        )
+        avg_rating, count_reviews = stats.one()
+        note.rating = Decimal(str(round(float(avg_rating or 0), 2)))
+        note.reviews_count = int(count_reviews or 0)
+        await db.flush()
+        result = await db.execute(
+            select(NoteReview)
+            .options(selectinload(NoteReview.user))
+            .where(NoteReview.id == review.id)
+        )
+        return result.scalar_one()
 
 
 note_repository = NoteRepository()

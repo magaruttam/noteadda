@@ -6,6 +6,8 @@ import {
   CategoryApiResponse,
   NoteApiResponse,
   NoteCreatePayload,
+  NoteReviewApiResponse,
+  NoteReviewCreatePayload,
   NoteUpdatePayload,
   NotesListParams,
 } from '../models/note.model';
@@ -64,6 +66,14 @@ export class NotesService {
 
   deleteNote(noteId: number): Observable<void> {
     return this.http.delete<void>(`${this.notesUrl}/${noteId}`);
+  }
+
+  listReviews(noteId: number): Observable<NoteReviewApiResponse[]> {
+    return this.http.get<NoteReviewApiResponse[]>(`${this.notesUrl}/${noteId}/reviews`);
+  }
+
+  submitReview(noteId: number, payload: NoteReviewCreatePayload): Observable<NoteReviewApiResponse> {
+    return this.http.post<NoteReviewApiResponse>(`${this.notesUrl}/${noteId}/reviews`, payload);
   }
 
   getCategoryIdFromSlug(slug: string): number {

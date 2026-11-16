@@ -5,9 +5,9 @@
     <div class="mb-5">
       <a class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400" routerLink="/notes">
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="m12.5 5-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M15.5 10h-11m4.5-4.5L4.5 10l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        Back to all notes
+        All notes
       </a>
     </div>
 
@@ -19,150 +19,305 @@
       <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
         <h2 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Note not found</h2>
         <p class="mb-5">{{ errorMessage || 'This study note could not be found.' }}</p>
-        <a class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700" routerLink="/notes">
+        <a class="inline-flex items-center justify-center rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700" routerLink="/notes">
           Browse available notes
         </a>
       </section>
     } @else {
       <section class="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <!-- Left Column -->
         <div class="flex flex-col gap-5">
-          <div class="grid gap-7 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 md:grid-cols-[230px_minmax(0,1fr)]">
-            <div class="relative flex items-center justify-center rounded-xl bg-slate-100 px-4 py-6 dark:bg-slate-800/70">
+          <!-- Card 1: Hero -->
+          <div class="grid gap-7 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 md:grid-cols-[240px_minmax(0,1fr)]">
+            <div class="relative flex items-center justify-center rounded-xl bg-slate-100/90 px-4 py-8 dark:bg-slate-800/70">
               @if (discountPercent > 0) {
-                <span class="absolute right-3 top-3 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                <span class="absolute right-3 top-3 z-10 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs">
                   Save {{ discountPercent }}%
                 </span>
               }
-              <div class="relative flex h-52 w-40 overflow-hidden rounded-l-md rounded-r-xl py-4 pl-5 pr-3.5 text-white shadow-xl" [class]="'cover-' + coverColor">
-                <div class="absolute inset-y-0 left-0 w-2.5 bg-slate-900/25" aria-hidden="true"></div>
+              <div
+                class="relative flex h-52 w-38 overflow-hidden rounded-l-sm rounded-r-xl py-4 pl-5 pr-3.5 text-white shadow-[10px_16px_24px_-8px_rgba(15,23,42,0.45)] [transform:perspective(700px)_rotateY(-8deg)]"
+                [class]="'cover-' + coverColor"
+              >
+                <div class="absolute inset-y-0 left-0 w-2.5 bg-slate-950/25" aria-hidden="true"></div>
                 <div class="flex w-full flex-col justify-between">
-                  <span class="text-[10px] uppercase tracking-wider opacity-85">{{ categoryName }}</span>
-                  <strong class="text-sm font-semibold leading-snug">{{ note.title }}</strong>
-                  <span class="text-xs opacity-85">{{ note.semester || 'All Semesters' }} · {{ note.pages }}p</span>
+                  <span class="text-[10px] font-semibold uppercase tracking-wider opacity-85">{{ categoryName }}</span>
+                  <strong class="line-clamp-4 text-sm font-bold leading-snug">{{ note.title }}</strong>
+                  <span class="text-[10px] opacity-85">{{ note.semester || 'All Semesters' }} · {{ note.pages }} pages</span>
                 </div>
               </div>
             </div>
 
-            <div>
+            <div class="flex flex-col justify-center">
               <div class="mb-3 flex flex-wrap gap-2">
-                <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">{{ categoryName }}</span>
+                <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">{{ categoryName }}</span>
                 @if (note.semester) {
-                  <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ note.semester }}</span>
+                  <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ note.semester }}</span>
                 }
-                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ note.pages }} pages</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ note.pages }} pages</span>
               </div>
 
-              <h1 class="mb-2 text-2xl font-bold leading-tight text-slate-900 dark:text-white">{{ note.title }}</h1>
+              <h1 class="mb-3 text-2xl font-bold leading-tight text-slate-900 dark:text-white sm:text-3xl">{{ note.title }}</h1>
 
-              <p class="mb-3.5 text-sm text-slate-600 dark:text-slate-400">
-                Uploaded by <strong class="text-slate-900 dark:text-white">{{ sellerDisplayName }}</strong>
-                @if (note.seller?.full_name && note.seller?.full_name !== sellerDisplayName) {
-                  <span> ({{ note.seller?.full_name }})</span>
-                }
-              </p>
-
-              <div class="mb-4 flex flex-wrap gap-4 border-y border-slate-100 py-3 text-sm text-slate-600 dark:border-slate-800 dark:text-slate-400">
-                <span class="inline-flex items-center gap-1">
-                  <span class="text-amber-500" aria-hidden="true">★</span>
-                  <strong class="text-slate-900 dark:text-white">{{ note.rating }}</strong>
-                  <span>({{ note.reviews_count }} reviews)</span>
+              <div class="mb-5 flex items-center gap-2.5 text-sm text-slate-600 dark:text-slate-400">
+                <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                  {{ sellerDisplayName.charAt(0).toUpperCase() }}
                 </span>
-                <span>{{ note.downloads_count }} downloads</span>
-                <span>{{ note.views_count }} views</span>
+                <span>
+                  Uploaded by <strong class="font-semibold text-indigo-600 dark:text-indigo-400">{{ '@' + sellerDisplayName }}</strong>
+                </span>
               </div>
 
-              <div>
-                <h2 class="mb-2 text-base font-bold text-slate-900 dark:text-white">Overview</h2>
-                <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-300">{{ note.summary }}</p>
+              <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
+                  <span class="block text-[11px] text-slate-500 dark:text-slate-400">Rating</span>
+                  <strong class="mt-0.5 inline-flex items-center gap-1 text-sm font-bold text-slate-900 dark:text-white">
+                    <span class="text-amber-400" aria-hidden="true">★</span>
+                    {{ note.rating }}
+                  </strong>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
+                  <span class="block text-[11px] text-slate-500 dark:text-slate-400">Reviews</span>
+                  <strong class="mt-0.5 block text-sm font-bold text-slate-900 dark:text-white">{{ formatCompact(note.reviews_count) }}</strong>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
+                  <span class="block text-[11px] text-slate-500 dark:text-slate-400">Downloads</span>
+                  <strong class="mt-0.5 block text-sm font-bold text-slate-900 dark:text-white">{{ formatCompact(note.downloads_count) }}</strong>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
+                  <span class="block text-[11px] text-slate-500 dark:text-slate-400">Views</span>
+                  <strong class="mt-0.5 block text-sm font-bold text-slate-900 dark:text-white">{{ formatCompact(note.views_count) }}</strong>
+                </div>
               </div>
             </div>
           </div>
 
-          @if (note.description && note.description !== note.summary) {
-            <section class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-              <h2 class="mb-2.5 text-base font-bold text-slate-900 dark:text-white">Detailed Description</h2>
-              <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-300">{{ note.description }}</p>
-            </section>
-          }
+          <!-- Card 2: Overview & Detailed Description -->
+          <section class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <div>
+              <h2 class="mb-2 text-base font-bold text-slate-900 dark:text-white">Overview</h2>
+              <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ note.summary }}</p>
+            </div>
 
-          <section class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-            <h2 class="mb-4 text-base font-bold text-slate-900 dark:text-white">Note Specifications</h2>
-            <dl class="m-0 grid grid-cols-2 gap-4">
+            @if (note.description && note.description !== note.summary) {
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Category</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ categoryName }}</dd>
+                <h2 class="mb-2 text-base font-bold text-slate-900 dark:text-white">Detailed description</h2>
+                <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ note.description }}</p>
               </div>
-              <div>
-                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Seller</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ sellerDisplayName }}</dd>
-              </div>
-              <div>
-                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Semester</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ note.semester || 'Not specified' }}</dd>
-              </div>
-              <div>
-                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Total Pages</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ note.pages }} pages</dd>
-              </div>
-              <div>
-                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Status</dt>
-                <dd class="m-0 text-sm font-semibold capitalize text-slate-900 dark:text-white">{{ note.status }}</dd>
-              </div>
-              <div>
-                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Last Updated</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ note.updated_at | date: 'mediumDate' }}</dd>
-              </div>
-            </dl>
+            }
           </section>
 
-          <section class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-            <h2 class="mb-3 text-base font-bold text-slate-900 dark:text-white">Included Files ({{ note.files.length }})</h2>
-            @if (note.files.length > 0) {
-              <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
-                @for (file of note.files; track file.id) {
-                  <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 dark:border-slate-700 dark:bg-slate-800">
-                    <div>
-                      <strong class="block text-sm text-slate-900 dark:text-white">{{ file.file_name }}</strong>
-                      <small class="text-xs text-slate-500 dark:text-slate-400">{{ file.file_type }} · {{ formatFileSize(file.file_size) }}</small>
+          <!-- Card 3: Specifications & Included Files -->
+          <section class="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <div>
+              <h2 class="mb-3 text-base font-bold text-slate-900 dark:text-white">Specifications</h2>
+              <dl class="m-0 grid gap-x-8 sm:grid-cols-2">
+                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm dark:border-slate-800">
+                  <dt class="text-slate-500 dark:text-slate-400">Category</dt>
+                  <dd class="m-0 font-semibold text-slate-900 dark:text-white">{{ categoryName }}</dd>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm dark:border-slate-800">
+                  <dt class="text-slate-500 dark:text-slate-400">Seller</dt>
+                  <dd class="m-0 font-semibold text-slate-900 dark:text-white">{{ sellerDisplayName }}</dd>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm dark:border-slate-800">
+                  <dt class="text-slate-500 dark:text-slate-400">Semester</dt>
+                  <dd class="m-0 font-semibold text-slate-900 dark:text-white">{{ note.semester || 'Not specified' }}</dd>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm dark:border-slate-800">
+                  <dt class="text-slate-500 dark:text-slate-400">Total pages</dt>
+                  <dd class="m-0 font-semibold text-slate-900 dark:text-white">{{ note.pages }}</dd>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm dark:border-slate-800">
+                  <dt class="text-slate-500 dark:text-slate-400">Status</dt>
+                  <dd class="m-0 font-semibold capitalize text-slate-900 dark:text-white">{{ note.status }}</dd>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm dark:border-slate-800">
+                  <dt class="text-slate-500 dark:text-slate-400">Last updated</dt>
+                  <dd class="m-0 font-semibold text-slate-900 dark:text-white">{{ note.updated_at | date: 'mediumDate' }}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <h2 class="mb-3 text-base font-bold text-slate-900 dark:text-white">Included files</h2>
+              @if (note.files.length > 0) {
+                <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
+                  @for (file of note.files; track file.id) {
+                    <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-3 dark:border-slate-800 dark:bg-slate-800/50">
+                      <div class="flex items-center gap-3">
+                        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-xs font-bold text-rose-600 dark:bg-rose-950/70 dark:text-rose-400" aria-hidden="true">
+                          PDF
+                        </span>
+                        <div>
+                          <strong class="block text-sm font-semibold text-slate-900 dark:text-white">{{ file.file_name }}</strong>
+                          <small class="text-xs text-slate-500 dark:text-slate-400">{{ formatFileSize(file.file_size) }}</small>
+                        </div>
+                      </div>
+                      @if (file.is_primary) {
+                        <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">Primary PDF</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="m-0 text-sm text-slate-500 dark:text-slate-400">No downloadable files attached yet.</p>
+              }
+            </div>
+          </section>
+
+          <!-- Card 4: Ratings & Reviews -->
+          <section class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h2 class="m-0 text-base font-bold text-slate-900 dark:text-white">
+                Ratings &amp; Reviews ({{ reviews.length }})
+              </h2>
+              <span class="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                <span class="text-amber-400" aria-hidden="true">★</span>
+                {{ note.rating }} average
+              </span>
+            </div>
+
+            @if (authService.isAuthenticated()) {
+              <form class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-800/50" (ngSubmit)="onSubmitReview()">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Rate this note</span>
+                  <div class="flex items-center gap-1" role="radiogroup" aria-label="Select star rating">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <button
+                        type="button"
+                        class="cursor-pointer border-0 bg-transparent p-0.5 text-xl leading-none transition hover:scale-110"
+                        [class]="(hoverRating || selectedRating) >= star ? 'text-amber-400' : 'text-slate-300 dark:text-slate-600'"
+                        (mouseenter)="hoverRating = star"
+                        (mouseleave)="hoverRating = 0"
+                        (click)="selectedRating = star"
+                        [attr.aria-label]="star + ' stars'"
+                      >
+                        ★
+                      </button>
+                    }
+                    <span class="ml-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300">{{ selectedRating }}/5</span>
+                  </div>
+                </div>
+
+                <textarea
+                  rows="2"
+                  name="reviewComment"
+                  [(ngModel)]="reviewComment"
+                  class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  placeholder="Share how helpful these notes were (optional)..."
+                ></textarea>
+
+                @if (reviewMessage) {
+                  <p class="m-0 text-xs font-medium text-emerald-600 dark:text-emerald-400" role="status">{{ reviewMessage }}</p>
+                }
+                @if (reviewError) {
+                  <p class="m-0 text-xs font-medium text-rose-600 dark:text-rose-400" role="alert">{{ reviewError }}</p>
+                }
+
+                <div class="flex justify-end">
+                  <button
+                    type="submit"
+                    class="cursor-pointer rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+                    [disabled]="submittingReview"
+                  >
+                    {{ submittingReview ? 'Submitting...' : 'Submit rating' }}
+                  </button>
+                </div>
+              </form>
+            } @else {
+              <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300">
+                <span>Want to rate this note? Sign in to leave a review.</span>
+                <a class="font-semibold text-indigo-600 hover:underline dark:text-indigo-400" routerLink="/login">Sign in →</a>
+              </div>
+            }
+
+            @if (reviews.length > 0) {
+              <ul class="m-0 flex list-none flex-col divide-y divide-slate-100 p-0 dark:divide-slate-800">
+                @for (rev of reviews; track rev.id) {
+                  <li class="py-3.5 first:pt-0 last:pb-0">
+                    <div class="mb-1 flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2">
+                        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-[11px] font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                          {{ (rev.user?.username || 'U').charAt(0).toUpperCase() }}
+                        </span>
+                        <strong class="text-xs font-semibold text-slate-900 dark:text-white">
+                          {{ '@' + (rev.user?.username || 'student') }}
+                        </strong>
+                      </div>
+                      <span class="text-xs text-slate-400">{{ rev.created_at | date: 'mediumDate' }}</span>
                     </div>
-                    @if (file.is_primary) {
-                      <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">Primary PDF</span>
+                    <div class="mb-1 text-xs text-amber-400" [attr.aria-label]="rev.rating + ' out of 5 stars'">
+                      @for (s of [1, 2, 3, 4, 5]; track s) {
+                        <span [class]="rev.rating >= s ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'">★</span>
+                      }
+                    </div>
+                    @if (rev.comment) {
+                      <p class="m-0 text-sm text-slate-600 dark:text-slate-300">{{ rev.comment }}</p>
                     }
                   </li>
                 }
               </ul>
             } @else {
-              <p class="m-0 text-sm text-slate-500 dark:text-slate-400">No downloadable files attached yet.</p>
+              <p class="m-0 text-sm text-slate-500 dark:text-slate-400">No reviews yet. Be the first to rate this note!</p>
             }
           </section>
         </div>
 
+        <!-- Right Column: Sticky Purchase Card -->
         <aside class="lg:sticky lg:top-22">
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-            <span class="mb-2 block text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Instant Digital Access</span>
-            <div class="mb-4 flex items-baseline gap-2.5">
-              <strong class="text-3xl font-bold text-slate-900 dark:text-white">{{ note.currency }} {{ note.price }}</strong>
-              @if (note.original_price && note.original_price > note.price) {
-                <del class="text-base text-slate-400">{{ note.currency }} {{ note.original_price }}</del>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <span class="mb-2 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              <span aria-hidden="true">⚡</span> Instant Digital Access
+            </span>
+
+            <div class="mb-5 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-baseline gap-2.5">
+                <strong class="text-3xl font-bold text-slate-900 dark:text-white">Rs. {{ note.price }}</strong>
+                @if (note.original_price && note.original_price > note.price) {
+                  <del class="text-sm text-slate-400">Rs. {{ note.original_price }}</del>
+                }
+              </div>
+              @if (discountPercent > 0) {
+                <span class="rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white">
+                  Save {{ discountPercent }}%
+                </span>
               }
             </div>
 
-            <ul class="mb-5 flex list-disc flex-col gap-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
-              <li>{{ note.pages }} pages of structured study material</li>
-              <li>Instant access after purchase</li>
-              <li>Prepared by {{ sellerDisplayName }}</li>
+            <ul class="m-0 mb-6 flex list-none flex-col gap-2.5 p-0 text-xs text-slate-600 dark:text-slate-300">
+              <li class="flex items-center gap-2.5">
+                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" aria-hidden="true">✓</span>
+                <span>Download PDF instantly after payment</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" aria-hidden="true">✓</span>
+                <span>Lifetime access &amp; free updates</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" aria-hidden="true">✓</span>
+                <span>Pay with eSewa, Khalti or card</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" aria-hidden="true">✓</span>
+                <span>Prepared by {{ sellerDisplayName }}</span>
+              </li>
             </ul>
 
             <button
               type="button"
-              class="w-full cursor-pointer rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+              class="w-full cursor-pointer rounded-full bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
               (click)="onGetBook()"
             >
               {{ note.price === 0 ? 'Download Free Note' : 'Get This Note' }}
             </button>
 
+            <p class="mt-3 text-center text-[11px] text-slate-400">
+              Secure checkout
+            </p>
+
             @if (purchaseMessage) {
-              <p class="mt-3.5 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs text-indigo-900 dark:bg-indigo-950 dark:text-indigo-200" role="status">
+              <p class="mt-3.5 rounded-xl bg-indigo-50 px-3 py-2.5 text-xs text-indigo-900 dark:bg-indigo-950 dark:text-indigo-200" role="status">
                 {{ purchaseMessage }}
               </p>
             }

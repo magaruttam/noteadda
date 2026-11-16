@@ -118,3 +118,19 @@ export interface CategoryApiResponse {
   is_active: boolean;
   created_at: string;
 }
+
+export interface NoteReviewCreatePayload {
+  rating: number;
+  comment?: string | null;
+}
+
+export interface NoteReviewApiResponse {
+  id: number;
+  note_id: number;
+  user_id: number;
+  rating: number;
+  comment: string | null;
+  user?: NoteSellerResponse | null;
+  created_at: string;
+  updated_at: string;
+}

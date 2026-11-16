@@ -5,9 +5,9 @@ from datetime import datetime, timezone
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.notes.models import Note, NoteFile, NoteImage, NoteStatus
+from app.modules.notes.models import Note, NoteFile, NoteImage, NoteReview, NoteStatus
 from app.modules.notes.repository import note_repository
-from app.modules.notes.schemas import NoteCreate, NoteUpdate
+from app.modules.notes.schemas import NoteCreate, NoteReviewCreate, NoteUpdate
 from app.modules.users.models import User
 
 
@@ -218,6 +218,33 @@ class NoteService:
                 detail="You do not have permission to delete this note.",
             )
         await self.repo.delete(db, note)
+
+    async def list_reviews(self, db: AsyncSession, note_id: int) -> Sequence[NoteReview]:
+        await self.get_note(db, note_id)
+        return await self.repo.list_reviews(db, note_id)
+
+    async def upsert_review(
+        self,
+        db: AsyncSession,
+        *,
+        note_id: int,
+        review_in: NoteReviewCreate,
+        current_user: User,
+    ) -> NoteReview:
+        note = await self.get_note(db, note_id)
+        existing = await self.repo.get_review_by_user(db, note_id, current_user.id)
+        if existing:
+            existing.rating = review_in.rating
+            existing.comment = review_in.comment.strip() if review_in.comment else None
+            review = existing
+        else:
+            review = NoteReview(
+                note_id=note.id,
+                user_id=current_user.id,
+                rating=review_in.rating,
+                comment=review_in.comment.strip() if review_in.comment else None,
+            )
+        return await self.repo.save_review_and_recalculate(db, note, review)
 
 
 note_service = NoteService()

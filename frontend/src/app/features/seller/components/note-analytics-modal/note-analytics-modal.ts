@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
+import { NoteReviewApiResponse } from '../../../../core/models/note.model';
+import { NotesService } from '../../../../core/services/notes.service';
 import { SellerNote } from '../../pages/seller-dashboard/seller-dashboard';
 
 @Component({
@@ -6,10 +8,34 @@ import { SellerNote } from '../../pages/seller-dashboard/seller-dashboard';
   standalone: true,
   templateUrl: './note-analytics-modal.html',
 })
-export class NoteAnalyticsModalComponent {
+export class NoteAnalyticsModalComponent implements OnChanges {
+  private readonly notesService = inject(NotesService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input({ required: true }) note!: SellerNote;
   @Output() close = new EventEmitter<void>();
   @Output() edit = new EventEmitter<SellerNote>();
+
+  reviews: NoteReviewApiResponse[] = [];
+
+  ngOnChanges(): void {
+    const noteId = Number(this.note?.id);
+    if (!Number.isInteger(noteId) || noteId <= 0) {
+      this.reviews = [];
+      return;
+    }
+
+    this.notesService.listReviews(noteId).subscribe({
+      next: (reviews) => {
+        this.reviews = reviews;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.reviews = [];
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   get estimatedViews(): number {
     if (this.note.downloads === 0) {
@@ -46,17 +72,13 @@ export class NoteAnalyticsModalComponent {
   }
 
   get ratingBreakdown(): { stars: number; pct: number }[] {
-    if (this.note.reviews === 0) {
-      return [
-        { stars: 5, pct: 0 },
-        { stars: 4, pct: 0 },
-        { stars: 3, pct: 0 },
-      ];
-    }
-    return [
-      { stars: 5, pct: 74 },
-      { stars: 4, pct: 19 },
-      { stars: 3, pct: 7 },
-    ];
+    const total = this.reviews.length;
+    return [5, 4, 3, 2, 1].map((stars) => {
+      if (total === 0) {
+        return { stars, pct: 0 };
+      }
+      const count = this.reviews.filter((r) => r.rating === stars).length;
+      return { stars, pct: Math.round((count / total) * 100) };
+    });
   }
 }
