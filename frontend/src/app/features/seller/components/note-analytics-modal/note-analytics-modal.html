@@ -1,0 +1,102 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <section
+    class="analytics-modal"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'Analytics for ' + note.title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="modal-header">
+      <div class="header-meta">
+        <span class="mini-cover" [class]="'mini-cover cover-' + note.color"></span>
+        <div>
+          <div class="meta-top">
+            <span class="status-pill" [class]="note.status">
+              {{ note.status === 'published' ? 'Published' : 'Draft' }}
+            </span>
+            <span class="meta-course">{{ note.course }} · {{ note.semester }} · {{ note.university }}</span>
+          </div>
+          <h2>{{ note.title }}</h2>
+        </div>
+      </div>
+
+      <button type="button" class="close-btn" (click)="close.emit()" aria-label="Close analytics">
+        ×
+      </button>
+    </header>
+
+    <div class="modal-body">
+      <!-- KPI Row -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span>Page Views</span>
+          <strong>{{ estimatedViews.toLocaleString() }}</strong>
+        </div>
+        <div class="kpi-card">
+          <span>Conversion</span>
+          <strong>{{ conversionRate }}</strong>
+        </div>
+        <div class="kpi-card">
+          <span>Copies Sold</span>
+          <strong>{{ note.downloads }}</strong>
+        </div>
+        <div class="kpi-card highlight">
+          <span>Net Earnings (85%)</span>
+          <strong>Rs. {{ netEarnings.toLocaleString() }}</strong>
+        </div>
+      </div>
+
+      <!-- Trend + Rating Breakdown -->
+      <div class="analytics-split">
+        <div class="panel-box">
+          <div class="panel-title">
+            <strong>Sales Trend (6 Months)</strong>
+            <span>{{ note.downloads }} total sold</span>
+          </div>
+          <div class="bar-chart" aria-label="Monthly sales bar chart">
+            @for (bar of monthlyTrend; track bar.label) {
+              <div class="bar-col">
+                <span class="bar-val">{{ bar.sales }}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.height.%]="bar.heightPct"></div>
+                </div>
+                <span class="bar-label">{{ bar.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="panel-box">
+          <div class="panel-title">
+            <strong>Student Rating</strong>
+            <span>{{ note.rating > 0 ? note.rating + ' ★ (' + note.reviews + ')' : 'No reviews yet' }}</span>
+          </div>
+          <div class="rating-bars">
+            @for (row of ratingBreakdown; track row.stars) {
+              <div class="rating-row">
+                <span>{{ row.stars }} ★</span>
+                <div class="rating-track">
+                  <div class="rating-fill" [style.width.%]="row.pct"></div>
+                </div>
+                <span class="rating-pct">{{ row.pct }}%</span>
+              </div>
+            }
+          </div>
+          <div class="file-meta">
+            <div><span>File:</span> <strong>{{ note.fileName }}</strong></div>
+            <div><span>Pages:</span> <strong>{{ note.pages }} pages</strong></div>
+            <div><span>Updated:</span> <strong>{{ note.updatedAt }}</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer">
+      <span class="gross-note">Gross sales: Rs. {{ grossRevenue.toLocaleString() }} (Rs. {{ note.price }}/copy)</span>
+      <div class="footer-actions">
+        <button type="button" class="secondary-btn" (click)="edit.emit(note)">Edit note</button>
+        <button type="button" class="primary-btn" (click)="close.emit()">Done</button>
+      </div>
+    </footer>
+  </section>
+</div>

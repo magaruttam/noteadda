@@ -1,0 +1,251 @@
+<app-site-header [searchQuery]="searchQuery" (searchChange)="onSearchChange($event)" />
+
+<main class="catalog-page">
+  <div class="section-shell">
+    <div class="page-top">
+      <a class="back-link" routerLink="/">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="m12.5 5-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Back to home
+      </a>
+
+      <div class="page-heading">
+        <div>
+          <h1>All Study Notes &amp; Books</h1>
+          <p>Filter by institute, course, or keyword to find the exact material for your exam.</p>
+        </div>
+        <div class="results-badge">
+          Showing <strong>{{ filteredNotes.length }}</strong> of {{ notes.length }} books
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Filter Bar -->
+    <section class="filter-bar" aria-label="Filter study notes">
+      <label class="filter-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8" />
+          <path d="m16 16 4.5 4.5" />
+        </svg>
+        <input
+          [value]="searchQuery"
+          (input)="onSearchChange($any($event.target).value)"
+          placeholder="Search title, subject, semester, or author..."
+          aria-label="Search all notes"
+        />
+        @if (searchQuery) {
+          <button type="button" class="clear-input" (click)="onSearchChange('')" aria-label="Clear search">
+            ×
+          </button>
+        }
+      </label>
+
+      <div class="filter-selects">
+        <!-- Institute Filter -->
+        <div class="filter-dropdown" [class.open]="openDropdown === 'institute'">
+          <button
+            type="button"
+            class="dropdown-trigger"
+            (click)="toggleDropdown('institute')"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="openDropdown === 'institute'"
+          >
+            <span class="trigger-label">Institute:</span>
+            <span class="trigger-value">{{ selectedInstitute === 'all' ? 'All institutes' : selectedInstitute }}</span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          @if (openDropdown === 'institute') {
+            <div class="dropdown-menu" role="listbox" aria-label="Filter by institute">
+              <button
+                type="button"
+                role="option"
+                class="dropdown-option"
+                [class.selected]="selectedInstitute === 'all'"
+                (click)="selectInstitute('all')"
+              >
+                <span>All institutes</span>
+              </button>
+              @for (institute of institutes; track institute) {
+                <button
+                  type="button"
+                  role="option"
+                  class="dropdown-option"
+                  [class.selected]="selectedInstitute === institute"
+                  (click)="selectInstitute(institute)"
+                >
+                  <span>{{ institute }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Course Filter -->
+        <div class="filter-dropdown" [class.open]="openDropdown === 'course'">
+          <button
+            type="button"
+            class="dropdown-trigger"
+            (click)="toggleDropdown('course')"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="openDropdown === 'course'"
+          >
+            <span class="trigger-label">Course:</span>
+            <span class="trigger-value">{{ selectedCourse === 'all' ? 'All courses' : selectedCourse }}</span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          @if (openDropdown === 'course') {
+            <div class="dropdown-menu" role="listbox" aria-label="Filter by course">
+              <button
+                type="button"
+                role="option"
+                class="dropdown-option"
+                [class.selected]="selectedCourse === 'all'"
+                (click)="selectCourse('all')"
+              >
+                <span>All courses</span>
+              </button>
+              @for (course of courses; track course) {
+                <button
+                  type="button"
+                  role="option"
+                  class="dropdown-option"
+                  [class.selected]="selectedCourse === course"
+                  (click)="selectCourse(course)"
+                >
+                  <span>{{ course }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Sort Filter -->
+        <div class="filter-dropdown" [class.open]="openDropdown === 'sort'">
+          <button
+            type="button"
+            class="dropdown-trigger"
+            (click)="toggleDropdown('sort')"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="openDropdown === 'sort'"
+          >
+            <span class="trigger-label">Sort:</span>
+            <span class="trigger-value">{{ activeSortLabel }}</span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          @if (openDropdown === 'sort') {
+            <div class="dropdown-menu right" role="listbox" aria-label="Sort options">
+              @for (option of sortOptions; track option.value) {
+                <button
+                  type="button"
+                  role="option"
+                  class="dropdown-option"
+                  [class.selected]="sortBy === option.value"
+                  (click)="selectSort(option.value)"
+                >
+                  <span>{{ option.label }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        @if (hasActiveFilters) {
+          <button type="button" class="clear-all-btn" (click)="clearFilters()">
+            Reset
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- Category Pills -->
+    <div class="category-pills" role="tablist" aria-label="Filter by faculty">
+      @for (category of categories; track category.id) {
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="activeCategory === category.id"
+          [class.active]="activeCategory === category.id"
+          (click)="onCategorySelect(category.id)"
+        >
+          {{ category.label }}
+          <span>{{ category.count }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Notes Grid -->
+    @if (filteredNotes.length) {
+      <div class="notes-grid">
+        @for (note of filteredNotes; track note.id) {
+          <app-note-card [note]="note" (preview)="selectedNote = $event" />
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <h3>No matching books found</h3>
+        <p>Try clearing one of your institute, course, or search filters.</p>
+        <button type="button" class="reset-btn" (click)="clearFilters()">Reset all filters</button>
+      </div>
+    }
+  </div>
+</main>
+
+<app-site-footer />
+
+@if (selectedNote) {
+  <div class="preview-backdrop" (click)="closePreview()">
+    <section
+      class="preview-modal"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="selectedNote.title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="preview-header">
+        <span>{{ selectedNote.course }} · {{ selectedNote.semester }} · {{ selectedNote.university }}</span>
+        <button type="button" class="close-btn" (click)="closePreview()" aria-label="Close preview">
+          ×
+        </button>
+      </div>
+
+      <div class="preview-body">
+        <h2>{{ selectedNote.title }}</h2>
+        <p class="preview-meta">
+          By {{ selectedNote.seller }} · {{ selectedNote.pages }} pages · ★ {{ selectedNote.rating }} ({{ selectedNote.reviews }} reviews)
+        </p>
+
+        <div class="sample-box">
+          <strong>What's included</strong>
+          <p>{{ selectedNote.summary }}</p>
+          <ul>
+            <li>Syllabus-aligned notes and key exam topics</li>
+            <li>Clear, revision-ready PDF format ({{ selectedNote.pages }} pages)</li>
+            <li>Shared by a student who completed this course</li>
+          </ul>
+        </div>
+
+        <div class="preview-footer">
+          <div class="preview-price">
+            <strong>Rs. {{ selectedNote.price }}</strong>
+            @if (selectedNote.originalPrice) {
+              <del>Rs. {{ selectedNote.originalPrice }}</del>
+            }
+          </div>
+          <button type="button" class="preview-close-btn" (click)="closePreview()">
+            Close preview
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+}

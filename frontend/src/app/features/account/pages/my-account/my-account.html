@@ -1,0 +1,107 @@
+<app-site-header />
+
+<main class="account-page">
+  <div class="section-shell">
+    <header class="page-header">
+      <div>
+        <h1>My Account</h1>
+        <p>View and update your personal information, profile photo, and academic details.</p>
+      </div>
+      <a class="seller-link" routerLink="/seller">Go to Seller Dashboard</a>
+    </header>
+
+    @if (savedMessage) {
+      <div class="success-banner" role="status">
+        <span>{{ savedMessage }}</span>
+        <button type="button" (click)="savedMessage = ''" aria-label="Dismiss">×</button>
+      </div>
+    }
+
+    <form class="account-card" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <!-- Avatar Upload Row -->
+      <div class="avatar-section">
+        <div class="avatar-circle">
+          @if (avatarPreview) {
+            <img [src]="avatarPreview" alt="Profile avatar" />
+          } @else {
+            <span>{{ initials }}</span>
+          }
+        </div>
+
+        <div class="avatar-controls">
+          <strong>Profile Photo</strong>
+          <p>Shown next to your username in the header and on your listed notes.</p>
+          <div class="avatar-btns">
+            <label class="upload-btn" for="avatar-upload">
+              <input id="avatar-upload" type="file" accept="image/*" (change)="onAvatarSelected($event)" />
+              Upload photo
+            </label>
+            @if (avatarPreview) {
+              <button type="button" class="remove-btn" (click)="removeAvatar()">Remove</button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field">
+          <label for="acc-fullname">Full Name *</label>
+          <input id="acc-fullname" type="text" formControlName="fullName" placeholder="Your full name" />
+          @if (profileForm.controls.fullName.touched && profileForm.controls.fullName.invalid) {
+            <span class="field-error">Full name is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="acc-username">Username *</label>
+          <input id="acc-username" type="text" formControlName="username" placeholder="username" />
+          @if (profileForm.controls.username.touched && profileForm.controls.username.invalid) {
+            <span class="field-error">Username is required.</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field">
+          <label for="acc-email">Email Address *</label>
+          <input id="acc-email" type="email" formControlName="email" placeholder="you@example.com" />
+          @if (profileForm.controls.email.touched && profileForm.controls.email.invalid) {
+            <span class="field-error">Enter a valid email address.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="acc-role">Account Mode</label>
+          <select id="acc-role" formControlName="role">
+            <option value="both">Buyer &amp; Seller</option>
+            <option value="buyer">Buyer only</option>
+            <option value="seller">Seller only</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field">
+          <label for="acc-university">University / Institute</label>
+          <input id="acc-university" type="text" formControlName="university" placeholder="e.g. Tribhuvan University" />
+        </div>
+
+        <div class="field">
+          <label for="acc-course">Course / Faculty</label>
+          <input id="acc-course" type="text" formControlName="course" placeholder="e.g. BSc CSIT" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="acc-bio">Bio</label>
+        <textarea id="acc-bio" rows="3" formControlName="bio" placeholder="Tell students about your notes or academic background..."></textarea>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" class="save-btn">Save changes</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<app-site-footer />

@@ -2,7 +2,27 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { API_CONFIG } from '../config/api.config';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../models/auth.model';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  UserMeResponse,
+  UserProfile,
+} from '../models/auth.model';
+
+const PROFILE_STORAGE_KEY = 'noteadda_user_profile_v1';
+
+const DEFAULT_PROFILE: UserProfile = {
+  fullName: 'Pawan Sharma',
+  username: 'pawan',
+  email: 'pawan@noteadda.com',
+  university: 'Tribhuvan University',
+  course: 'BSc CSIT',
+  role: 'both',
+  bio: 'Sharing exam-focused semester notes and solved past papers.',
+  avatarUrl: '',
+};
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,6 +31,13 @@ export class AuthService {
   private readonly tokenKey = 'noteadda_access_token';
 
   readonly isAuthenticated = signal<boolean>(this.hasStoredToken());
+  readonly userProfile = signal<UserProfile>(this.loadStoredProfile());
+
+  constructor() {
+    if (this.isAuthenticated()) {
+      this.fetchCurrentUser().subscribe({ error: () => {} });
+    }
+  }
 
   register(payload: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.authUrl}/register`, payload);
@@ -24,6 +51,28 @@ export class AuthService {
         otherStorage.removeItem(this.tokenKey);
         storage.setItem(this.tokenKey, response.access_token);
         this.isAuthenticated.set(true);
+        this.fetchCurrentUser().subscribe({ error: () => {} });
+      }),
+    );
+  }
+
+  fetchCurrentUser(): Observable<UserMeResponse> {
+    return this.http.get<UserMeResponse>(`${API_CONFIG.baseUrl}/users/me`).pipe(
+      tap((user) => {
+        const current = this.userProfile();
+        const merged: UserProfile = {
+          ...current,
+          id: user.id,
+          fullName: user.full_name?.trim() || user.username,
+          username: user.username,
+          email: user.email,
+          avatarUrl: user.avatar_url ?? current.avatarUrl,
+          university: user.university ?? current.university,
+          course: user.course ?? current.course,
+          role: user.role ?? current.role,
+          bio: user.bio ?? current.bio,
+        };
+        this.updateProfile(merged);
       }),
     );
   }
@@ -36,6 +85,27 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey) ?? sessionStorage.getItem(this.tokenKey);
+  }
+
+  updateProfile(profile: UserProfile): void {
+    this.userProfile.set(profile);
+    try {
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }
+
+  private loadStoredProfile(): UserProfile {
+    try {
+      const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+      if (raw) {
+        return { ...DEFAULT_PROFILE, ...(JSON.parse(raw) as Partial<UserProfile>) };
+      }
+    } catch {
+      // Ignore invalid JSON
+    }
+    return { ...DEFAULT_PROFILE };
   }
 
   extractErrorMessage(error: unknown, fallback: string): string {

@@ -60,6 +60,13 @@
               </div>
             }
           </div>
+
+          <a class="see-all-link" routerLink="/notes">
+            See all
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 5 12.5 10l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
         </div>
       </div>
 
@@ -84,6 +91,14 @@
             <app-note-card [note]="note" (preview)="selectedNote = $event" />
           }
         </div>
+        <div class="catalog-footer-cta">
+          <a class="see-all-btn" routerLink="/notes">
+            See all notes &amp; filter by institute
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4.5 10h11m-4.5-4.5 4.5 4.5-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
       } @else {
         <div class="empty-state">
           <h3>No notes found</h3>
@@ -95,19 +110,7 @@
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="section-shell footer-inner">
-    <div class="footer-brand">
-      <strong>NoteAdda</strong>
-      <span>Study notes and solved papers for students across Nepal.</span>
-    </div>
-    <div class="footer-links">
-      <a href="#marketplace">Browse notes</a>
-      <a href="mailto:hello@noteadda.com">Support</a>
-      <span>© 2026 NoteAdda</span>
-    </div>
-  </div>
-</footer>
+<app-site-footer />
 
 @if (selectedNote) {
   <div class="preview-backdrop" (click)="closePreview()">

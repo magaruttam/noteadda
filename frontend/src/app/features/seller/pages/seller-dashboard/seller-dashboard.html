@@ -1,0 +1,338 @@
+<app-site-header [searchQuery]="searchQuery" (searchChange)="searchQuery = $event" />
+
+<main class="seller-page">
+  <div class="section-shell">
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+      <div>
+        <span class="role-badge">Seller Studio</span>
+        <h1>Manage &amp; Sell Your Notes</h1>
+        <p>Create new study books, track copies sold, and monitor your earnings.</p>
+      </div>
+
+      <div class="header-actions">
+        <a class="browse-store-btn" routerLink="/notes">View public store</a>
+        <button type="button" class="create-btn" (click)="openCreateTab()">
+          + Create new note
+        </button>
+      </div>
+    </header>
+
+    @if (toastMessage) {
+      <div class="toast-banner" role="status">
+        <span>{{ toastMessage }}</span>
+        <button type="button" (click)="toastMessage = ''" aria-label="Dismiss">×</button>
+      </div>
+    }
+
+    <!-- Stats Summary -->
+    <section class="stats-grid" aria-label="Seller performance">
+      <article class="stat-card">
+        <span class="stat-label">Published Books</span>
+        <strong class="stat-value">{{ publishedCount }}</strong>
+        <span class="stat-sub">{{ sellerNotes.length }} total created</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Copies Sold</span>
+        <strong class="stat-value">{{ totalSales }}</strong>
+        <span class="stat-sub">Across all listings</span>
+      </article>
+      <article class="stat-card highlight">
+        <span class="stat-label">Total Revenue</span>
+        <strong class="stat-value">Rs. {{ totalRevenue.toLocaleString() }}</strong>
+        <span class="stat-sub">Gross book sales</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Avg. Rating</span>
+        <strong class="stat-value">{{ averageRating }} ★</strong>
+        <span class="stat-sub">Student feedback</span>
+      </article>
+    </section>
+
+    <!-- View Tabs -->
+    <div class="dashboard-tabs" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        [class.active]="activeTab === 'overview'"
+        [attr.aria-selected]="activeTab === 'overview'"
+        (click)="activeTab = 'overview'"
+      >
+        My Created Notes ({{ sellerNotes.length }})
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [class.active]="activeTab === 'create'"
+        [attr.aria-selected]="activeTab === 'create'"
+        (click)="activeTab = 'create'"
+      >
+        {{ editingNoteId ? 'Edit Note' : 'Create Note' }}
+      </button>
+    </div>
+
+    <!-- TAB 1: Track Created Notes -->
+    @if (activeTab === 'overview') {
+      <section class="notes-panel">
+        <div class="panel-toolbar">
+          <div class="status-filters">
+            <button
+              type="button"
+              [class.active]="statusFilter === 'all'"
+              (click)="statusFilter = 'all'"
+            >
+              All
+            </button>
+            <button
+              type="button"
+              [class.active]="statusFilter === 'published'"
+              (click)="statusFilter = 'published'"
+            >
+              Published
+            </button>
+            <button
+              type="button"
+              [class.active]="statusFilter === 'draft'"
+              (click)="statusFilter = 'draft'"
+            >
+              Drafts
+            </button>
+          </div>
+
+          <input
+            type="search"
+            class="table-search"
+            [value]="searchQuery"
+            (input)="searchQuery = $any($event.target).value"
+            placeholder="Filter your notes..."
+            aria-label="Filter your created notes"
+          />
+        </div>
+
+        @if (filteredSellerNotes.length) {
+          <div class="notes-table-wrap">
+            <table class="notes-table">
+              <thead>
+                <tr>
+                  <th>Book / Note</th>
+                  <th>Status</th>
+                  <th>Price</th>
+                  <th>Sold</th>
+                  <th>Revenue</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (note of filteredSellerNotes; track note.id) {
+                  <tr class="note-row" (click)="openAnalytics(note)">
+                    <td>
+                      <div class="note-cell">
+                        <span class="mini-cover" [class]="'mini-cover cover-' + note.color"></span>
+                        <div>
+                          <strong>{{ note.title }}</strong>
+                          <small>{{ note.course }} · {{ note.semester }} · {{ note.university }} · {{ note.pages }}p</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="status-pill" [class]="note.status">
+                        {{ note.status === 'published' ? 'Published' : 'Draft' }}
+                      </span>
+                    </td>
+                    <td class="num-cell">Rs. {{ note.price }}</td>
+                    <td class="num-cell">{{ note.downloads }}</td>
+                    <td class="num-cell strong">Rs. {{ (note.price * note.downloads).toLocaleString() }}</td>
+                    <td (click)="$event.stopPropagation()">
+                      <div class="row-actions">
+                        <button type="button" class="action-btn" (click)="openAnalytics(note)">
+                          Analytics
+                        </button>
+                        <button type="button" class="action-btn" (click)="editNote(note)">
+                          Edit
+                        </button>
+                        <button type="button" class="action-btn" (click)="toggleStatus(note)">
+                          {{ note.status === 'published' ? 'Unpublish' : 'Publish' }}
+                        </button>
+                        <button type="button" class="action-btn danger" (click)="deleteNote(note)">
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="empty-panel">
+            <h3>No notes match your filter</h3>
+            <p>Create a new note or clear the filter to view all your listings.</p>
+            <button type="button" class="create-btn" (click)="openCreateTab()">+ Create new note</button>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- TAB 2: Create / Edit Note Form + Live Preview -->
+    @if (activeTab === 'create') {
+      <section class="create-layout">
+        <form class="create-form" [formGroup]="noteForm" (ngSubmit)="onSubmitNote()">
+          <div class="form-header">
+            <h2>{{ editingNoteId ? 'Edit Your Note' : 'Create a New Study Note' }}</h2>
+            <p>Fill in the course details, upload your PDF, and set your price.</p>
+          </div>
+
+          <div class="field">
+            <label for="note-title">Book / Note Title *</label>
+            <input
+              id="note-title"
+              type="text"
+              formControlName="title"
+              placeholder="e.g. Data Structures & Algorithms — Complete Semester Notes"
+            />
+            @if (noteForm.controls.title.touched && noteForm.controls.title.invalid) {
+              <span class="field-error">Please enter a title (at least 5 characters).</span>
+            }
+          </div>
+
+          <div class="form-grid-2">
+            <div class="field">
+              <label for="note-course">Course / Program *</label>
+              <input id="note-course" type="text" formControlName="course" placeholder="e.g. BSc CSIT" />
+            </div>
+
+            <div class="field">
+              <label for="note-category">Faculty *</label>
+              <select id="note-category" formControlName="category">
+                @for (cat of categories; track cat.id) {
+                  <option [value]="cat.id">{{ cat.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="field">
+              <label for="note-university">Institute / University *</label>
+              <input
+                id="note-university"
+                type="text"
+                formControlName="university"
+                placeholder="e.g. Tribhuvan University"
+              />
+            </div>
+
+            <div class="field">
+              <label for="note-semester">Semester *</label>
+              <select id="note-semester" formControlName="semester">
+                @for (sem of semesters; track sem) {
+                  <option [value]="sem">{{ sem }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="field">
+              <label for="note-price">Selling Price (Rs.) *</label>
+              <input id="note-price" type="number" formControlName="price" min="20" />
+            </div>
+
+            <div class="field">
+              <label for="note-original">Original Price (Optional)</label>
+              <input id="note-original" type="number" formControlName="originalPrice" min="0" />
+            </div>
+
+            <div class="field">
+              <label for="note-pages">Total Pages *</label>
+              <input id="note-pages" type="number" formControlName="pages" min="1" />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="field">
+              <label for="note-badge">Achievement Badge (Optional)</label>
+              <input id="note-badge" type="text" formControlName="badge" placeholder="e.g. TU Board Rank 2" />
+            </div>
+
+            <div class="field">
+              <label for="note-status">Listing Status</label>
+              <select id="note-status" formControlName="status">
+                <option value="published">Publish immediately</option>
+                <option value="draft">Save as draft</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Book Cover Color</label>
+            <div class="color-swatches">
+              @for (c of coverColors; track c.id) {
+                <button
+                  type="button"
+                  class="swatch"
+                  [class]="'swatch cover-' + c.id"
+                  [class.selected]="noteForm.controls.color.value === c.id"
+                  (click)="noteForm.controls.color.setValue(c.id)"
+                  [attr.aria-label]="c.label"
+                  [title]="c.label"
+                ></button>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="note-summary">Description / What's Included *</label>
+            <textarea
+              id="note-summary"
+              rows="3"
+              formControlName="summary"
+              placeholder="Briefly describe chapters, solved papers, or diagrams included..."
+            ></textarea>
+            @if (noteForm.controls.summary.touched && noteForm.controls.summary.invalid) {
+              <span class="field-error">Please add a short description (at least 15 characters).</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="note-pdf">Upload Study Note PDF</label>
+            <label class="file-drop" for="note-pdf">
+              <input id="note-pdf" type="file" accept=".pdf" (change)="onFileSelected($event)" />
+              <span class="file-title">
+                {{ selectedFileName || 'Click to choose a PDF file (up to 50 MB)' }}
+              </span>
+              <span class="file-hint">Students will see a watermarked preview before buying.</span>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="activeTab = 'overview'">
+              Cancel
+            </button>
+            <button type="submit" class="submit-btn">
+              {{ editingNoteId ? 'Save changes' : 'Create & publish note' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Book Card Preview -->
+        <aside class="preview-sidebar">
+          <div class="preview-sticky">
+            <span class="preview-kicker">Live Store Preview</span>
+            <app-note-card [note]="previewNote" />
+          </div>
+        </aside>
+      </section>
+    }
+  </div>
+</main>
+
+<app-site-footer />
+
+@if (selectedAnalyticsNote) {
+  <app-note-analytics-modal
+    [note]="selectedAnalyticsNote"
+    (close)="closeAnalytics()"
+    (edit)="closeAnalytics(); editNote($event)"
+  />
+}

@@ -1,8 +1,11 @@
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { NotesService } from '../../../../core/services/notes.service';
+import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
 import { MarketplaceHeroComponent } from '../../components/marketplace-hero/marketplace-hero';
 import { NoteCardComponent } from '../../components/note-card/note-card';
-import { categories, notes } from '../../data/marketplace.data';
+import { categories } from '../../data/marketplace.data';
 import { Note } from '../../models/marketplace.model';
 
 type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
@@ -10,15 +13,27 @@ type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
 @Component({
   selector: 'app-marketplace-home',
   standalone: true,
-  imports: [SiteHeaderComponent, MarketplaceHeroComponent, NoteCardComponent],
+  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent, MarketplaceHeroComponent, NoteCardComponent],
   templateUrl: './marketplace-home.html',
   styleUrl: './marketplace-home.css',
 })
-export class MarketplaceHomeComponent {
+export class MarketplaceHomeComponent implements OnInit {
   private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly notesService = inject(NotesService);
 
   readonly categories = categories;
-  readonly notes = notes;
+  notes: Note[] = [];
+
+  ngOnInit(): void {
+    this.notesService.listNotes({ status: 'published', limit: 100 }).subscribe({
+      next: (apiNotes) => {
+        this.notes = apiNotes.map((n) => this.notesService.mapApiNoteToMarketplaceNote(n));
+      },
+      error: () => {
+        this.notes = [];
+      },
+    });
+  }
 
   readonly sortOptions: { value: SortOption; label: string }[] = [
     { value: 'popular', label: 'Most popular' },

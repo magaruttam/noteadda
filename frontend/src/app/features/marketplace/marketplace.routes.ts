@@ -6,4 +6,9 @@ export const MARKETPLACE_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/marketplace-home/marketplace-home').then((m) => m.MarketplaceHomeComponent),
   },
+  {
+    path: 'notes',
+    loadComponent: () =>
+      import('./pages/notes-catalog/notes-catalog').then((m) => m.NotesCatalogComponent),
+  },
 ];
