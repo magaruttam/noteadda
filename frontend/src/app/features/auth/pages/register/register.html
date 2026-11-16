@@ -1,73 +1,73 @@
-<div class="flex min-h-screen flex-col bg-slate-50">
+<div class="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
   <header class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
-    <a class="inline-flex items-center gap-2.5 text-lg font-bold tracking-tight text-slate-900 no-underline" routerLink="/" aria-label="NoteAdda home">
+    <a class="inline-flex items-center gap-2.5 text-lg font-bold tracking-tight text-slate-900 no-underline dark:text-white" routerLink="/" aria-label="NoteAdda home">
       <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white" aria-hidden="true">
         <svg class="h-4 w-4 stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z" />
           <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10h8" />
         </svg>
       </span>
-      <span>Note<span class="text-indigo-600">Adda</span></span>
+      <span>Note<span class="text-indigo-600 dark:text-indigo-400">Adda</span></span>
     </a>
-    <a class="text-sm font-medium text-slate-600 transition hover:text-indigo-600" routerLink="/">← Back to library</a>
+    <a class="text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400" routerLink="/">← Back to library</a>
   </header>
 
   <main class="flex flex-1 items-center justify-center px-4 py-8">
-    <section class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 shadow-sm" aria-labelledby="register-title">
+    <section class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900" aria-labelledby="register-title">
       <div class="mb-6">
-        <span class="mb-1.5 inline-block rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Join NoteAdda</span>
-        <h1 id="register-title" class="m-0 text-2xl font-bold text-slate-900">Create your account</h1>
-        <p class="mt-1 text-sm text-slate-500">Browse verified study notes, solved papers, and course guides across Nepal.</p>
+        <span class="mb-1.5 inline-block rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">Join NoteAdda</span>
+        <h1 id="register-title" class="m-0 text-2xl font-bold text-slate-900 dark:text-white">Create your account</h1>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Browse verified study notes, solved papers, and course guides across Nepal.</p>
       </div>
 
       @if (errorMessage) {
-        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-800" role="alert">
+        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-800 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-200" role="alert">
           {{ errorMessage }}
         </div>
       }
 
       <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="register-email">Email address</label>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="register-email">Email address</label>
           <input
             id="register-email"
             type="email"
-            class="rounded-xl border bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
-            [class]="hasError('email') ? 'border-rose-400' : 'border-slate-200'"
+            class="rounded-xl border bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+            [class]="hasError('email') ? 'border-rose-400 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700'"
             formControlName="email"
             placeholder="user@example.com"
             autocomplete="email"
           />
           @if (hasError('email')) {
-            <span class="text-xs font-medium text-rose-600">Please enter a valid email address.</span>
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Please enter a valid email address.</span>
           }
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="register-username">Username</label>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="register-username">Username</label>
           <input
             id="register-username"
             type="text"
-            class="rounded-xl border bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
-            [class]="hasError('username') ? 'border-rose-400' : 'border-slate-200'"
+            class="rounded-xl border bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+            [class]="hasError('username') ? 'border-rose-400 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700'"
             formControlName="username"
             placeholder="uttam"
             autocomplete="username"
           />
           @if (hasError('username')) {
-            <span class="text-xs font-medium text-rose-600">Username must be 3–50 characters.</span>
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Username must be 3–50 characters.</span>
           }
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="flex items-center justify-between text-xs font-semibold text-slate-700" for="register-name">
+          <label class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300" for="register-name">
             <span>Full name</span>
             <span class="font-normal text-slate-400">Optional</span>
           </label>
           <input
             id="register-name"
             type="text"
-            class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
+            class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
             formControlName="fullName"
             placeholder="Uttam Pulami"
             autocomplete="name"
@@ -75,12 +75,12 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="register-password">Password</label>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="register-password">Password</label>
           <div class="relative flex items-center">
             <input
               id="register-password"
-              class="w-full rounded-xl border bg-slate-50 py-2.5 pl-3.5 pr-16 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
-              [class]="hasError('password') ? 'border-rose-400' : 'border-slate-200'"
+              class="w-full rounded-xl border bg-slate-50 py-2.5 pl-3.5 pr-16 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+              [class]="hasError('password') ? 'border-rose-400 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700'"
               [type]="showPassword ? 'text' : 'password'"
               formControlName="password"
               placeholder="6–128 characters"
@@ -88,7 +88,7 @@
             />
             <button
               type="button"
-              class="absolute right-3 cursor-pointer text-xs font-semibold text-slate-500 hover:text-indigo-600"
+              class="absolute right-3 cursor-pointer text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
               (click)="showPassword = !showPassword"
               [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
             >
@@ -96,17 +96,17 @@
             </button>
           </div>
           @if (hasError('password')) {
-            <span class="text-xs font-medium text-rose-600">Password must be 6–128 characters.</span>
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Password must be 6–128 characters.</span>
           }
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="register-confirm-password">Confirm password</label>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="register-confirm-password">Confirm password</label>
           <div class="relative flex items-center">
             <input
               id="register-confirm-password"
-              class="w-full rounded-xl border bg-slate-50 py-2.5 pl-3.5 pr-16 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white"
-              [class]="hasError('confirmPassword') ? 'border-rose-400' : 'border-slate-200'"
+              class="w-full rounded-xl border bg-slate-50 py-2.5 pl-3.5 pr-16 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+              [class]="hasError('confirmPassword') ? 'border-rose-400 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700'"
               [type]="showConfirmPassword ? 'text' : 'password'"
               formControlName="confirmPassword"
               placeholder="Re-enter your password"
@@ -114,7 +114,7 @@
             />
             <button
               type="button"
-              class="absolute right-3 cursor-pointer text-xs font-semibold text-slate-500 hover:text-indigo-600"
+              class="absolute right-3 cursor-pointer text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
               (click)="showConfirmPassword = !showConfirmPassword"
               [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
             >
@@ -122,7 +122,7 @@
             </button>
           </div>
           @if (hasError('confirmPassword')) {
-            <span class="text-xs font-medium text-rose-600">
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">
               @if (form.hasError('passwordMismatch')) {
                 Passwords do not match.
               } @else {
@@ -142,8 +142,8 @@
         </button>
       </form>
 
-      <div class="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500">
-        Already have an account? <a class="font-semibold text-indigo-600 hover:underline" routerLink="/login">Sign in</a>
+      <div class="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+        Already have an account? <a class="font-semibold text-indigo-600 hover:underline dark:text-indigo-400" routerLink="/login">Sign in</a>
       </div>
     </section>
   </main>

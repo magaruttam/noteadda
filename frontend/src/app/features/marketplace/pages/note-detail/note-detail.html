@@ -1,9 +1,9 @@
 <app-site-header />
 
-<main class="min-h-[calc(100vh-140px)] bg-slate-50 pb-16 pt-7">
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 pb-16 pt-7 dark:bg-slate-950">
   <div class="mx-auto max-w-6xl px-4 sm:px-6">
     <div class="mb-5">
-      <a class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600" routerLink="/notes">
+      <a class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400" routerLink="/notes">
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="m12.5 5-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -12,12 +12,12 @@
     </div>
 
     @if (loading) {
-      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600">
+      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
         <p class="m-0">Loading note details...</p>
       </section>
     } @else if (errorMessage || !note) {
-      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600">
-        <h2 class="mb-2 text-xl font-bold text-slate-900">Note not found</h2>
+      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+        <h2 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Note not found</h2>
         <p class="mb-5">{{ errorMessage || 'This study note could not be found.' }}</p>
         <a class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700" routerLink="/notes">
           Browse available notes
@@ -26,10 +26,10 @@
     } @else {
       <section class="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div class="flex flex-col gap-5">
-          <div class="grid gap-7 rounded-2xl border border-slate-200 bg-white p-6 md:grid-cols-[230px_minmax(0,1fr)]">
-            <div class="relative flex items-center justify-center rounded-xl bg-slate-100 px-4 py-6">
+          <div class="grid gap-7 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 md:grid-cols-[230px_minmax(0,1fr)]">
+            <div class="relative flex items-center justify-center rounded-xl bg-slate-100 px-4 py-6 dark:bg-slate-800/70">
               @if (discountPercent > 0) {
-                <span class="absolute right-3 top-3 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                <span class="absolute right-3 top-3 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                   Save {{ discountPercent }}%
                 </span>
               }
@@ -45,26 +45,26 @@
 
             <div>
               <div class="mb-3 flex flex-wrap gap-2">
-                <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">{{ categoryName }}</span>
+                <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">{{ categoryName }}</span>
                 @if (note.semester) {
-                  <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{{ note.semester }}</span>
+                  <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ note.semester }}</span>
                 }
-                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{{ note.pages }} pages</span>
+                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ note.pages }} pages</span>
               </div>
 
-              <h1 class="mb-2 text-2xl font-bold leading-tight text-slate-900">{{ note.title }}</h1>
+              <h1 class="mb-2 text-2xl font-bold leading-tight text-slate-900 dark:text-white">{{ note.title }}</h1>
 
-              <p class="mb-3.5 text-sm text-slate-600">
-                Uploaded by <strong class="text-slate-900">{{ sellerDisplayName }}</strong>
+              <p class="mb-3.5 text-sm text-slate-600 dark:text-slate-400">
+                Uploaded by <strong class="text-slate-900 dark:text-white">{{ sellerDisplayName }}</strong>
                 @if (note.seller?.full_name && note.seller?.full_name !== sellerDisplayName) {
                   <span> ({{ note.seller?.full_name }})</span>
                 }
               </p>
 
-              <div class="mb-4 flex flex-wrap gap-4 border-y border-slate-100 py-3 text-sm text-slate-600">
+              <div class="mb-4 flex flex-wrap gap-4 border-y border-slate-100 py-3 text-sm text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <span class="inline-flex items-center gap-1">
                   <span class="text-amber-500" aria-hidden="true">★</span>
-                  <strong class="text-slate-900">{{ note.rating }}</strong>
+                  <strong class="text-slate-900 dark:text-white">{{ note.rating }}</strong>
                   <span>({{ note.reviews_count }} reviews)</span>
                 </span>
                 <span>{{ note.downloads_count }} downloads</span>
@@ -72,82 +72,82 @@
               </div>
 
               <div>
-                <h2 class="mb-2 text-base font-bold text-slate-900">Overview</h2>
-                <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ note.summary }}</p>
+                <h2 class="mb-2 text-base font-bold text-slate-900 dark:text-white">Overview</h2>
+                <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-300">{{ note.summary }}</p>
               </div>
             </div>
           </div>
 
           @if (note.description && note.description !== note.summary) {
-            <section class="rounded-2xl border border-slate-200 bg-white p-6">
-              <h2 class="mb-2.5 text-base font-bold text-slate-900">Detailed Description</h2>
-              <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ note.description }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+              <h2 class="mb-2.5 text-base font-bold text-slate-900 dark:text-white">Detailed Description</h2>
+              <p class="m-0 whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-300">{{ note.description }}</p>
             </section>
           }
 
-          <section class="rounded-2xl border border-slate-200 bg-white p-6">
-            <h2 class="mb-4 text-base font-bold text-slate-900">Note Specifications</h2>
+          <section class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <h2 class="mb-4 text-base font-bold text-slate-900 dark:text-white">Note Specifications</h2>
             <dl class="m-0 grid grid-cols-2 gap-4">
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500">Category</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900">{{ categoryName }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Category</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ categoryName }}</dd>
               </div>
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500">Seller</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900">{{ sellerDisplayName }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Seller</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ sellerDisplayName }}</dd>
               </div>
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500">Semester</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900">{{ note.semester || 'Not specified' }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Semester</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ note.semester || 'Not specified' }}</dd>
               </div>
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500">Total Pages</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900">{{ note.pages }} pages</dd>
+                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Total Pages</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ note.pages }} pages</dd>
               </div>
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500">Status</dt>
-                <dd class="m-0 text-sm font-semibold capitalize text-slate-900">{{ note.status }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Status</dt>
+                <dd class="m-0 text-sm font-semibold capitalize text-slate-900 dark:text-white">{{ note.status }}</dd>
               </div>
               <div>
-                <dt class="mb-0.5 text-xs text-slate-500">Last Updated</dt>
-                <dd class="m-0 text-sm font-semibold text-slate-900">{{ note.updated_at | date: 'mediumDate' }}</dd>
+                <dt class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Last Updated</dt>
+                <dd class="m-0 text-sm font-semibold text-slate-900 dark:text-white">{{ note.updated_at | date: 'mediumDate' }}</dd>
               </div>
             </dl>
           </section>
 
-          <section class="rounded-2xl border border-slate-200 bg-white p-6">
-            <h2 class="mb-3 text-base font-bold text-slate-900">Included Files ({{ note.files.length }})</h2>
+          <section class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <h2 class="mb-3 text-base font-bold text-slate-900 dark:text-white">Included Files ({{ note.files.length }})</h2>
             @if (note.files.length > 0) {
               <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
                 @for (file of note.files; track file.id) {
-                  <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
+                  <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 dark:border-slate-700 dark:bg-slate-800">
                     <div>
-                      <strong class="block text-sm text-slate-900">{{ file.file_name }}</strong>
-                      <small class="text-xs text-slate-500">{{ file.file_type }} · {{ formatFileSize(file.file_size) }}</small>
+                      <strong class="block text-sm text-slate-900 dark:text-white">{{ file.file_name }}</strong>
+                      <small class="text-xs text-slate-500 dark:text-slate-400">{{ file.file_type }} · {{ formatFileSize(file.file_size) }}</small>
                     </div>
                     @if (file.is_primary) {
-                      <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">Primary PDF</span>
+                      <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">Primary PDF</span>
                     }
                   </li>
                 }
               </ul>
             } @else {
-              <p class="m-0 text-sm text-slate-500">No downloadable files attached yet.</p>
+              <p class="m-0 text-sm text-slate-500 dark:text-slate-400">No downloadable files attached yet.</p>
             }
           </section>
         </div>
 
         <aside class="lg:sticky lg:top-22">
-          <div class="rounded-2xl border border-slate-200 bg-white p-6">
-            <span class="mb-2 block text-xs font-semibold uppercase tracking-wider text-indigo-600">Instant Digital Access</span>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <span class="mb-2 block text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Instant Digital Access</span>
             <div class="mb-4 flex items-baseline gap-2.5">
-              <strong class="text-3xl font-bold text-slate-900">{{ note.currency }} {{ note.price }}</strong>
+              <strong class="text-3xl font-bold text-slate-900 dark:text-white">{{ note.currency }} {{ note.price }}</strong>
               @if (note.original_price && note.original_price > note.price) {
                 <del class="text-base text-slate-400">{{ note.currency }} {{ note.original_price }}</del>
               }
             </div>
 
-            <ul class="mb-5 flex list-disc flex-col gap-2 pl-5 text-sm text-slate-600">
+            <ul class="mb-5 flex list-disc flex-col gap-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
               <li>{{ note.pages }} pages of structured study material</li>
               <li>Instant access after purchase</li>
               <li>Prepared by {{ sellerDisplayName }}</li>
@@ -162,7 +162,7 @@
             </button>
 
             @if (purchaseMessage) {
-              <p class="mt-3.5 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs text-indigo-900" role="status">
+              <p class="mt-3.5 rounded-lg bg-indigo-50 px-3 py-2.5 text-xs text-indigo-900 dark:bg-indigo-950 dark:text-indigo-200" role="status">
                 {{ purchaseMessage }}
               </p>
             }

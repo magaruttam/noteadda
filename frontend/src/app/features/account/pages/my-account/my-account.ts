@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { UserProfile } from '../../../../core/models/auth.model';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ThemeService } from '../../../../core/services/theme.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
 
@@ -15,6 +16,7 @@ import { SiteHeaderComponent } from '../../../../shared/components/site-header/s
 export class MyAccountComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
+  readonly themeService = inject(ThemeService);
 
   savedMessage = '';
   avatarPreview = this.authService.userProfile().avatarUrl;

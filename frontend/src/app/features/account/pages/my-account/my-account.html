@@ -1,28 +1,54 @@
 <app-site-header />
 
-<main class="min-h-[calc(100vh-140px)] bg-slate-50 py-8 pb-16">
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 py-8 pb-16 dark:bg-slate-950">
   <div class="mx-auto max-w-3xl px-4 sm:px-6">
     <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="m-0 text-2xl font-bold text-slate-900 sm:text-3xl">My Account</h1>
-        <p class="mt-1 text-sm text-slate-500">View and update your personal information, profile photo, and academic details.</p>
+        <h1 class="m-0 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">My Account</h1>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">View and update your personal information, profile photo, and appearance.</p>
       </div>
-      <a class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600" routerLink="/seller">
+      <a class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-indigo-500" routerLink="/seller">
         Go to Seller Dashboard
       </a>
     </header>
 
     @if (savedMessage) {
-      <div class="mb-5 flex items-center justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900" role="status">
+      <div class="mb-5 flex items-center justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-200" role="status">
         <span>{{ savedMessage }}</span>
-        <button type="button" class="cursor-pointer text-lg leading-none text-emerald-700 hover:text-emerald-950" (click)="savedMessage = ''" aria-label="Dismiss">×</button>
+        <button type="button" class="cursor-pointer text-lg leading-none text-emerald-700 hover:text-emerald-950 dark:text-emerald-300" (click)="savedMessage = ''" aria-label="Dismiss">×</button>
       </div>
     }
 
-    <form class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <!-- Appearance Card -->
+    <section class="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+      <div>
+        <strong class="block text-sm font-bold text-slate-900 dark:text-white">Appearance</strong>
+        <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Choose between light and dark theme across NoteAdda.</p>
+      </div>
+      <div class="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
+        <button
+          type="button"
+          class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+          [class]="themeService.theme() === 'light' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
+          (click)="themeService.setTheme('light')"
+        >
+          Light
+        </button>
+        <button
+          type="button"
+          class="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+          [class]="themeService.theme() === 'dark' ? 'bg-slate-900 text-white shadow-xs dark:bg-indigo-600' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'"
+          (click)="themeService.setTheme('dark')"
+        >
+          Dark
+        </button>
+      </div>
+    </section>
+
+    <form class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
       <!-- Avatar Upload Row -->
-      <div class="flex flex-wrap items-center gap-5 border-b border-slate-100 pb-6">
-        <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-2xl font-bold text-indigo-700">
+      <div class="flex flex-wrap items-center gap-5 border-b border-slate-100 pb-6 dark:border-slate-800">
+        <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-2xl font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
           @if (avatarPreview) {
             <img class="h-full w-full object-cover" [src]="avatarPreview" alt="Profile avatar" />
           } @else {
@@ -31,15 +57,15 @@
         </div>
 
         <div>
-          <strong class="block text-sm font-bold text-slate-900">Profile Photo</strong>
-          <p class="mt-0.5 mb-3 text-xs text-slate-500">Shown next to your username in the header and on your listed notes.</p>
+          <strong class="block text-sm font-bold text-slate-900 dark:text-white">Profile Photo</strong>
+          <p class="mt-0.5 mb-3 text-xs text-slate-500 dark:text-slate-400">Shown next to your username in the header and on your listed notes.</p>
           <div class="flex flex-wrap gap-2">
-            <label class="cursor-pointer rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50" for="avatar-upload">
+            <label class="cursor-pointer rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" for="avatar-upload">
               <input id="avatar-upload" type="file" class="hidden" accept="image/*" (change)="onAvatarSelected($event)" />
               Upload photo
             </label>
             @if (avatarPreview) {
-              <button type="button" class="cursor-pointer rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100" (click)="removeAvatar()">
+              <button type="button" class="cursor-pointer rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300" (click)="removeAvatar()">
                 Remove
               </button>
             }
@@ -49,34 +75,34 @@
 
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="acc-fullname">Full Name *</label>
-          <input id="acc-fullname" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="fullName" placeholder="Your full name" />
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-fullname">Full Name *</label>
+          <input id="acc-fullname" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="fullName" placeholder="Your full name" />
           @if (profileForm.controls.fullName.touched && profileForm.controls.fullName.invalid) {
-            <span class="text-xs font-medium text-rose-600">Full name is required.</span>
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Full name is required.</span>
           }
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="acc-username">Username *</label>
-          <input id="acc-username" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="username" placeholder="username" />
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-username">Username *</label>
+          <input id="acc-username" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="username" placeholder="username" />
           @if (profileForm.controls.username.touched && profileForm.controls.username.invalid) {
-            <span class="text-xs font-medium text-rose-600">Username is required.</span>
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Username is required.</span>
           }
         </div>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="acc-email">Email Address *</label>
-          <input id="acc-email" type="email" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="email" placeholder="you@example.com" />
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-email">Email Address *</label>
+          <input id="acc-email" type="email" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="email" placeholder="you@example.com" />
           @if (profileForm.controls.email.touched && profileForm.controls.email.invalid) {
-            <span class="text-xs font-medium text-rose-600">Enter a valid email address.</span>
+            <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Enter a valid email address.</span>
           }
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="acc-role">Account Mode</label>
-          <select id="acc-role" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="role">
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-role">Account Mode</label>
+          <select id="acc-role" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="role">
             <option value="both">Buyer &amp; Seller</option>
             <option value="buyer">Buyer only</option>
             <option value="seller">Seller only</option>
@@ -86,22 +112,22 @@
 
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="acc-university">University / Institute</label>
-          <input id="acc-university" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="university" placeholder="e.g. Tribhuvan University" />
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-university">University / Institute</label>
+          <input id="acc-university" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="university" placeholder="e.g. Tribhuvan University" />
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-semibold text-slate-700" for="acc-course">Course / Faculty</label>
-          <input id="acc-course" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="course" placeholder="e.g. BSc CSIT" />
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-course">Course / Faculty</label>
+          <input id="acc-course" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="course" placeholder="e.g. BSc CSIT" />
         </div>
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label class="text-xs font-semibold text-slate-700" for="acc-bio">Bio</label>
-        <textarea id="acc-bio" rows="3" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white" formControlName="bio" placeholder="Tell students about your notes or academic background..."></textarea>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="acc-bio">Bio</label>
+        <textarea id="acc-bio" rows="3" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="bio" placeholder="Tell students about your notes or academic background..."></textarea>
       </div>
 
-      <div class="flex justify-end border-t border-slate-100 pt-4">
+      <div class="flex justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
         <button type="submit" class="cursor-pointer rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700">
           Save changes
         </button>

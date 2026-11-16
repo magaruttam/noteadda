@@ -4,6 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
 :root {
+  color-scheme: light;
   --bg-page: #f8fafc;
   --bg-card: #ffffff;
   --bg-muted: #f1f5f9;
@@ -21,6 +22,24 @@
 
   --success: #059669;
   --warning: #d97706;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-page: #020617;
+  --bg-card: #0f172a;
+  --bg-muted: #1e293b;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  --brand: #6366f1;
+  --brand-hover: #818cf8;
+  --brand-soft: rgba(99, 102, 241, 0.16);
+
+  --border: #1e293b;
+  --border-hover: #334155;
 }
 
 @layer base {

@@ -1,9 +1,9 @@
 <app-site-header [searchQuery]="searchQuery" (searchChange)="onSearchChange($event)" />
 
-<main class="min-h-[calc(100vh-140px)] bg-slate-50 py-8 pb-16">
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 py-8 pb-16 dark:bg-slate-950">
   <div class="mx-auto max-w-6xl px-4 sm:px-6">
     <div class="mb-6">
-      <a class="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600" routerLink="/">
+      <a class="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400" routerLink="/">
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="m12.5 5-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -12,31 +12,31 @@
 
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 class="m-0 text-2xl font-bold text-slate-900 sm:text-3xl">All Study Notes &amp; Books</h1>
-          <p class="mt-1 text-sm text-slate-500">Filter by institute, course, or keyword to find the exact material for your exam.</p>
+          <h1 class="m-0 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">All Study Notes &amp; Books</h1>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Filter by institute, course, or keyword to find the exact material for your exam.</p>
         </div>
-        <div class="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs text-slate-600">
-          Showing <strong class="text-slate-900">{{ filteredNotes.length }}</strong> of {{ notes.length }} books
+        <div class="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+          Showing <strong class="text-slate-900 dark:text-white">{{ filteredNotes.length }}</strong> of {{ notes.length }} books
         </div>
       </div>
     </div>
 
     <!-- Top Filter Bar -->
-    <section class="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3" aria-label="Filter study notes">
-      <label class="flex min-w-[240px] flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:border-indigo-500 focus-within:bg-white">
+    <section class="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900" aria-label="Filter study notes">
+      <label class="flex min-w-[240px] flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:border-indigo-500 focus-within:bg-white dark:border-slate-700 dark:bg-slate-800 dark:focus-within:bg-slate-950">
         <svg class="h-4 w-4 shrink-0 stroke-slate-400" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="10.8" cy="10.8" r="6.8" />
           <path d="m16 16 4.5 4.5" />
         </svg>
         <input
-          class="w-full border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
+          class="w-full border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
           [value]="searchQuery"
           (input)="onSearchChange($any($event.target).value)"
           placeholder="Search title, subject, semester, or author..."
           aria-label="Search all notes"
         />
         @if (searchQuery) {
-          <button type="button" class="cursor-pointer text-base leading-none text-slate-400 hover:text-slate-700" (click)="onSearchChange('')" aria-label="Clear search">
+          <button type="button" class="cursor-pointer text-base leading-none text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" (click)="onSearchChange('')" aria-label="Clear search">
             ×
           </button>
         }
@@ -47,25 +47,25 @@
         <div class="filter-dropdown relative" [class.open]="openDropdown === 'institute'">
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
             (click)="toggleDropdown('institute')"
             aria-haspopup="listbox"
             [attr.aria-expanded]="openDropdown === 'institute'"
           >
             <span class="text-slate-400">Institute:</span>
-            <span class="font-semibold text-slate-900">{{ selectedInstitute === 'all' ? 'All institutes' : selectedInstitute }}</span>
+            <span class="font-semibold text-slate-900 dark:text-white">{{ selectedInstitute === 'all' ? 'All institutes' : selectedInstitute }}</span>
             <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
 
           @if (openDropdown === 'institute') {
-            <div class="absolute left-0 z-20 mt-2 max-h-60 w-56 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg" role="listbox" aria-label="Filter by institute">
+            <div class="absolute left-0 z-20 mt-2 max-h-60 w-56 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900" role="listbox" aria-label="Filter by institute">
               <button
                 type="button"
                 role="option"
                 class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm transition"
-                [class]="selectedInstitute === 'all' ? 'bg-indigo-50 font-semibold text-indigo-700' : 'text-slate-700 hover:bg-slate-50'"
+                [class]="selectedInstitute === 'all' ? 'bg-indigo-50 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800'"
                 (click)="selectInstitute('all')"
               >
                 All institutes
@@ -75,7 +75,7 @@
                   type="button"
                   role="option"
                   class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm transition"
-                  [class]="selectedInstitute === institute ? 'bg-indigo-50 font-semibold text-indigo-700' : 'text-slate-700 hover:bg-slate-50'"
+                  [class]="selectedInstitute === institute ? 'bg-indigo-50 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800'"
                   (click)="selectInstitute(institute)"
                 >
                   {{ institute }}
@@ -89,25 +89,25 @@
         <div class="filter-dropdown relative" [class.open]="openDropdown === 'course'">
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
             (click)="toggleDropdown('course')"
             aria-haspopup="listbox"
             [attr.aria-expanded]="openDropdown === 'course'"
           >
             <span class="text-slate-400">Course:</span>
-            <span class="font-semibold text-slate-900">{{ selectedCourse === 'all' ? 'All courses' : selectedCourse }}</span>
+            <span class="font-semibold text-slate-900 dark:text-white">{{ selectedCourse === 'all' ? 'All courses' : selectedCourse }}</span>
             <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
 
           @if (openDropdown === 'course') {
-            <div class="absolute left-0 z-20 mt-2 max-h-60 w-52 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg" role="listbox" aria-label="Filter by course">
+            <div class="absolute left-0 z-20 mt-2 max-h-60 w-52 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900" role="listbox" aria-label="Filter by course">
               <button
                 type="button"
                 role="option"
                 class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm transition"
-                [class]="selectedCourse === 'all' ? 'bg-indigo-50 font-semibold text-indigo-700' : 'text-slate-700 hover:bg-slate-50'"
+                [class]="selectedCourse === 'all' ? 'bg-indigo-50 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800'"
                 (click)="selectCourse('all')"
               >
                 All courses
@@ -117,7 +117,7 @@
                   type="button"
                   role="option"
                   class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm transition"
-                  [class]="selectedCourse === course ? 'bg-indigo-50 font-semibold text-indigo-700' : 'text-slate-700 hover:bg-slate-50'"
+                  [class]="selectedCourse === course ? 'bg-indigo-50 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800'"
                   (click)="selectCourse(course)"
                 >
                   {{ course }}
@@ -131,26 +131,26 @@
         <div class="filter-dropdown relative" [class.open]="openDropdown === 'sort'">
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
             (click)="toggleDropdown('sort')"
             aria-haspopup="listbox"
             [attr.aria-expanded]="openDropdown === 'sort'"
           >
             <span class="text-slate-400">Sort:</span>
-            <span class="font-semibold text-slate-900">{{ activeSortLabel }}</span>
+            <span class="font-semibold text-slate-900 dark:text-white">{{ activeSortLabel }}</span>
             <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="m6 8 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
 
           @if (openDropdown === 'sort') {
-            <div class="absolute right-0 z-20 mt-2 w-48 rounded-xl border border-slate-200 bg-white p-1 shadow-lg" role="listbox" aria-label="Sort options">
+            <div class="absolute right-0 z-20 mt-2 w-48 rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900" role="listbox" aria-label="Sort options">
               @for (option of sortOptions; track option.value) {
                 <button
                   type="button"
                   role="option"
                   class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm transition"
-                  [class]="sortBy === option.value ? 'bg-indigo-50 font-semibold text-indigo-700' : 'text-slate-700 hover:bg-slate-50'"
+                  [class]="sortBy === option.value ? 'bg-indigo-50 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800'"
                   (click)="selectSort(option.value)"
                 >
                   {{ option.label }}
@@ -163,7 +163,7 @@
         @if (hasActiveFilters) {
           <button
             type="button"
-            class="cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+            class="cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
             (click)="clearFilters()"
           >
             Reset
@@ -179,12 +179,12 @@
           type="button"
           role="tab"
           class="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition"
-          [class]="activeCategory === category.id ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'"
+          [class]="activeCategory === category.id ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600'"
           [attr.aria-selected]="activeCategory === category.id"
           (click)="onCategorySelect(category.id)"
         >
           <span>{{ category.label }}</span>
-          <span class="rounded-full px-1.5 py-0.5 text-xs" [class]="activeCategory === category.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'">
+          <span class="rounded-full px-1.5 py-0.5 text-xs" [class]="activeCategory === category.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'">
             {{ category.count }}
           </span>
         </button>
@@ -199,9 +199,9 @@
         }
       </div>
     } @else {
-      <div class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center">
-        <h3 class="mb-2 text-lg font-bold text-slate-900">No matching books found</h3>
-        <p class="mb-5 text-sm text-slate-500">Try clearing one of your institute, course, or search filters.</p>
+      <div class="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center dark:border-slate-800 dark:bg-slate-900">
+        <h3 class="mb-2 text-lg font-bold text-slate-900 dark:text-white">No matching books found</h3>
+        <p class="mb-5 text-sm text-slate-500 dark:text-slate-400">Try clearing one of your institute, course, or search filters.</p>
         <button
           type="button"
           class="cursor-pointer rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"

@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-site-header',
@@ -10,6 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class SiteHeaderComponent {
   readonly authService = inject(AuthService);
+  readonly themeService = inject(ThemeService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
 
   @Input() searchQuery = '';
