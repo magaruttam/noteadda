@@ -175,22 +175,51 @@
     </section>
 
     <!-- Category Pills -->
-    <div class="mb-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Filter by faculty">
-      @for (category of categories; track category.id) {
-        <button
-          type="button"
-          role="tab"
-          class="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition"
-          [class]="activeCategory === category.id ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600'"
-          [attr.aria-selected]="activeCategory === category.id"
-          (click)="onCategorySelect(category.id)"
-        >
-          <span>{{ category.label }}</span>
-          <span class="rounded-full px-1.5 py-0.5 text-xs" [class]="activeCategory === category.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'">
-            {{ category.count }}
-          </span>
-        </button>
-      }
+    <div class="relative mb-7 flex items-center gap-2">
+      <button
+        type="button"
+        class="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-indigo-500"
+        (click)="scrollCategories(categoryStrip, 'left')"
+        aria-label="Scroll categories left"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="m12.5 5-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <div
+        #categoryStrip
+        class="flex flex-1 gap-2 overflow-x-auto scroll-smooth py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="tablist"
+        aria-label="Filter by category"
+      >
+        @for (category of categories; track category.id) {
+          <button
+            type="button"
+            role="tab"
+            class="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition"
+            [class]="activeCategory === category.id ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600'"
+            [attr.aria-selected]="activeCategory === category.id"
+            (click)="onCategorySelect(category.id)"
+          >
+            <span>{{ category.label }}</span>
+            <span class="rounded-full px-1.5 py-0.5 text-xs" [class]="activeCategory === category.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'">
+              {{ category.count }}
+            </span>
+          </button>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-indigo-500"
+        (click)="scrollCategories(categoryStrip, 'right')"
+        aria-label="Scroll categories right"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 5 12.5 10l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
     </div>
 
     <!-- Notes Grid -->

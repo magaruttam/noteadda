@@ -154,6 +154,11 @@ export class NotesCatalogComponent implements OnInit {
     this.selectedCourse = 'all';
   }
 
+  scrollCategories(container: HTMLElement, direction: 'left' | 'right'): void {
+    const amount = direction === 'left' ? -280 : 280;
+    container.scrollBy({ left: amount, behavior: 'smooth' });
+  }
+
   openNoteDetail(note: Note): void {
     this.router.navigate(['/notes', note.id]);
   }
