@@ -187,7 +187,7 @@
     @if (filteredNotes.length) {
       <div class="notes-grid">
         @for (note of filteredNotes; track note.id) {
-          <app-note-card [note]="note" (preview)="selectedNote = $event" />
+          <app-note-card [note]="note" (preview)="openNoteDetail($event)" />
         }
       </div>
     } @else {

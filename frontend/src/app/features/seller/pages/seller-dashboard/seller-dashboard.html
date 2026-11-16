@@ -197,23 +197,29 @@
 
           <div class="form-grid-2">
             <div class="field">
-              <label for="note-course">Course / Program *</label>
+              <label for="note-course">Course / Program (Optional)</label>
               <input id="note-course" type="text" formControlName="course" placeholder="e.g. BSc CSIT" />
             </div>
 
             <div class="field">
-              <label for="note-category">Faculty *</label>
-              <select id="note-category" formControlName="category">
+              <label for="note-category">Category *</label>
+              <select id="note-category" formControlName="categoryId">
+                @if (categories.length === 0) {
+                  <option [ngValue]="0" disabled>No categories found</option>
+                }
                 @for (cat of categories; track cat.id) {
-                  <option [value]="cat.id">{{ cat.label }}</option>
+                  <option [ngValue]="cat.id">{{ cat.name }}</option>
                 }
               </select>
+              @if (noteForm.controls.categoryId.touched && noteForm.controls.categoryId.invalid) {
+                <span class="field-error">Please select a category.</span>
+              }
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="field">
-              <label for="note-university">Institute / University *</label>
+              <label for="note-university">Institute / University (Optional)</label>
               <input
                 id="note-university"
                 type="text"
@@ -223,8 +229,9 @@
             </div>
 
             <div class="field">
-              <label for="note-semester">Semester *</label>
+              <label for="note-semester">Semester (Optional)</label>
               <select id="note-semester" formControlName="semester">
+                <option value="">Select semester (optional)</option>
                 @for (sem of semesters; track sem) {
                   <option [value]="sem">{{ sem }}</option>
                 }
@@ -235,17 +242,17 @@
           <div class="form-grid-3">
             <div class="field">
               <label for="note-price">Selling Price (Rs.) *</label>
-              <input id="note-price" type="number" formControlName="price" min="20" />
+              <input id="note-price" type="number" formControlName="price" min="20" placeholder="e.g. 199" />
             </div>
 
             <div class="field">
               <label for="note-original">Original Price (Optional)</label>
-              <input id="note-original" type="number" formControlName="originalPrice" min="0" />
+              <input id="note-original" type="number" formControlName="originalPrice" min="0" placeholder="e.g. 299" />
             </div>
 
             <div class="field">
               <label for="note-pages">Total Pages *</label>
-              <input id="note-pages" type="number" formControlName="pages" min="1" />
+              <input id="note-pages" type="number" formControlName="pages" min="1" placeholder="e.g. 45" />
             </div>
           </div>
 

@@ -82,9 +82,18 @@ class NoteUpdate(BaseModel):
     rejection_reason: str | None = None
 
 
+class NoteSellerResponse(BaseModel):
+    id: int
+    username: str
+    full_name: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class NoteResponse(BaseModel):
     id: int
     seller_id: int
+    seller: NoteSellerResponse | None = None
     category_id: int
     institution_id: int | None
     course_id: int | None

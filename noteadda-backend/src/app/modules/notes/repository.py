@@ -14,7 +14,7 @@ class NoteRepository:
     async def get_by_id(self, db: AsyncSession, note_id: int) -> Note | None:
         stmt = (
             select(Note)
-            .options(selectinload(Note.files), selectinload(Note.images))
+            .options(selectinload(Note.seller), selectinload(Note.files), selectinload(Note.images))
             .where(Note.id == note_id)
         )
         result = await db.execute(stmt)
@@ -40,7 +40,7 @@ class NoteRepository:
     ) -> Sequence[Note]:
         stmt = (
             select(Note)
-            .options(selectinload(Note.files), selectinload(Note.images))
+            .options(selectinload(Note.seller), selectinload(Note.files), selectinload(Note.images))
             .order_by(Note.created_at.desc())
             .offset(skip)
             .limit(limit)
@@ -80,14 +80,14 @@ class NoteRepository:
 
         db.add(note)
         await db.flush()
-        await db.refresh(note, attribute_names=["files", "images"])
+        await db.refresh(note, attribute_names=["seller", "files", "images"])
         return note
 
     async def update(self, db: AsyncSession, note: Note, updates: dict) -> Note:
         for field, value in updates.items():
             setattr(note, field, value)
         await db.flush()
-        await db.refresh(note, attribute_names=["files", "images"])
+        await db.refresh(note, attribute_names=["seller", "files", "images"])
         return note
 
     async def delete(self, db: AsyncSession, note: Note) -> None:

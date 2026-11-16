@@ -1,7 +1,8 @@
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
+  CategoryApiResponse,
   NoteApiResponse,
   NoteCreatePayload,
   NoteUpdatePayload,
@@ -11,13 +12,13 @@ import { NotesService } from '../../../../core/services/notes.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
 import { NoteCardComponent } from '../../../marketplace/components/note-card/note-card';
-import { categories } from '../../../marketplace/data/marketplace.data';
 import { Note } from '../../../marketplace/models/marketplace.model';
 import { NoteAnalyticsModalComponent } from '../../components/note-analytics-modal/note-analytics-modal';
 
 export type SellerNoteStatus = 'published' | 'draft';
 
 export interface SellerNote extends Note {
+  categoryId: number;
   status: SellerNoteStatus;
   fileName: string;
   updatedAt: string;
@@ -41,8 +42,9 @@ export class SellerDashboardComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly notesService = inject(NotesService);
   private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly categories = categories.filter((c) => c.id !== 'all');
+  categories: CategoryApiResponse[] = [];
   readonly semesters = [
     'Semester 1',
     'Semester 2',
@@ -76,6 +78,20 @@ export class SellerDashboardComponent implements OnInit {
   toastMessage = '';
 
   ngOnInit(): void {
+    this.notesService.listCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+        if (cats.length > 0 && !this.noteForm.controls.categoryId.value) {
+          this.noteForm.controls.categoryId.setValue(cats[0].id);
+        }
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.categories = [];
+        this.cdr.markForCheck();
+      },
+    });
+
     if (!this.authService.isAuthenticated()) {
       return;
     }
@@ -93,13 +109,13 @@ export class SellerDashboardComponent implements OnInit {
 
   readonly noteForm = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(5)]],
-    course: ['BSc CSIT', [Validators.required]],
-    category: ['csit', [Validators.required]],
-    semester: ['Semester 4', [Validators.required]],
-    university: ['Tribhuvan University', [Validators.required]],
-    pages: [45, [Validators.required, Validators.min(1)]],
-    price: [199, [Validators.required, Validators.min(20)]],
-    originalPrice: [299],
+    course: [''],
+    categoryId: [0, [Validators.required, Validators.min(1)]],
+    semester: [''],
+    university: [''],
+    pages: [null as number | null, [Validators.required, Validators.min(1)]],
+    price: [null as number | null, [Validators.required, Validators.min(20)]],
+    originalPrice: [null as number | null],
     color: ['indigo', [Validators.required]],
     badge: [''],
     summary: ['', [Validators.required, Validators.minLength(15)]],
@@ -140,6 +156,7 @@ export class SellerDashboardComponent implements OnInit {
 
   get previewNote(): SellerNote {
     const raw = this.noteForm.getRawValue();
+    const selectedCategory = this.categories.find((c) => c.id === Number(raw.categoryId));
     return {
       id: 'preview',
       title: raw.title.trim() || 'Your Study Note Title Will Appear Here',
@@ -147,7 +164,8 @@ export class SellerDashboardComponent implements OnInit {
       semester: raw.semester,
       university: raw.university.trim() || 'University',
       seller: 'You',
-      category: raw.category,
+      category: selectedCategory?.slug || 'general',
+      categoryId: Number(raw.categoryId) || 0,
       pages: Number(raw.pages) || 1,
       price: Number(raw.price) || 0,
       originalPrice: raw.originalPrice ? Number(raw.originalPrice) : undefined,
@@ -169,13 +187,13 @@ export class SellerDashboardComponent implements OnInit {
     this.selectedFile = null;
     this.noteForm.reset({
       title: '',
-      course: 'BSc CSIT',
-      category: 'csit',
-      semester: 'Semester 4',
-      university: 'Tribhuvan University',
-      pages: 45,
-      price: 199,
-      originalPrice: 299,
+      course: '',
+      categoryId: this.categories[0]?.id ?? 0,
+      semester: '',
+      university: '',
+      pages: null,
+      price: null,
+      originalPrice: null,
       color: 'indigo',
       badge: '',
       summary: '',
@@ -191,12 +209,12 @@ export class SellerDashboardComponent implements OnInit {
     this.noteForm.patchValue({
       title: note.title,
       course: note.course,
-      category: note.category,
+      categoryId: note.categoryId,
       semester: note.semester,
       university: note.university,
       pages: note.pages,
       price: note.price,
-      originalPrice: note.originalPrice ?? 0,
+      originalPrice: note.originalPrice ?? null,
       color: note.color,
       badge: note.badge ?? '',
       summary: note.summary,
@@ -233,11 +251,11 @@ export class SellerDashboardComponent implements OnInit {
     if (this.editingNoteId && this.isNumericId(this.editingNoteId)) {
       const noteId = Number(this.editingNoteId);
       const updatePayload: NoteUpdatePayload = {
-        category_id: this.notesService.getCategoryIdFromSlug(raw.category),
+        category_id: Number(raw.categoryId),
         title: raw.title.trim(),
         summary: raw.summary.trim(),
         description: raw.summary.trim(),
-        semester: raw.semester,
+        semester: raw.semester.trim() || null,
         pages: Number(raw.pages),
         price,
         original_price: originalPrice,
@@ -255,21 +273,23 @@ export class SellerDashboardComponent implements OnInit {
           this.editingNoteId = null;
           this.activeTab = 'overview';
           this.showToast('Note updated successfully.');
+          this.cdr.markForCheck();
         },
         error: (err) => {
           this.isSubmitting = false;
           this.showToast(this.authService.extractErrorMessage(err, 'Failed to update note.'));
+          this.cdr.markForCheck();
         },
       });
       return;
     }
 
     const createPayload: NoteCreatePayload = {
-      category_id: this.notesService.getCategoryIdFromSlug(raw.category),
+      category_id: Number(raw.categoryId),
       title: raw.title.trim(),
       summary: raw.summary.trim(),
       description: raw.summary.trim(),
-      semester: raw.semester,
+      semester: raw.semester.trim() || null,
       pages: Number(raw.pages),
       price,
       original_price: originalPrice,
@@ -302,10 +322,12 @@ export class SellerDashboardComponent implements OnInit {
             ? 'Your note is now published in your seller catalog.'
             : 'Your note was saved as a draft.',
         );
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.isSubmitting = false;
         this.showToast(this.authService.extractErrorMessage(err, 'Failed to create note.'));
+        this.cdr.markForCheck();
       },
     });
   }
@@ -330,9 +352,11 @@ export class SellerDashboardComponent implements OnInit {
               ? `"${note.title}" is now published.`
               : `"${note.title}" moved to drafts.`,
           );
+          this.cdr.markForCheck();
         },
         error: (err) => {
           this.showToast(this.authService.extractErrorMessage(err, 'Failed to update note status.'));
+          this.cdr.markForCheck();
         },
       });
       return;
@@ -354,9 +378,11 @@ export class SellerDashboardComponent implements OnInit {
         next: () => {
           this.sellerNotes = this.sellerNotes.filter((item) => item.id !== note.id);
           this.showToast('Note deleted.');
+          this.cdr.markForCheck();
         },
         error: (err) => {
           this.showToast(this.authService.extractErrorMessage(err, 'Failed to delete note.'));
+          this.cdr.markForCheck();
         },
       });
       return;
@@ -370,9 +396,11 @@ export class SellerDashboardComponent implements OnInit {
     this.notesService.listNotes({ seller_id: sellerId, limit: 100 }).subscribe({
       next: (apiNotes) => {
         this.sellerNotes = apiNotes.map((n) => this.mapApiToSellerNote(n));
+        this.cdr.markForCheck();
       },
       error: () => {
         this.sellerNotes = [];
+        this.cdr.markForCheck();
       },
     });
   }
@@ -387,6 +415,7 @@ export class SellerDashboardComponent implements OnInit {
     const base = this.notesService.mapApiNoteToMarketplaceNote(apiNote, apiNote.seller_id);
     return {
       ...base,
+      categoryId: apiNote.category_id,
       course: courseOverride?.trim() || base.course,
       university: universityOverride?.trim() || base.university,
       color: colorOverride || base.color,

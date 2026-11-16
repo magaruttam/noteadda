@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_CONFIG } from '../config/api.config';
 import {
+  CategoryApiResponse,
   NoteApiResponse,
   NoteCreatePayload,
   NoteUpdatePayload,
@@ -30,6 +31,12 @@ const COVER_COLORS = ['indigo', 'emerald', 'blue', 'slate', 'amber', 'rose', 'vi
 export class NotesService {
   private readonly http = inject(HttpClient);
   private readonly notesUrl = `${API_CONFIG.baseUrl}/notes`;
+  private readonly categoriesUrl = `${API_CONFIG.baseUrl}/categories`;
+
+  listCategories(activeOnly = true): Observable<CategoryApiResponse[]> {
+    const params = new HttpParams().set('active_only', String(activeOnly));
+    return this.http.get<CategoryApiResponse[]>(`${this.categoriesUrl}/`, { params });
+  }
 
   listNotes(params?: NotesListParams): Observable<NoteApiResponse[]> {
     let httpParams = new HttpParams();
@@ -67,7 +74,11 @@ export class NotesService {
     return CATEGORY_ID_TO_SLUG[categoryId] ?? 'csit';
   }
 
-  mapApiNoteToMarketplaceNote(apiNote: NoteApiResponse, currentUserId?: number): Note {
+  mapApiNoteToMarketplaceNote(
+    apiNote: NoteApiResponse,
+    currentUserId?: number,
+    categorySlugById?: Record<number, string>,
+  ): Note {
     const isOwner = currentUserId !== undefined && apiNote.seller_id === currentUserId;
     return {
       id: String(apiNote.id),
@@ -75,8 +86,11 @@ export class NotesService {
       course: apiNote.course_id ? `Course #${apiNote.course_id}` : 'Study Notes',
       semester: apiNote.semester || 'All Semesters',
       university: apiNote.institution_id ? `Institute #${apiNote.institution_id}` : 'NoteAdda',
-      seller: isOwner ? 'You' : `Seller #${apiNote.seller_id}`,
-      category: this.getCategorySlugFromId(apiNote.category_id),
+      seller:
+        apiNote.seller?.username ||
+        apiNote.seller?.full_name ||
+        (isOwner ? 'You' : `Seller #${apiNote.seller_id}`),
+      category: categorySlugById?.[apiNote.category_id] ?? this.getCategorySlugFromId(apiNote.category_id),
       pages: apiNote.pages,
       price: apiNote.price,
       originalPrice: apiNote.original_price ?? undefined,

@@ -1,0 +1,176 @@
+<app-site-header />
+
+<main class="detail-page">
+  <div class="section-shell">
+    <div class="breadcrumb-row">
+      <a class="back-link" routerLink="/notes">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path
+            d="m12.5 5-5 5 5 5"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Back to all notes
+      </a>
+    </div>
+
+    @if (loading) {
+      <section class="state-card">
+        <p>Loading note details...</p>
+      </section>
+    } @else if (errorMessage || !note) {
+      <section class="state-card error">
+        <h2>Note not found</h2>
+        <p>{{ errorMessage || 'This study note could not be found.' }}</p>
+        <a class="primary-btn" routerLink="/notes">Browse available notes</a>
+      </section>
+    } @else {
+      <section class="detail-grid">
+        <!-- Left Column: Cover & Main Info -->
+        <div class="detail-main">
+          <div class="hero-card">
+            <div class="cover-stage">
+              @if (discountPercent > 0) {
+                <span class="discount-badge">Save {{ discountPercent }}%</span>
+              }
+              <div class="book-cover" [class]="'book-cover cover-' + coverColor">
+                <div class="book-spine" aria-hidden="true"></div>
+                <div class="book-cover-inner">
+                  <span class="book-kicker">{{ categoryName }}</span>
+                  <strong class="book-cover-title">{{ note.title }}</strong>
+                  <span class="book-cover-meta">
+                    {{ note.semester || 'All Semesters' }} · {{ note.pages }}p
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-info">
+              <div class="meta-pills">
+                <span class="pill">{{ categoryName }}</span>
+                @if (note.semester) {
+                  <span class="pill subtle">{{ note.semester }}</span>
+                }
+                <span class="pill subtle">{{ note.pages }} pages</span>
+              </div>
+
+              <h1>{{ note.title }}</h1>
+
+              <p class="seller-line">
+                Uploaded by <strong>{{ sellerDisplayName }}</strong>
+                @if (note.seller?.full_name && note.seller?.full_name !== sellerDisplayName) {
+                  <span>({{ note.seller?.full_name }})</span>
+                }
+              </p>
+
+              <div class="stats-row">
+                <span class="stat-chip">
+                  <span class="star" aria-hidden="true">★</span>
+                  <strong>{{ note.rating }}</strong>
+                  <span>({{ note.reviews_count }} reviews)</span>
+                </span>
+                <span class="stat-chip">{{ note.downloads_count }} downloads</span>
+                <span class="stat-chip">{{ note.views_count }} views</span>
+              </div>
+
+              <div class="summary-block">
+                <h2>Overview</h2>
+                <p>{{ note.summary }}</p>
+              </div>
+            </div>
+          </div>
+
+          @if (note.description && note.description !== note.summary) {
+            <section class="content-card">
+              <h2>Detailed Description</h2>
+              <p class="description-text">{{ note.description }}</p>
+            </section>
+          }
+
+          <section class="content-card">
+            <h2>Note Specifications</h2>
+            <dl class="specs-grid">
+              <div>
+                <dt>Category</dt>
+                <dd>{{ categoryName }}</dd>
+              </div>
+              <div>
+                <dt>Seller</dt>
+                <dd>{{ sellerDisplayName }}</dd>
+              </div>
+              <div>
+                <dt>Semester</dt>
+                <dd>{{ note.semester || 'Not specified' }}</dd>
+              </div>
+              <div>
+                <dt>Total Pages</dt>
+                <dd>{{ note.pages }} pages</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd class="status-text">{{ note.status }}</dd>
+              </div>
+              <div>
+                <dt>Last Updated</dt>
+                <dd>{{ note.updated_at | date: 'mediumDate' }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="content-card">
+            <h2>Included Files ({{ note.files.length }})</h2>
+            @if (note.files.length > 0) {
+              <ul class="files-list">
+                @for (file of note.files; track file.id) {
+                  <li class="file-item">
+                    <div>
+                      <strong>{{ file.file_name }}</strong>
+                      <small>{{ file.file_type }} · {{ formatFileSize(file.file_size) }}</small>
+                    </div>
+                    @if (file.is_primary) {
+                      <span class="primary-tag">Primary PDF</span>
+                    }
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="muted-text">No downloadable files attached yet.</p>
+            }
+          </section>
+        </div>
+
+        <!-- Right Column: Purchase Card -->
+        <aside class="purchase-sidebar">
+          <div class="purchase-card">
+            <span class="price-kicker">Instant Digital Access</span>
+            <div class="price-row">
+              <strong>{{ note.currency }} {{ note.price }}</strong>
+              @if (note.original_price && note.original_price > note.price) {
+                <del>{{ note.currency }} {{ note.original_price }}</del>
+              }
+            </div>
+
+            <ul class="perks-list">
+              <li>{{ note.pages }} pages of structured study material</li>
+              <li>Instant access after purchase</li>
+              <li>Prepared by {{ sellerDisplayName }}</li>
+            </ul>
+
+            <button type="button" class="primary-btn full" (click)="onGetBook()">
+              {{ note.price === 0 ? 'Download Free Note' : 'Get This Note' }}
+            </button>
+
+            @if (purchaseMessage) {
+              <p class="purchase-notice" role="status">{{ purchaseMessage }}</p>
+            }
+          </div>
+        </aside>
+      </section>
+    }
+  </div>
+</main>
+
+<app-site-footer />

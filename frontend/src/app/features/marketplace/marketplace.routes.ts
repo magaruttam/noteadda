@@ -11,4 +11,9 @@ export const MARKETPLACE_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/notes-catalog/notes-catalog').then((m) => m.NotesCatalogComponent),
   },
+  {
+    path: 'notes/:id',
+    loadComponent: () =>
+      import('./pages/note-detail/note-detail').then((m) => m.NoteDetailComponent),
+  },
 ];

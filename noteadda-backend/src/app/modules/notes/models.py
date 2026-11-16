@@ -16,10 +16,14 @@ from sqlalchemy import (
     func,
     text,
 )
+from typing import TYPE_CHECKING
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base, TimestampMixin
+
+if TYPE_CHECKING:
+    from app.modules.users.models import User
 
 
 class NoteStatus(str, enum.Enum):
@@ -137,6 +141,7 @@ class Note(Base, TimestampMixin):
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Relationships
+    seller: Mapped["User"] = relationship("User")
     files: Mapped[list["NoteFile"]] = relationship(
         "NoteFile",
         back_populates="note",

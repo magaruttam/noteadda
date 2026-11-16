@@ -63,9 +63,16 @@ export interface NoteUpdatePayload {
   rejection_reason?: string | null;
 }
 
+export interface NoteSellerResponse {
+  id: number;
+  username: string;
+  full_name: string | null;
+}
+
 export interface NoteApiResponse {
   id: number;
   seller_id: number;
+  seller?: NoteSellerResponse | null;
   category_id: number;
   institution_id: number | null;
   course_id: number | null;
@@ -100,4 +107,14 @@ export interface NotesListParams {
   seller_id?: number;
   status?: ApiNoteStatus;
   search?: string;
+}
+
+export interface CategoryApiResponse {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  parent_id: number | null;
+  is_active: boolean;
+  created_at: string;
 }

@@ -1,11 +1,11 @@
-import { Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { NotesService } from '../../../../core/services/notes.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
 import { NoteCardComponent } from '../../components/note-card/note-card';
-import { categories } from '../../data/marketplace.data';
-import { Note } from '../../models/marketplace.model';
+import { MarketplaceCategory, Note } from '../../models/marketplace.model';
 
 type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
 type DropdownKey = 'institute' | 'course' | 'sort';
@@ -19,25 +19,46 @@ type DropdownKey = 'institute' | 'course' | 'sort';
 })
 export class NotesCatalogComponent implements OnInit {
   private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly router = inject(Router);
   private readonly notesService = inject(NotesService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly categories = categories;
+  categories: MarketplaceCategory[] = [{ id: 'all', label: 'All Notes', count: '0' }];
   notes: Note[] = [];
 
   institutes: string[] = [];
   courses: string[] = [];
 
   ngOnInit(): void {
-    this.notesService.listNotes({ status: 'published', limit: 100 }).subscribe({
-      next: (apiNotes) => {
-        this.notes = apiNotes.map((n) => this.notesService.mapApiNoteToMarketplaceNote(n));
+    forkJoin({
+      categories: this.notesService.listCategories(),
+      notes: this.notesService.listNotes({ status: 'published', limit: 100 }),
+    }).subscribe({
+      next: ({ categories: apiCats, notes: apiNotes }) => {
+        const slugById: Record<number, string> = {};
+        for (const cat of apiCats) {
+          slugById[cat.id] = cat.slug;
+        }
+        this.notes = apiNotes.map((n) =>
+          this.notesService.mapApiNoteToMarketplaceNote(n, undefined, slugById),
+        );
+        this.categories = [
+          { id: 'all', label: 'All Notes', count: String(this.notes.length) },
+          ...apiCats.map((cat) => ({
+            id: cat.slug,
+            label: cat.name,
+            count: String(this.notes.filter((n) => n.category === cat.slug).length),
+          })),
+        ];
         this.institutes = Array.from(new Set(this.notes.map((n) => n.university))).sort();
         this.courses = Array.from(new Set(this.notes.map((n) => n.course))).sort();
+        this.cdr.markForCheck();
       },
       error: () => {
         this.notes = [];
         this.institutes = [];
         this.courses = [];
+        this.cdr.markForCheck();
       },
     });
   }
@@ -132,6 +153,10 @@ export class NotesCatalogComponent implements OnInit {
     this.activeCategory = 'all';
     this.selectedInstitute = 'all';
     this.selectedCourse = 'all';
+  }
+
+  openNoteDetail(note: Note): void {
+    this.router.navigate(['/notes', note.id]);
   }
 
   closePreview(): void {
