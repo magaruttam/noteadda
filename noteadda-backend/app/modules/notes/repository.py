@@ -81,6 +81,7 @@ class NoteRepository:
 
         db.add(note)
         await db.flush()
+        await db.refresh(note)
         await db.refresh(note, attribute_names=["seller", "files", "images"])
         return note
 
@@ -88,6 +89,7 @@ class NoteRepository:
         for field, value in updates.items():
             setattr(note, field, value)
         await db.flush()
+        await db.refresh(note)
         await db.refresh(note, attribute_names=["seller", "files", "images"])
         return note
 
