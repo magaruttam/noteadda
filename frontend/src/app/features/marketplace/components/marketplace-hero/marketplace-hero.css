@@ -28,26 +28,26 @@
 
 .hero-content {
   position: relative;
-  max-width: 920px;
+  max-width: 780px;
   margin: auto;
-  padding: 68px 24px 72px;
+  padding: 40px 24px 44px;
   text-align: center;
 }
 
 .eyebrow {
-  margin: 0 0 18px;
+  margin: 0 0 12px;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   color: #6b7188;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .eyebrow-line {
-  width: 22px;
+  width: 18px;
   height: 1px;
   background: #b5b1f5;
 }
@@ -55,10 +55,10 @@
 h1 {
   margin: 0;
   color: #171d2e;
-  font-size: clamp(44px, 6.2vw, 72px);
+  font-size: clamp(32px, 3.8vw, 46px);
   font-weight: 800;
-  line-height: 1.03;
-  letter-spacing: -0.04em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 h1 span {
@@ -69,26 +69,26 @@ h1 span {
 }
 
 .hero-copy {
-  max-width: 560px;
-  margin: 20px auto 30px;
+  max-width: 490px;
+  margin: 12px auto 20px;
   color: #5f667a;
-  font-size: 16px;
-  line-height: 1.65;
+  font-size: 13.5px;
+  line-height: 1.55;
 }
 
 .hero-search {
-  max-width: 660px;
-  height: 64px;
+  max-width: 540px;
+  height: 48px;
   margin: auto;
-  padding: 7px 8px 7px 20px;
+  padding: 5px 5px 5px 15px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-align: left;
   border: 1px solid #e1e4ef;
-  border-radius: 16px;
+  border-radius: 12px;
   background: #ffffff;
-  box-shadow: 0 16px 40px -12px rgba(27, 32, 50, 0.12), 0 2px 6px rgba(81, 70, 229, 0.05);
+  box-shadow: 0 12px 30px -10px rgba(27, 32, 50, 0.11), 0 2px 6px rgba(81, 70, 229, 0.04);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -98,7 +98,7 @@ h1 span {
 }
 
 .hero-search svg {
-  width: 20px;
+  width: 18px;
   flex: 0 0 auto;
   fill: none;
   stroke: #8e95a8;
@@ -114,7 +114,7 @@ h1 span {
   background: transparent;
   color: #1f2538;
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .hero-search input::placeholder {
@@ -122,19 +122,19 @@ h1 span {
 }
 
 .find-button {
-  min-width: 140px;
+  min-width: 122px;
   align-self: stretch;
-  padding: 0 20px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  border-radius: 11px;
+  gap: 7px;
+  border-radius: 9px;
   color: #ffffff;
   background: #5146e5;
   box-shadow: 0 4px 12px rgba(81, 70, 229, 0.28);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
 }
