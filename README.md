@@ -27,13 +27,12 @@
 noteadda/
 ├── noteadda-backend/          # FastAPI backend
 │   ├── alembic/               # Database migrations
-│   ├── src/
+│   ├── app/
 │   │   ├── main.py            # Entry point
-│   │   └── app/
-│   │       ├── api/           # API v1 router aggregator
-│   │       ├── core/          # Config, JWT security, dependencies
-│   │       ├── database/      # Base models & async session
-│   │       └── modules/       # Feature modules (auth, users, categories, institutions, notes)
+│   │   ├── api/               # API v1 router aggregator
+│   │   ├── core/              # Config, JWT security, dependencies
+│   │   ├── database/          # Base models & async session
+│   │   └── modules/           # Feature modules (auth, users, categories, institutions, notes)
 │   ├── .env.example
 │   └── pyproject.toml
 │
@@ -82,7 +81,7 @@ cp .env.example .env
 uv run alembic upgrade head
 
 # Start the FastAPI server (http://127.0.0.1:8000)
-uv run fastapi dev src/app/main.py
+uv run fastapi dev app/main.py
 ```
 
 - **Interactive API Docs (Swagger UI):** `http://127.0.0.1:8000/docs`

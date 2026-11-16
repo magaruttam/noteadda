@@ -39,45 +39,43 @@
 
 ## 3. Directory & Folder Architecture
 
-The project strictly follows the **Feature-Based MVC (Modular) `src` layout**:
+The project strictly follows the **Feature-Based Modular** layout:
 
 ```text
 noteadda-backend/
 ├── .venv/                         # Managed by uv
-├── src/
-│   ├── main.py                    # Root entry point proxy
-│   └── app/                       # Main application package
-│       ├── core/                  # Global foundations & core logic
-│       │   ├── config.py          # Settings class reading .env via pydantic-settings
-│       │   ├── security.py        # Argon2 password hashing, JWT creation & verification
-│       │   └── dependencies.py    # Common dependencies (get_current_user, etc.)
-│       │
-│       ├── database/              # Database infrastructure
-│       │   ├── base.py            # DeclarativeBase, shared mixins (TimestampMixin)
-│       │   └── session.py         # Async engine, sessionmaker, get_db dependency
-│       │
-│       ├── modules/               # Self-contained feature modules (Feature-Based MVC)
-│       │   ├── auth/              # Authentication module
-│       │   │   ├── router.py      # HTTP endpoints (/login, /register, /me)
-│       │   │   ├── service.py     # Business logic & authentication service
-│       │   │   └── schemas.py     # Pydantic schemas (Token, LoginRequest)
-│       │   │
-│       │   ├── users/             # User management module
-│       │   │   ├── router.py      # HTTP endpoints (/users)
-│       │   │   ├── service.py     # User business logic & database queries
-│       │   │   ├── models.py      # User SQLAlchemy entity
-│       │   │   └── schemas.py     # UserCreate, UserResponse, UserUpdate
-│       │   │
-│       │   └── notes/             # Notes management module (future)
-│       │       ├── router.py
-│       │       ├── service.py
-│       │       ├── models.py
-│       │       └── schemas.py
-│       │
-│       ├── api/                   # API Aggregator
-│       │   └── router.py          # Merges all module routers into /api/v1
-│       │
-│       └── main.py                # FastAPI app creation & lifespan setup
+├── app/                           # Main application package
+│   ├── core/                      # Global foundations & core logic
+│   │   ├── config.py              # Settings class reading .env via pydantic-settings
+│   │   ├── security.py            # Argon2 password hashing, JWT creation & verification
+│   │   └── dependencies.py        # Common dependencies (get_current_user, etc.)
+│   │
+│   ├── database/                  # Database infrastructure
+│   │   ├── base.py                # DeclarativeBase, shared mixins (TimestampMixin)
+│   │   └── session.py             # Async engine, sessionmaker, get_db dependency
+│   │
+│   ├── modules/                   # Self-contained feature modules
+│   │   ├── auth/                  # Authentication module
+│   │   │   ├── router.py          # HTTP endpoints (/login, /register, /me)
+│   │   │   ├── service.py         # Business logic & authentication service
+│   │   │   └── schemas.py         # Pydantic schemas (Token, LoginRequest)
+│   │   │
+│   │   ├── users/                 # User management module
+│   │   │   ├── router.py          # HTTP endpoints (/users)
+│   │   │   ├── service.py         # User business logic & database queries
+│   │   │   ├── models.py          # User SQLAlchemy entity
+│   │   │   └── schemas.py         # UserCreate, UserResponse, UserUpdate
+│   │   │
+│   │   └── notes/                 # Notes management module
+│   │       ├── router.py
+│   │       ├── service.py
+│   │       ├── models.py
+│   │       └── schemas.py
+│   │
+│   ├── api/                       # API Aggregator
+│   │   └── router.py              # Merges all module routers into /api/v1
+│   │
+│   └── main.py                    # FastAPI app creation & lifespan setup
 │
 ├── alembic/                       # Alembic migration scripts
 ├── tests/                         # Automated test suite
@@ -149,7 +147,7 @@ uv sync
 uv add <package-name>
 
 # Run local development server
-uv run fastapi dev src/app/main.py
+uv run fastapi dev app/main.py
 
 # Run database migrations with Alembic
 uv run alembic revision --autogenerate -m "create users and notes tables"

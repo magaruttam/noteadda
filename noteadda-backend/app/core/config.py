@@ -2,7 +2,7 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Base directory pointing to noteadda-backend root
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 ENV_FILE = BASE_DIR / ".env"
 
 
