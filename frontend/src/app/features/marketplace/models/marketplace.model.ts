@@ -13,6 +13,7 @@ export interface Note {
   reviews: number;
   downloads: number;
   color: string;
+  coverImageUrl?: string;
   badge?: string;
   summary: string;
 }

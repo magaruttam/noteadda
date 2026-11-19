@@ -1,14 +1,18 @@
+import logging
 import re
 import uuid
 from collections.abc import Sequence
 from datetime import datetime, timezone
-from fastapi import HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.notes.models import Note, NoteFile, NoteImage, NoteReview, NoteStatus
 from app.modules.notes.repository import note_repository
 from app.modules.notes.schemas import NoteCreate, NoteReviewCreate, NoteUpdate
 from app.modules.users.models import User
+from app.storage.service import storage_service
+
+logger = logging.getLogger(__name__)
 
 
 def _slugify(value: str) -> str:
@@ -120,6 +124,17 @@ class NoteService:
             )
         return note
 
+    async def _get_owned_note(
+        self, db: AsyncSession, note_id: int, current_user: User, action: str = "modify"
+    ) -> Note:
+        note = await self.get_note(db, note_id)
+        if note.seller_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"You do not have permission to {action} this note.",
+            )
+        return note
+
     async def list_notes(
         self,
         db: AsyncSession,
@@ -153,12 +168,7 @@ class NoteService:
         note_in: NoteUpdate,
         current_user: User,
     ) -> Note:
-        note = await self.get_note(db, note_id)
-        if note.seller_id != current_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="You do not have permission to update this note.",
-            )
+        note = await self._get_owned_note(db, note_id, current_user, action="update")
 
         updates = note_in.model_dump(exclude_unset=True)
         if not updates:
@@ -211,13 +221,97 @@ class NoteService:
         note_id: int,
         current_user: User,
     ) -> None:
-        note = await self.get_note(db, note_id)
-        if note.seller_id != current_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="You do not have permission to delete this note.",
-            )
+        note = await self._get_owned_note(db, note_id, current_user, action="delete")
+        image_keys = [img.image_key for img in note.images]
         await self.repo.delete(db, note)
+        for key in image_keys:
+            try:
+                await storage_service.delete_object(key)
+            except Exception:
+                logger.warning("Failed to delete note image '%s' from R2", key, exc_info=True)
+
+    async def upload_note_image(
+        self,
+        db: AsyncSession,
+        *,
+        note_id: int,
+        file: UploadFile,
+        alt_text: str | None = None,
+        sort_order: int | None = None,
+        current_user: User,
+    ) -> NoteImage:
+        """Upload a cover/preview image for a note to R2 and save its metadata."""
+        await self._get_owned_note(db, note_id, current_user, action="update")
+        uploaded = await storage_service.upload_image(file, folder=f"notes/{note_id}/images")
+
+        resolved_order = (
+            sort_order
+            if sort_order is not None
+            else await self.repo.get_next_image_sort_order(db, note_id)
+        )
+        image = NoteImage(
+            note_id=note_id,
+            image_key=uploaded.key,
+            alt_text=alt_text.strip() if alt_text else None,
+            sort_order=resolved_order,
+        )
+        try:
+            return await self.repo.add_image(db, image)
+        except Exception:
+            try:
+                await storage_service.delete_object(uploaded.key)
+            except Exception:
+                logger.warning("Failed to clean up R2 object '%s' after DB error", uploaded.key, exc_info=True)
+            raise
+
+    async def reorder_note_images(
+        self,
+        db: AsyncSession,
+        *,
+        note_id: int,
+        image_ids: list[int],
+        current_user: User,
+    ) -> Sequence[NoteImage]:
+        """Reorder a note's images by updating sort_order according to image_ids."""
+        await self._get_owned_note(db, note_id, current_user, action="update")
+        existing_images = await self.repo.list_images(db, note_id)
+        existing_by_id = {img.id: img for img in existing_images}
+
+        if len(image_ids) != len(set(image_ids)) or set(image_ids) != set(existing_by_id.keys()):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="image_ids must include every image belonging to this note exactly once.",
+            )
+
+        for idx, image_id in enumerate(image_ids):
+            existing_by_id[image_id].sort_order = idx
+
+        await db.flush()
+        return await self.repo.list_images(db, note_id)
+
+    async def delete_note_image(
+        self,
+        db: AsyncSession,
+        *,
+        note_id: int,
+        image_id: int,
+        current_user: User,
+    ) -> None:
+        """Delete a single image from a note and remove it from R2."""
+        await self._get_owned_note(db, note_id, current_user, action="update")
+        image = await self.repo.get_image_by_id(db, note_id, image_id)
+        if not image:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Note image not found",
+            )
+
+        key = image.image_key
+        await self.repo.delete_image(db, image)
+        try:
+            await storage_service.delete_object(key)
+        except Exception:
+            logger.warning("Failed to delete note image '%s' from R2", key, exc_info=True)
 
     async def list_reviews(self, db: AsyncSession, note_id: int) -> Sequence[NoteReview]:
         await self.get_note(db, note_id)

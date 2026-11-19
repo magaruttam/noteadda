@@ -25,6 +25,7 @@ export interface NoteImageResponse extends NoteImagePayload {
   id: number;
   note_id: number;
   sort_order: number;
+  image_url: string;
   created_at: string;
 }
 

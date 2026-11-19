@@ -17,11 +17,15 @@
     }
 
     <div
-      class="relative flex h-36 w-28 items-center overflow-hidden rounded-l-sm rounded-r-xl py-2.5 pl-3.5 pr-2.5 text-left text-white shadow-[10px_16px_24px_-8px_rgba(15,23,42,0.45)] transition duration-200 [transform:perspective(700px)_rotateY(-8deg)] group-hover:[transform:perspective(700px)_rotateY(-2deg)_scale(1.03)]"
-      [class]="'cover-' + note.color"
+      class="relative flex h-36 w-28 items-center overflow-hidden rounded-l-sm rounded-r-xl text-left text-white shadow-[10px_16px_24px_-8px_rgba(15,23,42,0.45)] transition duration-200 [transform:perspective(700px)_rotateY(-8deg)] group-hover:[transform:perspective(700px)_rotateY(-2deg)_scale(1.03)]"
+      [class]="note.coverImageUrl ? 'bg-slate-200 dark:bg-slate-800' : 'py-2.5 pl-3.5 pr-2.5 cover-' + note.color"
     >
-      <div class="absolute inset-y-0 left-0 w-2 bg-slate-950/25" aria-hidden="true"></div>
-      <strong class="line-clamp-4 text-xs font-bold leading-snug">{{ note.title }}</strong>
+      @if (note.coverImageUrl) {
+        <img class="h-full w-full object-cover" [src]="note.coverImageUrl" [alt]="note.title" />
+      } @else {
+        <div class="absolute inset-y-0 left-0 w-2 bg-slate-950/25" aria-hidden="true"></div>
+        <strong class="line-clamp-4 text-xs font-bold leading-snug">{{ note.title }}</strong>
+      }
     </div>
   </button>
 

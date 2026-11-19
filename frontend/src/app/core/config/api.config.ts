@@ -1,3 +1,5 @@
+import { environment } from '../../../environments/environment.prod';
+
 export const API_CONFIG = {
-  baseUrl: '/api/v1',
+  baseUrl: environment.apiBaseUrl,
 } as const;

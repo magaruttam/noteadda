@@ -152,5 +152,41 @@ class NoteRepository:
         )
         return result.scalar_one()
 
+    async def get_next_image_sort_order(self, db: AsyncSession, note_id: int) -> int:
+        result = await db.execute(
+            select(func.max(NoteImage.sort_order)).where(NoteImage.note_id == note_id)
+        )
+        max_order = result.scalar_one_or_none()
+        return 0 if max_order is None else int(max_order) + 1
+
+    async def add_image(self, db: AsyncSession, image: NoteImage) -> NoteImage:
+        db.add(image)
+        await db.flush()
+        await db.refresh(image)
+        return image
+
+    async def get_image_by_id(
+        self, db: AsyncSession, note_id: int, image_id: int
+    ) -> NoteImage | None:
+        stmt = select(NoteImage).where(
+            NoteImage.id == image_id,
+            NoteImage.note_id == note_id,
+        )
+        result = await db.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def list_images(self, db: AsyncSession, note_id: int) -> Sequence[NoteImage]:
+        stmt = (
+            select(NoteImage)
+            .where(NoteImage.note_id == note_id)
+            .order_by(NoteImage.sort_order.asc(), NoteImage.id.asc())
+        )
+        result = await db.execute(stmt)
+        return result.scalars().all()
+
+    async def delete_image(self, db: AsyncSession, image: NoteImage) -> None:
+        await db.delete(image)
+        await db.flush()
+
 
 note_repository = NoteRepository()

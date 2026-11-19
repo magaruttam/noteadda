@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
 import { NoteReviewApiResponse } from '../../../../core/models/note.model';
 import { NotesService } from '../../../../core/services/notes.service';
-import { SellerNote } from '../../pages/seller-dashboard/seller-dashboard';
+import { SellerNote } from '../../models/seller-note.model';
 
 @Component({
   selector: 'app-note-analytics-modal',

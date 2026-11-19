@@ -1,8 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 from app.modules.notes.models import NoteStatus
+from app.storage.service import storage_service
 
 
 class NoteFileCreate(BaseModel):
@@ -32,7 +33,16 @@ class NoteImageResponse(NoteImageCreate):
     note_id: int
     created_at: datetime
 
+    @computed_field
+    @property
+    def image_url(self) -> str:
+        return storage_service.get_public_url(self.image_key)
+
     model_config = ConfigDict(from_attributes=True)
+
+
+class NoteImageReorder(BaseModel):
+    image_ids: list[int] = Field(min_length=1)
 
 
 class NoteCreate(BaseModel):

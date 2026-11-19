@@ -6,6 +6,7 @@ import {
   CategoryApiResponse,
   NoteApiResponse,
   NoteCreatePayload,
+  NoteImageResponse,
   NoteReviewApiResponse,
   NoteReviewCreatePayload,
   NoteUpdatePayload,
@@ -68,6 +69,33 @@ export class NotesService {
     return this.http.delete<void>(`${this.notesUrl}/${noteId}`);
   }
 
+  uploadNoteImage(
+    noteId: number,
+    file: File,
+    altText?: string,
+    sortOrder?: number,
+  ): Observable<NoteImageResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (altText?.trim()) {
+      formData.append('alt_text', altText.trim());
+    }
+    if (sortOrder !== undefined) {
+      formData.append('sort_order', String(sortOrder));
+    }
+    return this.http.post<NoteImageResponse>(`${this.notesUrl}/${noteId}/images`, formData);
+  }
+
+  reorderNoteImages(noteId: number, imageIds: number[]): Observable<NoteImageResponse[]> {
+    return this.http.put<NoteImageResponse[]>(`${this.notesUrl}/${noteId}/images/reorder`, {
+      image_ids: imageIds,
+    });
+  }
+
+  deleteNoteImage(noteId: number, imageId: number): Observable<void> {
+    return this.http.delete<void>(`${this.notesUrl}/${noteId}/images/${imageId}`);
+  }
+
   listReviews(noteId: number): Observable<NoteReviewApiResponse[]> {
     return this.http.get<NoteReviewApiResponse[]>(`${this.notesUrl}/${noteId}/reviews`);
   }
@@ -108,6 +136,7 @@ export class NotesService {
       reviews: apiNote.reviews_count,
       downloads: apiNote.downloads_count,
       color: COVER_COLORS[apiNote.id % COVER_COLORS.length],
+      coverImageUrl: apiNote.images?.[0]?.image_url,
       badge: apiNote.status !== 'published' ? apiNote.status.toUpperCase() : undefined,
       summary: apiNote.summary,
     };

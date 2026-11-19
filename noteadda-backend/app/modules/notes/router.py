@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, File, Form, Query, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user
@@ -6,6 +6,8 @@ from app.database.session import get_db
 from app.modules.notes.models import NoteStatus
 from app.modules.notes.schemas import (
     NoteCreate,
+    NoteImageReorder,
+    NoteImageResponse,
     NoteResponse,
     NoteReviewCreate,
     NoteReviewResponse,
@@ -86,6 +88,62 @@ async def delete_note(
 ):
     """Delete a note (seller/owner only)."""
     await note_service.delete_note(db, note_id=note_id, current_user=current_user)
+
+
+@router.post(
+    "/{note_id}/images",
+    response_model=NoteImageResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_note_image(
+    note_id: int,
+    file: UploadFile = File(...),
+    alt_text: str | None = Form(default=None),
+    sort_order: int | None = Form(default=None),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upload a cover or preview image for a note (seller/owner only)."""
+    return await note_service.upload_note_image(
+        db,
+        note_id=note_id,
+        file=file,
+        alt_text=alt_text,
+        sort_order=sort_order,
+        current_user=current_user,
+    )
+
+
+@router.put("/{note_id}/images/reorder", response_model=list[NoteImageResponse])
+async def reorder_note_images(
+    note_id: int,
+    reorder_in: NoteImageReorder,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Reorder a note's images (seller/owner only)."""
+    return await note_service.reorder_note_images(
+        db,
+        note_id=note_id,
+        image_ids=reorder_in.image_ids,
+        current_user=current_user,
+    )
+
+
+@router.delete("/{note_id}/images/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_note_image(
+    note_id: int,
+    image_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Delete a note image from DB and R2 (seller/owner only)."""
+    await note_service.delete_note_image(
+        db,
+        note_id=note_id,
+        image_id=image_id,
+        current_user=current_user,
+    )
 
 
 @router.get("/{note_id}/reviews", response_model=list[NoteReviewResponse])

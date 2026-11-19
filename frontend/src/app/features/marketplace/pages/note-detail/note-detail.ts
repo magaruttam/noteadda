@@ -30,6 +30,7 @@ export class NoteDetailComponent implements OnInit {
   note: NoteApiResponse | null = null;
   reviews: NoteReviewApiResponse[] = [];
   categoryName = '';
+  activeImageIndex = 0;
   loading = true;
   errorMessage = '';
   purchaseMessage = '';
@@ -59,6 +60,10 @@ export class NoteDetailComponent implements OnInit {
   get coverColor(): string {
     if (!this.note) return 'indigo';
     return COVER_COLORS[this.note.id % COVER_COLORS.length];
+  }
+
+  get activeImageUrl(): string | null {
+    return this.note?.images?.[this.activeImageIndex]?.image_url ?? this.note?.images?.[0]?.image_url ?? null;
   }
 
   get sellerDisplayName(): string {

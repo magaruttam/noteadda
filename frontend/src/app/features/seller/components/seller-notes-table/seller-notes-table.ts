@@ -1,0 +1,34 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { SellerNote, SellerNoteStatus } from '../../models/seller-note.model';
+
+@Component({
+  selector: 'app-seller-notes-table',
+  standalone: true,
+  templateUrl: './seller-notes-table.html',
+})
+export class SellerNotesTableComponent {
+  @Input({ required: true }) notes: SellerNote[] = [];
+  @Input() statusFilter: 'all' | SellerNoteStatus = 'all';
+  @Input() searchQuery = '';
+
+  @Output() statusFilterChange = new EventEmitter<'all' | SellerNoteStatus>();
+  @Output() searchQueryChange = new EventEmitter<string>();
+  @Output() analytics = new EventEmitter<SellerNote>();
+  @Output() edit = new EventEmitter<SellerNote>();
+  @Output() toggleStatus = new EventEmitter<SellerNote>();
+  @Output() delete = new EventEmitter<SellerNote>();
+  @Output() createNew = new EventEmitter<void>();
+
+  get filteredNotes(): SellerNote[] {
+    const query = this.searchQuery.trim().toLowerCase();
+    return this.notes.filter((note) => {
+      const matchesStatus = this.statusFilter === 'all' || note.status === this.statusFilter;
+      const matchesQuery =
+        !query ||
+        [note.title, note.course, note.university, note.semester].some((v) =>
+          v.toLowerCase().includes(query),
+        );
+      return matchesStatus && matchesQuery;
+    });
+  }
+}

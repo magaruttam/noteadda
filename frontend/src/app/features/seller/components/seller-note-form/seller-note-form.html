@@ -1,0 +1,220 @@
+<section class="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_320px]">
+  <form class="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900" [formGroup]="noteForm" (ngSubmit)="onSubmitNote()">
+    <div class="border-b border-slate-100 pb-4 dark:border-slate-800">
+      <h2 class="m-0 text-xl font-bold text-slate-900 dark:text-white">{{ editingNote ? 'Edit Your Note' : 'Create a New Study Note' }}</h2>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Fill in the course details, upload your PDF, and set your price.</p>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-title">Book / Note Title *</label>
+      <input
+        id="note-title"
+        type="text"
+        class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+        formControlName="title"
+        placeholder="e.g. Data Structures & Algorithms — Complete Semester Notes"
+      />
+      @if (noteForm.controls.title.touched && noteForm.controls.title.invalid) {
+        <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Please enter a title (at least 5 characters).</span>
+      }
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-course">Course / Program (Optional)</label>
+        <input id="note-course" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="course" placeholder="e.g. BSc CSIT" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-category">Category *</label>
+        <select id="note-category" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="categoryId">
+          @if (categories.length === 0) {
+            <option [ngValue]="0" disabled>No categories found</option>
+          }
+          @for (cat of categories; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.name }}</option>
+          }
+        </select>
+        @if (noteForm.controls.categoryId.touched && noteForm.controls.categoryId.invalid) {
+          <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Please select a category.</span>
+        }
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-university">Institute / University (Optional)</label>
+        <input
+          id="note-university"
+          type="text"
+          class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+          formControlName="university"
+          placeholder="e.g. Tribhuvan University"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-semester">Semester (Optional)</label>
+        <select id="note-semester" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="semester">
+          <option value="">Select semester (optional)</option>
+          @for (sem of semesters; track sem) {
+            <option [value]="sem">{{ sem }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-price">Selling Price (Rs.) *</label>
+        <input id="note-price" type="number" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="price" min="20" placeholder="e.g. 199" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-original">Original Price (Optional)</label>
+        <input id="note-original" type="number" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="originalPrice" min="0" placeholder="e.g. 299" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-pages">Total Pages *</label>
+        <input id="note-pages" type="number" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="pages" min="1" placeholder="e.g. 45" />
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-badge">Achievement Badge (Optional)</label>
+        <input id="note-badge" type="text" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="badge" placeholder="e.g. TU Board Rank 2" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-status">Listing Status</label>
+        <select id="note-status" class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950" formControlName="status">
+          <option value="published">Publish immediately</option>
+          <option value="draft">Save as draft</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Book Cover Color</label>
+      <div class="flex flex-wrap gap-2.5">
+        @for (c of coverColors; track c.id) {
+          <button
+            type="button"
+            class="h-8 w-8 cursor-pointer rounded-lg transition"
+            [class]="'cover-' + c.id + (noteForm.controls.color.value === c.id ? ' ring-2 ring-indigo-600 ring-offset-2 dark:ring-offset-slate-900' : '')"
+            (click)="noteForm.controls.color.setValue(c.id)"
+            [attr.aria-label]="c.label"
+            [title]="c.label"
+          ></button>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-summary">Description / What's Included *</label>
+      <textarea
+        id="note-summary"
+        rows="3"
+        class="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+        formControlName="summary"
+        placeholder="Briefly describe chapters, solved papers, or diagrams included..."
+      ></textarea>
+      @if (noteForm.controls.summary.touched && noteForm.controls.summary.invalid) {
+        <span class="text-xs font-medium text-rose-600 dark:text-rose-400">Please add a short description (at least 15 characters).</span>
+      }
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-images">Cover &amp; Preview Images (Optional)</label>
+        <span class="text-[11px] text-slate-400">First image is used as the cover</span>
+      </div>
+
+      <label
+        class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-center transition hover:border-indigo-400 hover:bg-indigo-50/40 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-indigo-500"
+        [class.opacity-60]="imageUploading"
+        for="note-images"
+      >
+        <input id="note-images" type="file" class="hidden" accept="image/jpeg,image/png,image/webp,image/gif" multiple [disabled]="imageUploading" (change)="onNoteImagesSelected($event)" />
+        <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+          {{ imageUploading ? 'Uploading images...' : 'Click to upload cover or preview images' }}
+        </span>
+        <span class="mt-1 text-xs text-slate-500 dark:text-slate-400">JPEG, PNG, WEBP, GIF up to 5 MB each.</span>
+      </label>
+
+      @if (imageError) {
+        <span class="text-xs font-medium text-rose-600 dark:text-rose-400" role="alert">{{ imageError }}</span>
+      }
+
+      @if (editingNote && noteImages.length) {
+        <div class="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          @for (img of noteImages; track img.id; let idx = $index) {
+            <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+              <img class="h-28 w-full object-cover" [src]="img.image_url" [alt]="img.alt_text || 'Note image'" />
+              @if (idx === 0) {
+                <span class="absolute left-1.5 top-1.5 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white">Cover</span>
+              }
+              <div class="flex items-center justify-between gap-1 p-1.5">
+                <div class="flex gap-1">
+                  <button type="button" [disabled]="idx === 0 || imageUploading" (click)="moveExistingImage(idx, -1)" class="cursor-pointer rounded bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200" aria-label="Move left">←</button>
+                  <button type="button" [disabled]="idx === noteImages.length - 1 || imageUploading" (click)="moveExistingImage(idx, 1)" class="cursor-pointer rounded bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200" aria-label="Move right">→</button>
+                </div>
+                <button type="button" [disabled]="imageUploading" (click)="deleteExistingImage(img)" class="cursor-pointer rounded bg-rose-50 px-1.5 py-0.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 disabled:opacity-40 dark:bg-rose-950/70 dark:text-rose-300" aria-label="Delete image">×</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @if (!editingNote && pendingImages.length) {
+        <div class="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          @for (img of pendingImages; track img.previewUrl; let idx = $index) {
+            <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+              <img class="h-28 w-full object-cover" [src]="img.previewUrl" [alt]="img.file.name" />
+              @if (idx === 0) {
+                <span class="absolute left-1.5 top-1.5 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white">Cover</span>
+              }
+              <div class="flex items-center justify-between gap-1 p-1.5">
+                <div class="flex gap-1">
+                  <button type="button" [disabled]="idx === 0" (click)="movePendingImage(idx, -1)" class="cursor-pointer rounded bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200" aria-label="Move left">←</button>
+                  <button type="button" [disabled]="idx === pendingImages.length - 1" (click)="movePendingImage(idx, 1)" class="cursor-pointer rounded bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs disabled:opacity-40 dark:bg-slate-900 dark:text-slate-200" aria-label="Move right">→</button>
+                </div>
+                <button type="button" (click)="removePendingImage(idx)" class="cursor-pointer rounded bg-rose-50 px-1.5 py-0.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:bg-rose-950/70 dark:text-rose-300" aria-label="Remove image">×</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-semibold text-slate-700 dark:text-slate-300" for="note-pdf">Upload Study Note PDF</label>
+      <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center transition hover:border-indigo-400 hover:bg-indigo-50/40 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-indigo-500" for="note-pdf">
+        <input id="note-pdf" type="file" class="hidden" accept=".pdf" (change)="onFileSelected($event)" />
+        <span class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+          {{ selectedFileName || 'Click to choose a PDF file (up to 50 MB)' }}
+        </span>
+        <span class="mt-1 text-xs text-slate-500 dark:text-slate-400">Students will see a watermarked preview before buying.</span>
+      </label>
+    </div>
+
+    <div class="flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+      <button type="button" class="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" (click)="cancel.emit()">
+        Cancel
+      </button>
+      <button type="submit" [disabled]="isSubmitting" class="cursor-pointer rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60">
+        {{ editingNote ? 'Save changes' : 'Create & publish note' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Live Book Card Preview -->
+  <aside class="lg:sticky lg:top-22">
+    <div>
+      <span class="mb-2.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Live Store Preview</span>
+      <app-note-card [note]="previewNote" />
+    </div>
+  </aside>
+</section>
