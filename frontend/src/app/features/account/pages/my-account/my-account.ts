@@ -8,7 +8,6 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmLabel } from '@spartan-ng/helm/label';
 import { HlmSeparator } from '@spartan-ng/helm/separator';
-import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { UserProfile } from '../../../../core/models/auth.model';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ThemeService } from '../../../../core/services/theme.service';
@@ -29,7 +28,6 @@ import { SiteHeaderComponent } from '../../../../shared/components/site-header/s
     HlmAvatarImports,
     HlmLabel,
     HlmInput,
-    HlmTextarea,
     HlmSeparator,
   ],
   templateUrl: './my-account.html',
@@ -51,7 +49,6 @@ export class MyAccountComponent implements OnInit {
     university: [this.authService.userProfile().university],
     course: [this.authService.userProfile().course],
     role: [this.authService.userProfile().role],
-    bio: [this.authService.userProfile().bio],
   });
 
   ngOnInit(): void {
@@ -68,7 +65,6 @@ export class MyAccountComponent implements OnInit {
           university: profile.university,
           course: profile.course,
           role: profile.role,
-          bio: profile.bio,
         });
       },
       error: () => {
@@ -166,7 +162,7 @@ export class MyAccountComponent implements OnInit {
       university: raw.university.trim(),
       course: raw.course.trim(),
       role: raw.role,
-      bio: raw.bio.trim(),
+      bio: this.authService.userProfile().bio,
       avatarUrl: this.avatarPreview,
     };
 
