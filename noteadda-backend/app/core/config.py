@@ -35,6 +35,19 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "mysql+asyncmy://root:root@localhost:3306/noteadda"
 
+    # Cloudflare R2 Storage (S3-compatible)
+    R2_ACCOUNT_ID: str = ""
+    R2_ACCESS_KEY_ID: str = ""
+    R2_SECRET_ACCESS_KEY: str = ""
+    R2_BUCKET_NAME: str = "noteadda"
+    R2_PUBLIC_URL: str = ""
+
+    @property
+    def r2_endpoint_url(self) -> str:
+        if not self.R2_ACCOUNT_ID:
+            return ""
+        return f"https://{self.R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",
