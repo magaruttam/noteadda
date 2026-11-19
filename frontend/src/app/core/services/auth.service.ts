@@ -14,13 +14,13 @@ import {
 const PROFILE_STORAGE_KEY = 'noteadda_user_profile_v1';
 
 const DEFAULT_PROFILE: UserProfile = {
-  fullName: 'Pawan Sharma',
-  username: 'pawan',
-  email: 'pawan@noteadda.com',
-  university: 'Tribhuvan University',
-  course: 'BSc CSIT',
-  role: 'both',
-  bio: 'Sharing exam-focused semester notes and solved past papers.',
+  fullName: '',
+  username: '',
+  email: '',
+  university: '',
+  course: '',
+  role: 'buyer',
+  bio: '',
   avatarUrl: '',
 };
 
@@ -101,6 +101,8 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     sessionStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(PROFILE_STORAGE_KEY);
+    this.userProfile.set({ ...DEFAULT_PROFILE });
     this.isAuthenticated.set(false);
   }
 

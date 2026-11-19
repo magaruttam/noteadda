@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ChangeDetectorRef, Component, DestroyRef, ElementRef, HostListener, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HlmBadge } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
@@ -30,6 +31,8 @@ type DropdownKey = 'institute' | 'course' | 'sort';
 export class NotesCatalogComponent implements OnInit {
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly notesService = inject(NotesService);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -40,6 +43,13 @@ export class NotesCatalogComponent implements OnInit {
   courses: string[] = [];
 
   ngOnInit(): void {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.searchQuery = params.get('q') ?? '';
+        this.cdr.markForCheck();
+      });
+
     forkJoin({
       categories: this.notesService.listCategories(),
       notes: this.notesService.listNotes({ status: 'published', limit: 100 }),

@@ -26,10 +26,10 @@
 
       <div class="flex flex-col gap-2 text-sm">
         <h3 class="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">Universities</h3>
-        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes">Tribhuvan University</a>
-        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes">IOE Pulchowk</a>
-        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes">Kathmandu University</a>
-        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes">Pokhara University</a>
+        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes" [queryParams]="{ q: 'Tribhuvan University' }">Tribhuvan University</a>
+        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes" [queryParams]="{ q: 'Pulchowk' }">IOE Pulchowk</a>
+        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes" [queryParams]="{ q: 'Kathmandu University' }">Kathmandu University</a>
+        <a class="text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400" routerLink="/notes" [queryParams]="{ q: 'Pokhara University' }">Pokhara University</a>
       </div>
 
       <div class="flex flex-col gap-2 text-sm">
