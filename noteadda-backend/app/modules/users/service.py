@@ -1,11 +1,15 @@
+import logging
 from collections.abc import Sequence
-from fastapi import HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import hash_password
 from app.modules.users.models import User
 from app.modules.users.schemas import UserCreate
+from app.storage.service import storage_service
+
+logger = logging.getLogger(__name__)
 
 
 class UserService:
@@ -72,6 +76,45 @@ class UserService:
         await db.flush()
         await db.refresh(user)
         return user
+
+    async def update_profile_image(
+        self,
+        db: AsyncSession,
+        current_user: User,
+        file: UploadFile,
+    ) -> User:
+        """Upload a new profile image to R2 and replace the user's existing one."""
+        uploaded = await storage_service.upload_image(file, folder="avatars")
+        old_key = current_user.profile_image_key
+
+        current_user.profile_image_key = uploaded.key
+        await db.flush()
+        await db.refresh(current_user)
+
+        if old_key and old_key != uploaded.key:
+            try:
+                await storage_service.delete_object(old_key)
+            except Exception:
+                logger.warning("Failed to delete old profile image '%s' from R2", old_key, exc_info=True)
+
+        return current_user
+
+    async def delete_profile_image(self, db: AsyncSession, current_user: User) -> User:
+        """Remove the user's profile image from the database and R2."""
+        old_key = current_user.profile_image_key
+        if not old_key:
+            return current_user
+
+        current_user.profile_image_key = None
+        await db.flush()
+        await db.refresh(current_user)
+
+        try:
+            await storage_service.delete_object(old_key)
+        except Exception:
+            logger.warning("Failed to delete profile image '%s' from R2", old_key, exc_info=True)
+
+        return current_user
 
 
 user_service = UserService()

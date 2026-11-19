@@ -60,16 +60,24 @@
           <strong class="block text-sm font-bold text-slate-900 dark:text-white">Profile Photo</strong>
           <p class="mt-0.5 mb-3 text-xs text-slate-500 dark:text-slate-400">Shown next to your username in the header and on your listed notes.</p>
           <div class="flex flex-wrap gap-2">
-            <label class="cursor-pointer rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" for="avatar-upload">
-              <input id="avatar-upload" type="file" class="hidden" accept="image/*" (change)="onAvatarSelected($event)" />
-              Upload photo
+            <label
+              class="rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              [class.cursor-pointer]="!avatarUploading"
+              [class.opacity-60]="avatarUploading"
+              for="avatar-upload"
+            >
+              <input id="avatar-upload" type="file" class="hidden" accept="image/jpeg,image/png,image/webp,image/gif" [disabled]="avatarUploading" (change)="onAvatarSelected($event)" />
+              {{ avatarUploading ? 'Uploading...' : 'Upload photo' }}
             </label>
             @if (avatarPreview) {
-              <button type="button" class="cursor-pointer rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300" (click)="removeAvatar()">
+              <button type="button" [disabled]="avatarUploading" class="cursor-pointer rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300" (click)="removeAvatar()">
                 Remove
               </button>
             }
           </div>
+          @if (avatarError) {
+            <p class="mt-2 text-xs font-medium text-rose-600 dark:text-rose-400" role="alert">{{ avatarError }}</p>
+          }
         </div>
       </div>
 

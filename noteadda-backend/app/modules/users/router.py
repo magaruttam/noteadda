@@ -1,5 +1,4 @@
-from collections.abc import Sequence
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user
@@ -17,6 +16,25 @@ async def get_my_profile(
 ):
     """Get the current authenticated user's profile."""
     return current_user
+
+
+@router.put("/me/profile-image", response_model=UserResponse)
+async def upload_my_profile_image(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upload or replace the current user's profile image."""
+    return await user_service.update_profile_image(db, current_user=current_user, file=file)
+
+
+@router.delete("/me/profile-image", response_model=UserResponse)
+async def delete_my_profile_image(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Remove the current user's profile image."""
+    return await user_service.delete_profile_image(db, current_user=current_user)
 
 
 @router.get("/", response_model=list[UserResponse])

@@ -58,23 +58,44 @@ export class AuthService {
 
   fetchCurrentUser(): Observable<UserMeResponse> {
     return this.http.get<UserMeResponse>(`${API_CONFIG.baseUrl}/users/me`).pipe(
-      tap((user) => {
-        const current = this.userProfile();
-        const merged: UserProfile = {
-          ...current,
-          id: user.id,
-          fullName: user.full_name?.trim() || user.username,
-          username: user.username,
-          email: user.email,
-          avatarUrl: user.avatar_url ?? current.avatarUrl,
-          university: user.university ?? current.university,
-          course: user.course ?? current.course,
-          role: user.role ?? current.role,
-          bio: user.bio ?? current.bio,
-        };
-        this.updateProfile(merged);
-      }),
+      tap((user) => this.applyUserMe(user)),
     );
+  }
+
+  uploadProfileImage(file: File): Observable<UserMeResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.put<UserMeResponse>(`${API_CONFIG.baseUrl}/users/me/profile-image`, formData).pipe(
+      tap((user) => this.applyUserMe(user)),
+    );
+  }
+
+  deleteProfileImage(): Observable<UserMeResponse> {
+    return this.http.delete<UserMeResponse>(`${API_CONFIG.baseUrl}/users/me/profile-image`).pipe(
+      tap((user) => this.applyUserMe(user)),
+    );
+  }
+
+  private applyUserMe(user: UserMeResponse): void {
+    const current = this.userProfile();
+    const resolvedAvatarUrl =
+      user.profile_image_url !== undefined
+        ? (user.profile_image_url ?? '')
+        : (user.avatar_url ?? current.avatarUrl);
+
+    const merged: UserProfile = {
+      ...current,
+      id: user.id,
+      fullName: user.full_name?.trim() || user.username,
+      username: user.username,
+      email: user.email,
+      avatarUrl: resolvedAvatarUrl,
+      university: user.university ?? current.university,
+      course: user.course ?? current.course,
+      role: user.role ?? current.role,
+      bio: user.bio ?? current.bio,
+    };
+    this.updateProfile(merged);
   }
 
   logout(): void {

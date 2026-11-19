@@ -31,6 +31,8 @@ export interface UserMeResponse {
   full_name: string | null;
   is_active?: boolean;
   created_at?: string;
+  profile_image_key?: string | null;
+  profile_image_url?: string | null;
   avatar_url?: string | null;
   university?: string | null;
   course?: string | null;

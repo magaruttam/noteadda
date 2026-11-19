@@ -1,5 +1,7 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, computed_field
+
+from app.storage.service import storage_service
 
 
 class UserBase(BaseModel):
@@ -22,7 +24,15 @@ class UserUpdate(BaseModel):
 class UserResponse(UserBase):
     id: int
     is_active: bool
+    profile_image_key: str | None = None
     created_at: datetime
+
+    @computed_field
+    @property
+    def profile_image_url(self) -> str | None:
+        if not self.profile_image_key:
+            return None
+        return storage_service.get_public_url(self.profile_image_key)
 
     model_config = ConfigDict(from_attributes=True)
 

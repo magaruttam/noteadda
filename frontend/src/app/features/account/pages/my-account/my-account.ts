@@ -19,6 +19,8 @@ export class MyAccountComponent implements OnInit {
   readonly themeService = inject(ThemeService);
 
   savedMessage = '';
+  avatarError = '';
+  avatarUploading = false;
   avatarPreview = this.authService.userProfile().avatarUrl;
 
   readonly profileForm = this.fb.nonNullable.group({
@@ -62,19 +64,71 @@ export class MyAccountComponent implements OnInit {
   onAvatarSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
+    input.value = '';
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        this.avatarPreview = reader.result;
-      }
-    };
-    reader.readAsDataURL(file);
+    this.avatarError = '';
+    const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+    if (!allowedTypes.has(file.type)) {
+      this.avatarError = 'Please choose a JPEG, PNG, WEBP, or GIF image.';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.avatarError = 'Image size must be 5 MB or less.';
+      return;
+    }
+
+    const previousAvatar = this.avatarPreview;
+    const objectUrl = URL.createObjectURL(file);
+    this.avatarPreview = objectUrl;
+
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+
+    this.avatarUploading = true;
+    this.authService.uploadProfileImage(file).subscribe({
+      next: (user) => {
+        URL.revokeObjectURL(objectUrl);
+        this.avatarPreview = user.profile_image_url ?? '';
+        this.avatarUploading = false;
+        this.showSavedMessage('Profile photo updated.');
+      },
+      error: (err) => {
+        URL.revokeObjectURL(objectUrl);
+        this.avatarPreview = previousAvatar;
+        this.avatarUploading = false;
+        this.avatarError = this.authService.extractErrorMessage(err, 'Failed to upload profile photo.');
+      },
+    });
   }
 
   removeAvatar(): void {
-    this.avatarPreview = '';
+    this.avatarError = '';
+    if (!this.authService.isAuthenticated()) {
+      this.avatarPreview = '';
+      return;
+    }
+
+    this.avatarUploading = true;
+    this.authService.deleteProfileImage().subscribe({
+      next: () => {
+        this.avatarPreview = '';
+        this.avatarUploading = false;
+        this.showSavedMessage('Profile photo removed.');
+      },
+      error: (err) => {
+        this.avatarUploading = false;
+        this.avatarError = this.authService.extractErrorMessage(err, 'Failed to remove profile photo.');
+      },
+    });
+  }
+
+  private showSavedMessage(message: string): void {
+    this.savedMessage = message;
+    setTimeout(() => {
+      this.savedMessage = '';
+    }, 3500);
   }
 
   onSubmit(): void {
