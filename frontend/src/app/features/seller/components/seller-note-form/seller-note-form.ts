@@ -1,5 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HlmAlertImports } from '@spartan-ng/helm/alert';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInput } from '@spartan-ng/helm/input';
@@ -40,6 +42,8 @@ export interface SellerNoteSavedEvent {
   imports: [
     ReactiveFormsModule,
     NoteCardComponent,
+    HlmAlertImports,
+    HlmBadgeImports,
     HlmCardImports,
     HlmLabel,
     HlmInput,
