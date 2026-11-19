@@ -1,9 +1,16 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmTableImports } from '@spartan-ng/helm/table';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { SellerNote, SellerNoteStatus } from '../../models/seller-note.model';
 
 @Component({
   selector: 'app-seller-notes-table',
   standalone: true,
+  imports: [HlmCardImports, HlmButtonImports, HlmInput, HlmTableImports, HlmBadge, HlmTooltip],
   templateUrl: './seller-notes-table.html',
 })
 export class SellerNotesTableComponent {

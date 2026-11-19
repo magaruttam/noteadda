@@ -1,4 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 import { NoteReviewApiResponse } from '../../../../core/models/note.model';
 import { NotesService } from '../../../../core/services/notes.service';
 import { SellerNote } from '../../models/seller-note.model';
@@ -6,6 +9,7 @@ import { SellerNote } from '../../models/seller-note.model';
 @Component({
   selector: 'app-note-analytics-modal',
   standalone: true,
+  imports: [HlmCardImports, HlmBadge, HlmButtonImports],
   templateUrl: './note-analytics-modal.html',
 })
 export class NoteAnalyticsModalComponent implements OnChanges {

@@ -1,5 +1,11 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmLabel } from '@spartan-ng/helm/label';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { concatMap, from, of, toArray } from 'rxjs';
 import {
   CategoryApiResponse,
@@ -31,7 +37,16 @@ export interface SellerNoteSavedEvent {
 @Component({
   selector: 'app-seller-note-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NoteCardComponent],
+  imports: [
+    ReactiveFormsModule,
+    NoteCardComponent,
+    HlmCardImports,
+    HlmLabel,
+    HlmInput,
+    HlmTextarea,
+    HlmButtonImports,
+    HlmSeparator,
+  ],
   templateUrl: './seller-note-form.html',
 })
 export class SellerNoteFormComponent implements OnChanges {

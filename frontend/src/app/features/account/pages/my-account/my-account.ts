@@ -1,6 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { HlmAlertImports } from '@spartan-ng/helm/alert';
+import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmLabel } from '@spartan-ng/helm/label';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { UserProfile } from '../../../../core/models/auth.model';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ThemeService } from '../../../../core/services/theme.service';
@@ -10,7 +18,20 @@ import { SiteHeaderComponent } from '../../../../shared/components/site-header/s
 @Component({
   selector: 'app-my-account',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    HlmButtonImports,
+    HlmCardImports,
+    HlmAlertImports,
+    HlmAvatarImports,
+    HlmLabel,
+    HlmInput,
+    HlmTextarea,
+    HlmSeparator,
+  ],
   templateUrl: './my-account.html',
 })
 export class MyAccountComponent implements OnInit {

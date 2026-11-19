@@ -1,5 +1,8 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 import { forkJoin } from 'rxjs';
 import { NotesService } from '../../../../core/services/notes.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
@@ -13,7 +16,15 @@ type DropdownKey = 'institute' | 'course' | 'sort';
 @Component({
   selector: 'app-notes-catalog',
   standalone: true,
-  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent, NoteCardComponent],
+  imports: [
+    RouterLink,
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    NoteCardComponent,
+    HlmButtonImports,
+    HlmCardImports,
+    HlmBadge,
+  ],
   templateUrl: './notes-catalog.html',
 })
 export class NotesCatalogComponent implements OnInit {

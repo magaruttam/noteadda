@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 @Component({
   selector: 'app-marketplace-hero',
   standalone: true,
+  imports: [HlmButtonImports],
   templateUrl: './marketplace-hero.html',
 })
 export class MarketplaceHeroComponent {

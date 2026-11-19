@@ -28,8 +28,11 @@
       <a class="hidden text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 sm:inline-block" routerLink="/seller">Sell notes</a>
 
       <button
+        hlmBtn
+        variant="outline"
+        size="icon"
         type="button"
-        class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-amber-300"
+        class="h-9 w-9 cursor-pointer text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-amber-300"
         (click)="themeService.toggleTheme()"
         [attr.aria-label]="themeService.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
         [title]="themeService.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
@@ -50,58 +53,66 @@
         <div class="profile-dropdown relative" [class.open]="profileMenuOpen">
           <button
             type="button"
-            class="inline-flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-indigo-50 text-sm font-bold text-indigo-700 transition hover:border-indigo-300 dark:border-slate-700 dark:bg-indigo-950 dark:text-indigo-300"
+            class="cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             (click)="toggleProfileMenu()"
             aria-haspopup="menu"
             [attr.aria-expanded]="profileMenuOpen"
             [attr.aria-label]="'Account menu for ' + authService.userProfile().username"
           >
-            @if (authService.userProfile().avatarUrl) {
-              <img class="h-full w-full object-cover" [src]="authService.userProfile().avatarUrl" alt="" />
-            } @else {
-              <span>{{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}</span>
-            }
+            <hlm-avatar class="size-9 border border-border">
+              @if (authService.userProfile().avatarUrl) {
+                <img hlmAvatarImage [src]="authService.userProfile().avatarUrl" alt="" />
+              }
+              <span hlmAvatarFallback class="bg-indigo-50 text-sm font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                {{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}
+              </span>
+            </hlm-avatar>
           </button>
 
           @if (profileMenuOpen) {
-            <div class="absolute right-0 mt-2 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg dark:border-slate-700 dark:bg-slate-900" role="menu">
-              <div class="flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 dark:border-slate-800">
-                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-sm font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300" aria-hidden="true">
+            <div class="absolute right-0 mt-2 w-60 rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg" role="menu">
+              <div class="flex items-center gap-3 px-3 py-2.5">
+                <hlm-avatar class="size-9 shrink-0">
                   @if (authService.userProfile().avatarUrl) {
-                    <img class="h-full w-full object-cover" [src]="authService.userProfile().avatarUrl" alt="" />
-                  } @else {
-                    <span>{{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}</span>
+                    <img hlmAvatarImage [src]="authService.userProfile().avatarUrl" alt="" />
                   }
-                </span>
+                  <span hlmAvatarFallback class="bg-indigo-100 text-sm font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                    {{ (authService.userProfile().fullName || authService.userProfile().username).charAt(0).toUpperCase() }}
+                  </span>
+                </hlm-avatar>
                 <div class="min-w-0">
-                  <strong class="block truncate text-sm font-semibold text-slate-900 dark:text-white">{{ authService.userProfile().fullName }}</strong>
-                  <span class="block truncate text-xs text-slate-500 dark:text-slate-400">{{ '@' + authService.userProfile().username }}</span>
+                  <strong class="block truncate text-sm font-semibold text-foreground">{{ authService.userProfile().fullName }}</strong>
+                  <span class="block truncate text-xs text-muted-foreground">{{ '@' + authService.userProfile().username }}</span>
                 </div>
               </div>
-              <a class="mt-1 block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" routerLink="/account" role="menuitem" (click)="profileMenuOpen = false">
+              <hlm-separator class="my-1" />
+              <a class="block rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-muted" routerLink="/account" role="menuitem" (click)="profileMenuOpen = false">
                 My account
               </a>
-              <a class="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" routerLink="/seller" role="menuitem" (click)="profileMenuOpen = false">
+              <a class="block rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-muted" routerLink="/seller" role="menuitem" (click)="profileMenuOpen = false">
                 Seller dashboard
               </a>
-              <a class="block rounded-lg px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" routerLink="/notes" role="menuitem" (click)="profileMenuOpen = false">
+              <a class="block rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-muted" routerLink="/notes" role="menuitem" (click)="profileMenuOpen = false">
                 Browse all notes
               </a>
-              <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
-              <button type="button" class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/50" role="menuitem" (click)="onLogout()">
+              <hlm-separator class="my-1" />
+              <button type="button" class="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-medium text-destructive transition hover:bg-destructive/10" role="menuitem" (click)="onLogout()">
                 Log out
               </button>
             </div>
           }
         </div>
       } @else {
-        <a class="hidden text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 sm:inline-block" routerLink="/login">Log in</a>
-        <a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700" routerLink="/register">Sign up</a>
+        <a hlmBtn variant="ghost" size="sm" class="hidden sm:inline-flex" routerLink="/login">Log in</a>
+        <a hlmBtn size="default" class="px-3.5 font-semibold" routerLink="/register">Sign up</a>
       }
 
       <button
+        hlmBtn
+        variant="outline"
+        size="icon"
         type="button"
-        class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 text-lg text-slate-700 dark:border-slate-700 dark:text-slate-200 md:hidden"
+        class="h-9 w-9 cursor-pointer text-lg md:hidden"
         (click)="menuOpen = !menuOpen"
         [attr.aria-expanded]="menuOpen"
         aria-label="Toggle menu"
@@ -112,10 +123,11 @@
   </div>
 
   @if (menuOpen) {
-    <div class="border-t border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900 md:hidden">
+    <div class="border-t border-border bg-background px-4 py-3 md:hidden">
       <label class="mb-3 block">
         <input
-          class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          hlmInput
+          class="h-9"
           [value]="searchQuery"
           (input)="onSearchInput($event)"
           placeholder="Search notes..."

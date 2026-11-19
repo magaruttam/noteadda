@@ -1,5 +1,9 @@
 import { ChangeDetectorRef, Component, HostListener, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HlmAlertImports } from '@spartan-ng/helm/alert';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 import {
   CategoryApiResponse,
   NoteApiResponse,
@@ -27,6 +31,10 @@ import { SellerNote, SellerNoteStatus } from '../../models/seller-note.model';
     SellerNotesTableComponent,
     SellerNoteFormComponent,
     NoteAnalyticsModalComponent,
+    HlmBadge,
+    HlmButtonImports,
+    HlmAlertImports,
+    HlmCardImports,
   ],
   templateUrl: './seller-dashboard.html',
 })

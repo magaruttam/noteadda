@@ -2,6 +2,12 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { HlmAlertImports } from '@spartan-ng/helm/alert';
+import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmTextarea } from '@spartan-ng/helm/textarea';
 import { forkJoin } from 'rxjs';
 import {
   CategoryApiResponse,
@@ -18,7 +24,19 @@ const COVER_COLORS = ['indigo', 'emerald', 'blue', 'slate', 'amber', 'rose', 'vi
 @Component({
   selector: 'app-note-detail',
   standalone: true,
-  imports: [RouterLink, DatePipe, FormsModule, SiteHeaderComponent, SiteFooterComponent],
+  imports: [
+    RouterLink,
+    DatePipe,
+    FormsModule,
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    HlmCardImports,
+    HlmBadge,
+    HlmButtonImports,
+    HlmAvatarImports,
+    HlmTextarea,
+    HlmAlertImports,
+  ],
   templateUrl: './note-detail.html',
 })
 export class NoteDetailComponent implements OnInit {

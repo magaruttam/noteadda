@@ -1,12 +1,16 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmInput } from '@spartan-ng/helm/input';
+import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-site-header',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, HlmButtonImports, HlmAvatarImports, HlmInput, HlmSeparator],
   templateUrl: './site-header.html',
 })
 export class SiteHeaderComponent {

@@ -1,5 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 import { AuthService } from '../../../../core/services/auth.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
@@ -22,7 +25,7 @@ interface SellFaq {
 @Component({
   selector: 'app-how-to-sell',
   standalone: true,
-  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent, HlmBadge, HlmButtonImports, HlmCardImports],
   templateUrl: './how-to-sell.html',
 })
 export class HowToSellComponent {

@@ -1,5 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 import { forkJoin } from 'rxjs';
 import { NotesService } from '../../../../core/services/notes.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
@@ -13,7 +15,15 @@ type SortOption = 'popular' | 'rating' | 'price-low' | 'price-high';
 @Component({
   selector: 'app-marketplace-home',
   standalone: true,
-  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent, MarketplaceHeroComponent, NoteCardComponent],
+  imports: [
+    RouterLink,
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    MarketplaceHeroComponent,
+    NoteCardComponent,
+    HlmButtonImports,
+    HlmCardImports,
+  ],
   templateUrl: './marketplace-home.html',
 })
 export class MarketplaceHomeComponent implements OnInit {
