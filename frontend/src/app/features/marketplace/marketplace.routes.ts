@@ -16,4 +16,9 @@ export const MARKETPLACE_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/note-detail/note-detail').then((m) => m.NoteDetailComponent),
   },
+  {
+    path: 'users/:id',
+    loadComponent: () =>
+      import('./pages/user-profile/user-profile').then((m) => m.UserProfileComponent),
+  },
 ];

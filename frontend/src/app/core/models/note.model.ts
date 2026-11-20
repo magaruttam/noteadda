@@ -68,6 +68,7 @@ export interface NoteSellerResponse {
   id: number;
   username: string;
   full_name: string | null;
+  profile_image_url?: string | null;
 }
 
 export interface NoteApiResponse {

@@ -32,19 +32,34 @@
           <!-- Card 1: Hero -->
           <div hlmCard class="grid gap-7 rounded-2xl p-6 md:grid-cols-[240px_minmax(0,1fr)]">
             <div class="flex flex-col items-center gap-3">
-              <div class="relative flex w-full items-center justify-center rounded-xl bg-slate-100/90 px-4 py-8 dark:bg-slate-800/70">
-                @if (discountPercent > 0) {
-                  <span hlmBadge class="absolute right-3 top-3 z-10 bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs">
-                    Save {{ discountPercent }}%
-                  </span>
-                }
-                @if (activeImageUrl) {
+              @if (activeImageUrl) {
+                <button
+                  type="button"
+                  class="group relative aspect-[3/4] w-full max-w-[260px] cursor-zoom-in overflow-hidden rounded-xl border border-indigo-500/40 bg-slate-900/60 p-0 shadow-[0_0_28px_-4px_rgba(99,102,241,0.35)] ring-1 ring-indigo-400/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 md:max-w-none"
+                  (click)="openLightbox()"
+                  aria-label="View full image"
+                >
+                  @if (discountPercent > 0) {
+                    <span hlmBadge class="absolute right-2.5 top-2.5 z-10 bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-md">
+                      Save {{ discountPercent }}%
+                    </span>
+                  }
                   <img
-                    class="h-52 w-38 rounded-l-sm rounded-r-xl object-cover shadow-[10px_16px_24px_-8px_rgba(15,23,42,0.45)] [transform:perspective(700px)_rotateY(-8deg)]"
+                    class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]"
                     [src]="activeImageUrl"
                     [alt]="note.images[activeImageIndex]?.alt_text || note.title"
                   />
-                } @else {
+                  <span class="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-slate-950/75 px-2.5 py-1 text-[11px] font-medium text-white opacity-0 backdrop-blur-xs transition group-hover:opacity-100">
+                    Click to expand
+                  </span>
+                </button>
+              } @else {
+                <div class="relative flex w-full items-center justify-center rounded-xl bg-slate-100/90 px-4 py-8 dark:bg-slate-800/70">
+                  @if (discountPercent > 0) {
+                    <span hlmBadge class="absolute right-3 top-3 z-10 bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs">
+                      Save {{ discountPercent }}%
+                    </span>
+                  }
                   <div
                     class="relative flex h-52 w-38 overflow-hidden rounded-l-sm rounded-r-xl py-4 pl-5 pr-3.5 text-white shadow-[10px_16px_24px_-8px_rgba(15,23,42,0.45)] [transform:perspective(700px)_rotateY(-8deg)]"
                     [class]="'cover-' + coverColor"
@@ -56,8 +71,8 @@
                       <span class="text-[10px] opacity-85">{{ note.semester || 'All Semesters' }} · {{ note.pages }} pages</span>
                     </div>
                   </div>
-                }
-              </div>
+                </div>
+              }
 
               @if (note.images.length > 1) {
                 <div class="flex flex-wrap justify-center gap-2">
@@ -88,14 +103,22 @@
               <h1 class="mb-3 text-2xl font-bold leading-tight text-foreground sm:text-3xl">{{ note.title }}</h1>
 
               <div class="mb-5 flex items-center gap-2.5 text-sm text-muted-foreground">
-                <hlm-avatar class="size-6">
-                  <span hlmAvatarFallback class="bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                    {{ sellerDisplayName.charAt(0).toUpperCase() }}
+                <a
+                  [routerLink]="['/users', note.seller_id]"
+                  class="group inline-flex items-center gap-2.5 transition hover:text-primary"
+                >
+                  <hlm-avatar class="size-7 border border-slate-200 dark:border-slate-700">
+                    @if (note.seller?.profile_image_url) {
+                      <img hlmAvatarImage [src]="note.seller?.profile_image_url" [alt]="sellerDisplayName" class="object-cover" />
+                    }
+                    <span hlmAvatarFallback class="bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                      {{ sellerDisplayName.charAt(0).toUpperCase() }}
+                    </span>
+                  </hlm-avatar>
+                  <span>
+                    Uploaded by <strong class="font-semibold text-primary group-hover:underline">{{ '@' + sellerDisplayName }}</strong>
                   </span>
-                </hlm-avatar>
-                <span>
-                  Uploaded by <strong class="font-semibold text-primary">{{ '@' + sellerDisplayName }}</strong>
-                </span>
+                </a>
               </div>
 
               <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
@@ -361,6 +384,60 @@
       </section>
     }
   </div>
+
+  @if (isLightboxOpen && activeImageUrl && note) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-xs"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Full image preview"
+      (click)="closeLightbox()"
+    >
+      <button
+        type="button"
+        class="absolute right-4 top-4 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-xl font-bold text-white transition hover:bg-white/20"
+        (click)="closeLightbox()"
+        aria-label="Close full image"
+      >
+        ×
+      </button>
+
+      @if (note.images.length > 1) {
+        <button
+          type="button"
+          class="absolute left-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/10 text-2xl font-bold text-white transition hover:bg-white/20"
+          (click)="$event.stopPropagation(); prevImage()"
+          aria-label="Previous image"
+        >
+          ‹
+        </button>
+      }
+
+      <div class="relative flex max-h-[90vh] max-w-5xl flex-col items-center gap-3" (click)="$event.stopPropagation()">
+        <img
+          class="max-h-[82vh] max-w-full rounded-xl object-contain shadow-2xl"
+          [src]="activeImageUrl"
+          [alt]="note.images[activeImageIndex]?.alt_text || note.title"
+        />
+        @if (note.images.length > 1) {
+          <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white">
+            {{ activeImageIndex + 1 }} / {{ note.images.length }}
+          </span>
+        }
+      </div>
+
+      @if (note.images.length > 1) {
+        <button
+          type="button"
+          class="absolute right-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/10 text-2xl font-bold text-white transition hover:bg-white/20"
+          (click)="$event.stopPropagation(); nextImage()"
+          aria-label="Next image"
+        >
+          ›
+        </button>
+      }
+    </div>
+  }
 </main>
 
 <app-site-footer />

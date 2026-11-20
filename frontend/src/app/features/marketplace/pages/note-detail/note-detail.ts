@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
@@ -49,6 +49,7 @@ export class NoteDetailComponent implements OnInit {
   reviews: NoteReviewApiResponse[] = [];
   categoryName = '';
   activeImageIndex = 0;
+  isLightboxOpen = false;
   loading = true;
   errorMessage = '';
   purchaseMessage = '';
@@ -169,8 +170,43 @@ export class NoteDetailComponent implements OnInit {
     });
   }
 
+  openLightbox(): void {
+    if (!this.activeImageUrl) return;
+    this.isLightboxOpen = true;
+  }
+
+  closeLightbox(): void {
+    this.isLightboxOpen = false;
+  }
+
+  prevImage(): void {
+    const total = this.note?.images?.length ?? 0;
+    if (total <= 1) return;
+    this.activeImageIndex = (this.activeImageIndex - 1 + total) % total;
+  }
+
+  nextImage(): void {
+    const total = this.note?.images?.length ?? 0;
+    if (total <= 1) return;
+    this.activeImageIndex = (this.activeImageIndex + 1) % total;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    if (!this.isLightboxOpen) return;
+    if (event.key === 'Escape') {
+      this.closeLightbox();
+    } else if (event.key === 'ArrowLeft') {
+      this.prevImage();
+    } else if (event.key === 'ArrowRight') {
+      this.nextImage();
+    }
+  }
+
   private loadNote(noteId: number): void {
     this.loading = true;
+    this.isLightboxOpen = false;
+    this.activeImageIndex = 0;
     this.errorMessage = '';
     this.purchaseMessage = '';
     this.reviewMessage = '';

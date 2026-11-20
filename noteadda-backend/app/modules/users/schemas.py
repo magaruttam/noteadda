@@ -36,3 +36,20 @@ class UserResponse(UserBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+class PublicUserResponse(BaseModel):
+    id: int
+    username: str
+    full_name: str | None = None
+    profile_image_key: str | None = None
+    created_at: datetime
+
+    @computed_field
+    @property
+    def profile_image_url(self) -> str | None:
+        if not self.profile_image_key:
+            return None
+        return storage_service.get_public_url(self.profile_image_key)
+
+    model_config = ConfigDict(from_attributes=True)
+

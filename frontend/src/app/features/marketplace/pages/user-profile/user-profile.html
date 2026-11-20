@@ -1,0 +1,134 @@
+<app-site-header />
+
+<main class="min-h-[calc(100vh-140px)] bg-slate-50 pb-16 pt-7 dark:bg-slate-950">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="mb-5">
+      <a class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400" routerLink="/notes">
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M15.5 10h-11m4.5-4.5L4.5 10l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        All notes
+      </a>
+    </div>
+
+    @if (loading) {
+      <section hlmCard class="rounded-2xl px-6 py-12 text-center text-muted-foreground">
+        <p class="m-0">Loading user profile...</p>
+      </section>
+    } @else if (errorMessage || !user) {
+      <section hlmCard class="rounded-2xl px-6 py-12 text-center text-muted-foreground">
+        <h2 class="mb-2 text-xl font-bold text-foreground">User not found</h2>
+        <p class="mb-5">{{ errorMessage || 'This user profile could not be found.' }}</p>
+        <div>
+          <a hlmBtn size="lg" class="rounded-full px-5 font-semibold" routerLink="/notes">
+            Browse available notes
+          </a>
+        </div>
+      </section>
+    } @else {
+      <section hlmCard class="mb-8 flex flex-col gap-6 rounded-2xl p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+          @if (user.profile_image_url) {
+            <button
+              type="button"
+              class="group relative cursor-zoom-in rounded-full p-0 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+              (click)="openAvatarLightbox()"
+              aria-label="View full profile image"
+            >
+              <hlm-avatar class="size-20 border-2 border-indigo-500/40 shadow-md">
+                <img hlmAvatarImage [src]="user.profile_image_url" [alt]="displayName" class="object-cover" />
+                <span hlmAvatarFallback class="bg-indigo-100 text-2xl font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                  {{ initials }}
+                </span>
+              </hlm-avatar>
+            </button>
+          } @else {
+            <hlm-avatar class="size-20 border-2 border-indigo-500/40 shadow-md">
+              <span hlmAvatarFallback class="bg-indigo-100 text-2xl font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                {{ initials }}
+              </span>
+            </hlm-avatar>
+          }
+
+          <div>
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+              <h1 class="m-0 text-2xl font-bold text-foreground">{{ displayName }}</h1>
+              <span hlmBadge variant="secondary" class="text-xs font-semibold">{{ '@' + user.username }}</span>
+            </div>
+            <p class="mt-1 text-sm text-muted-foreground">
+              Member since {{ user.created_at | date: 'MMMM y' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 sm:min-w-[300px]">
+          <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-center dark:border-slate-800 dark:bg-slate-800/50">
+            <span class="block text-[11px] text-muted-foreground">Notes</span>
+            <strong class="mt-0.5 block text-lg font-bold text-foreground">{{ notes.length }}</strong>
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-center dark:border-slate-800 dark:bg-slate-800/50">
+            <span class="block text-[11px] text-muted-foreground">Downloads</span>
+            <strong class="mt-0.5 block text-lg font-bold text-foreground">{{ totalDownloads }}</strong>
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 text-center dark:border-slate-800 dark:bg-slate-800/50">
+            <span class="block text-[11px] text-muted-foreground">Avg Rating</span>
+            <strong class="mt-0.5 inline-flex items-center gap-1 text-lg font-bold text-foreground">
+              <span class="text-amber-400" aria-hidden="true">★</span>
+              {{ averageRating > 0 ? averageRating.toFixed(1) : '—' }}
+            </strong>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="m-0 text-xl font-bold text-foreground">Uploaded Notes ({{ notes.length }})</h2>
+        </div>
+
+        @if (notes.length === 0) {
+          <div hlmCard class="rounded-2xl px-6 py-10 text-center text-muted-foreground">
+            <p class="m-0">This user has not published any notes yet.</p>
+          </div>
+        } @else {
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @for (note of notes; track note.id) {
+              <app-note-card [note]="note" />
+            }
+          </div>
+        }
+      </section>
+    }
+  </div>
+
+  @if (isAvatarLightboxOpen && user?.profile_image_url) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-xs"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Full profile image"
+      (click)="closeAvatarLightbox()"
+    >
+      <button
+        type="button"
+        class="absolute right-4 top-4 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-xl font-bold text-white transition hover:bg-white/20"
+        (click)="closeAvatarLightbox()"
+        aria-label="Close full image"
+      >
+        ×
+      </button>
+
+      <div class="relative flex max-h-[90vh] max-w-3xl flex-col items-center gap-3" (click)="$event.stopPropagation()">
+        <img
+          class="max-h-[82vh] max-w-full rounded-2xl object-contain shadow-2xl"
+          [src]="user!.profile_image_url"
+          [alt]="displayName"
+        />
+        <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white">
+          {{ displayName }} ({{ '@' + user!.username }})
+        </span>
+      </div>
+    </div>
+  }
+</main>
+
+<app-site-footer />
