@@ -5,6 +5,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { AuthService } from '../../../core/services/auth.service';
+import { FavoritesService } from '../../../core/services/favorites.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
@@ -15,6 +16,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 })
 export class SiteHeaderComponent {
   readonly authService = inject(AuthService);
+  readonly favoritesService = inject(FavoritesService);
   readonly themeService = inject(ThemeService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
 

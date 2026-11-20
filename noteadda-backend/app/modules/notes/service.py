@@ -396,5 +396,20 @@ class NoteService:
             )
         return await self.repo.save_review_and_recalculate(db, note, review)
 
+    async def list_favorites(self, db: AsyncSession, *, current_user: User) -> Sequence[Note]:
+        return await self.repo.list_favorite_notes(db, current_user.id)
+
+    async def add_favorite(self, db: AsyncSession, *, note_id: int, current_user: User) -> None:
+        await self.get_note(db, note_id)
+        await self.repo.add_favorite(db, note_id, current_user.id)
+
+    async def remove_favorite(self, db: AsyncSession, *, note_id: int, current_user: User) -> None:
+        existing = await self.repo.get_favorite(db, note_id, current_user.id)
+        if existing:
+            await self.repo.remove_favorite(db, existing)
+
+    async def clear_favorites(self, db: AsyncSession, *, current_user: User) -> None:
+        await self.repo.clear_favorites(db, current_user.id)
+
 
 note_service = NoteService()

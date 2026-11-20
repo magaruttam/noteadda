@@ -15,6 +15,7 @@ import {
   NoteReviewApiResponse,
 } from '../../../../core/models/note.model';
 import { AuthService } from '../../../../core/services/auth.service';
+import { FavoritesService } from '../../../../core/services/favorites.service';
 import { NotesService } from '../../../../core/services/notes.service';
 import { SiteFooterComponent } from '../../../../shared/components/site-footer/site-footer';
 import { SiteHeaderComponent } from '../../../../shared/components/site-header/site-header';
@@ -43,6 +44,7 @@ export class NoteDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly notesService = inject(NotesService);
   readonly authService = inject(AuthService);
+  readonly favoritesService = inject(FavoritesService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   note: NoteApiResponse | null = null;

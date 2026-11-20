@@ -248,3 +248,32 @@ class NoteReview(Base, TimestampMixin):
     comment: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     user: Mapped["User"] = relationship("User")
+
+
+class NoteFavorite(Base):
+    """User's saved favorite note."""
+
+    __tablename__ = "note_favorites"
+    __table_args__ = (
+        UniqueConstraint("note_id", "user_id", name="uq_note_favorite_user"),
+        Index("idx_note_favorites_user", "user_id"),
+    )
+
+    id: Mapped[int] = mapped_column(BIGINT(unsigned=True), primary_key=True, autoincrement=True)
+    note_id: Mapped[int] = mapped_column(
+        BIGINT(unsigned=True),
+        ForeignKey("notes.id", name="fk_note_favorites_note", ondelete="CASCADE"),
+        nullable=False,
+    )
+    user_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("users.id", name="fk_note_favorites_user", ondelete="CASCADE"),
+        nullable=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    note: Mapped["Note"] = relationship("Note")

@@ -370,6 +370,23 @@
               {{ note.price === 0 ? 'Download Free Note' : 'Get This Note' }}
             </button>
 
+            <button
+              hlmBtn
+              variant="outline"
+              size="lg"
+              type="button"
+              class="mt-2.5 h-10 w-full cursor-pointer rounded-full px-4 text-sm font-semibold"
+              [class.border-rose-400]="favoritesService.isFavorite(note.id)"
+              [class.text-rose-500]="favoritesService.isFavorite(note.id)"
+              (click)="favoritesService.toggleFavorite(note.id)"
+              [attr.aria-pressed]="favoritesService.isFavorite(note.id)"
+            >
+              <svg class="mr-1.5 h-4 w-4" viewBox="0 0 24 24" [attr.fill]="favoritesService.isFavorite(note.id) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              </svg>
+              {{ favoritesService.isFavorite(note.id) ? 'Saved in Favorites' : 'Save to Favorites' }}
+            </button>
+
             <p class="mt-3 text-center text-[11px] text-muted-foreground">
               Secure checkout
             </p>

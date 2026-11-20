@@ -116,6 +116,22 @@ export class NotesService {
     return this.http.post<NoteReviewApiResponse>(`${this.notesUrl}/${noteId}/reviews`, payload);
   }
 
+  listFavorites(): Observable<NoteApiResponse[]> {
+    return this.http.get<NoteApiResponse[]>(`${this.notesUrl}/favorites`);
+  }
+
+  addFavorite(noteId: number): Observable<void> {
+    return this.http.post<void>(`${this.notesUrl}/${noteId}/favorite`, {});
+  }
+
+  removeFavorite(noteId: number): Observable<void> {
+    return this.http.delete<void>(`${this.notesUrl}/${noteId}/favorite`);
+  }
+
+  clearFavorites(): Observable<void> {
+    return this.http.delete<void>(`${this.notesUrl}/favorites`);
+  }
+
   getCategoryIdFromSlug(slug: string): number {
     return CATEGORY_SLUG_TO_ID[slug] ?? 1;
   }

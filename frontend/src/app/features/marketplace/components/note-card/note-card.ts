@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { HlmBadge } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
+import { FavoritesService } from '../../../../core/services/favorites.service';
 import { Note } from '../../models/marketplace.model';
 
 @Component({
@@ -12,9 +13,15 @@ import { Note } from '../../models/marketplace.model';
 })
 export class NoteCardComponent {
   protected readonly Math = Math;
+  readonly favoritesService = inject(FavoritesService);
 
   @Input({ required: true }) note!: Note;
   @Output() preview = new EventEmitter<Note>();
+
+  onToggleFavorite(event: Event): void {
+    event.stopPropagation();
+    this.favoritesService.toggleFavorite(this.note.id);
+  }
 
   formatDownloads(count: number): string {
     if (count >= 1000) {

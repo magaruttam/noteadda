@@ -27,6 +27,25 @@
     <div class="flex items-center gap-3">
       <a class="hidden text-sm font-medium text-slate-600 transition hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 sm:inline-block" routerLink="/seller">Sell notes</a>
 
+      <a
+        hlmBtn
+        variant="outline"
+        size="icon"
+        routerLink="/favorites"
+        class="relative h-9 w-9 cursor-pointer text-slate-600 hover:text-rose-500 dark:text-slate-300 dark:hover:text-rose-400"
+        aria-label="Saved favorites"
+        title="Saved favorites"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+        @if (favoritesService.count() > 0) {
+          <span class="absolute -right-1.5 -top-1.5 inline-flex min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold leading-4 text-white">
+            {{ favoritesService.count() }}
+          </span>
+        }
+      </a>
+
       <button
         hlmBtn
         variant="outline"
@@ -88,6 +107,9 @@
               <hlm-separator class="my-1" />
               <a class="block rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-muted" routerLink="/account" role="menuitem" (click)="profileMenuOpen = false">
                 My account
+              </a>
+              <a class="block rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-muted" routerLink="/favorites" role="menuitem" (click)="profileMenuOpen = false">
+                Saved favorites
               </a>
               <a class="block rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-muted" routerLink="/seller" role="menuitem" (click)="profileMenuOpen = false">
                 Seller dashboard

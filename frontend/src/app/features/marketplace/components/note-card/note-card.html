@@ -30,8 +30,26 @@
   </button>
 
   <div class="flex flex-1 flex-col px-1.5 pb-1 pt-3.5">
-    <div class="mb-1 text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-      {{ note.university }}
+    <div class="mb-1 flex items-center justify-between gap-2">
+      <div class="truncate text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+        {{ note.university }}
+      </div>
+      <button
+        type="button"
+        class="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-rose-300 hover:text-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-rose-500/60"
+        [class.border-rose-300]="favoritesService.isFavorite(note.id)"
+        [class.bg-rose-50]="favoritesService.isFavorite(note.id)"
+        [class.text-rose-500]="favoritesService.isFavorite(note.id)"
+        [class.dark:bg-rose-950/60]="favoritesService.isFavorite(note.id)"
+        (click)="onToggleFavorite($event)"
+        [attr.aria-label]="favoritesService.isFavorite(note.id) ? 'Remove from favorites' : 'Save to favorites'"
+        [attr.aria-pressed]="favoritesService.isFavorite(note.id)"
+        [title]="favoritesService.isFavorite(note.id) ? 'Remove from favorites' : 'Save to favorites'"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" [attr.fill]="favoritesService.isFavorite(note.id) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+      </button>
     </div>
 
     <button

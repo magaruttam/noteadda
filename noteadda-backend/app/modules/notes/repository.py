@@ -1,12 +1,12 @@
 from collections.abc import Sequence
 from decimal import Decimal
-from sqlalchemy import func, or_, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.modules.categories.models import Category
 from app.modules.institutions.models import Course, Institution
-from app.modules.notes.models import Note, NoteFile, NoteImage, NoteReview, NoteStatus
+from app.modules.notes.models import Note, NoteFavorite, NoteFile, NoteImage, NoteReview, NoteStatus
 
 
 class NoteRepository:
@@ -213,6 +213,45 @@ class NoteRepository:
 
     async def delete_file(self, db: AsyncSession, note_file: NoteFile) -> None:
         await db.delete(note_file)
+        await db.flush()
+
+    async def list_favorite_notes(self, db: AsyncSession, user_id: int) -> Sequence[Note]:
+        stmt = (
+            select(Note)
+            .join(NoteFavorite, NoteFavorite.note_id == Note.id)
+            .options(selectinload(Note.seller), selectinload(Note.files), selectinload(Note.images))
+            .where(NoteFavorite.user_id == user_id)
+            .order_by(NoteFavorite.created_at.desc(), NoteFavorite.id.desc())
+        )
+        result = await db.execute(stmt)
+        return result.scalars().all()
+
+    async def get_favorite(
+        self, db: AsyncSession, note_id: int, user_id: int
+    ) -> NoteFavorite | None:
+        stmt = select(NoteFavorite).where(
+            NoteFavorite.note_id == note_id,
+            NoteFavorite.user_id == user_id,
+        )
+        result = await db.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def add_favorite(self, db: AsyncSession, note_id: int, user_id: int) -> NoteFavorite:
+        existing = await self.get_favorite(db, note_id, user_id)
+        if existing:
+            return existing
+        fav = NoteFavorite(note_id=note_id, user_id=user_id)
+        db.add(fav)
+        await db.flush()
+        await db.refresh(fav)
+        return fav
+
+    async def remove_favorite(self, db: AsyncSession, favorite: NoteFavorite) -> None:
+        await db.delete(favorite)
+        await db.flush()
+
+    async def clear_favorites(self, db: AsyncSession, user_id: int) -> None:
+        await db.execute(delete(NoteFavorite).where(NoteFavorite.user_id == user_id))
         await db.flush()
 
 

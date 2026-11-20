@@ -56,6 +56,44 @@ async def list_notes(
     )
 
 
+@router.get("/favorites", response_model=list[NoteResponse])
+async def list_my_favorites(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """List the current user's saved favorite notes."""
+    return await note_service.list_favorites(db, current_user=current_user)
+
+
+@router.delete("/favorites", status_code=status.HTTP_204_NO_CONTENT)
+async def clear_my_favorites(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Remove all saved favorites for the current user."""
+    await note_service.clear_favorites(db, current_user=current_user)
+
+
+@router.post("/{note_id}/favorite", status_code=status.HTTP_204_NO_CONTENT)
+async def add_favorite_note(
+    note_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Save a note to the current user's favorites."""
+    await note_service.add_favorite(db, note_id=note_id, current_user=current_user)
+
+
+@router.delete("/{note_id}/favorite", status_code=status.HTTP_204_NO_CONTENT)
+async def remove_favorite_note(
+    note_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Remove a note from the current user's favorites."""
+    await note_service.remove_favorite(db, note_id=note_id, current_user=current_user)
+
+
 @router.get("/{note_id}", response_model=NoteResponse)
 async def get_note(
     note_id: int,

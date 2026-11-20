@@ -21,4 +21,9 @@ export const MARKETPLACE_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/user-profile/user-profile').then((m) => m.UserProfileComponent),
   },
+  {
+    path: 'favorites',
+    loadComponent: () =>
+      import('./pages/favorites/favorites').then((m) => m.FavoritesComponent),
+  },
 ];
