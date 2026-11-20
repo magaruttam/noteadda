@@ -6,6 +6,7 @@ from app.database.session import get_db
 from app.modules.notes.models import NoteStatus
 from app.modules.notes.schemas import (
     NoteCreate,
+    NoteFileResponse,
     NoteImageReorder,
     NoteImageResponse,
     NoteResponse,
@@ -142,6 +143,44 @@ async def delete_note_image(
         db,
         note_id=note_id,
         image_id=image_id,
+        current_user=current_user,
+    )
+
+
+@router.post(
+    "/{note_id}/files",
+    response_model=NoteFileResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_note_file(
+    note_id: int,
+    file: UploadFile = File(...),
+    is_primary: bool = Form(default=True),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upload a study note document (PDF, DOC, DOCX, PPT, PPTX) for a note (seller/owner only)."""
+    return await note_service.upload_note_file(
+        db,
+        note_id=note_id,
+        file=file,
+        is_primary=is_primary,
+        current_user=current_user,
+    )
+
+
+@router.delete("/{note_id}/files/{file_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_note_file(
+    note_id: int,
+    file_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Delete a note file from DB and R2 (seller/owner only)."""
+    await note_service.delete_note_file(
+        db,
+        note_id=note_id,
+        file_id=file_id,
         current_user=current_user,
     )
 

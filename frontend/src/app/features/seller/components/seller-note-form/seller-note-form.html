@@ -222,6 +222,11 @@
         </span>
         <span class="mt-1 text-xs text-slate-500 dark:text-slate-400">Students will see a watermarked preview before buying.</span>
       </label>
+      @if (fileError) {
+        <div hlmAlert variant="destructive">
+          <p hlmAlertDescription>{{ fileError }}</p>
+        </div>
+      }
     </div>
 
     <hlm-separator />

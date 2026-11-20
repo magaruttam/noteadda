@@ -6,6 +6,7 @@ import {
   CategoryApiResponse,
   NoteApiResponse,
   NoteCreatePayload,
+  NoteFileResponse,
   NoteImageResponse,
   NoteReviewApiResponse,
   NoteReviewCreatePayload,
@@ -94,6 +95,17 @@ export class NotesService {
 
   deleteNoteImage(noteId: number, imageId: number): Observable<void> {
     return this.http.delete<void>(`${this.notesUrl}/${noteId}/images/${imageId}`);
+  }
+
+  uploadNoteFile(noteId: number, file: File, isPrimary = true): Observable<NoteFileResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('is_primary', String(isPrimary));
+    return this.http.post<NoteFileResponse>(`${this.notesUrl}/${noteId}/files`, formData);
+  }
+
+  deleteNoteFile(noteId: number, fileId: number): Observable<void> {
+    return this.http.delete<void>(`${this.notesUrl}/${noteId}/files/${fileId}`);
   }
 
   listReviews(noteId: number): Observable<NoteReviewApiResponse[]> {

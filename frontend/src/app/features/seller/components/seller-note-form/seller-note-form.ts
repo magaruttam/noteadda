@@ -8,11 +8,12 @@ import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmLabel } from '@spartan-ng/helm/label';
 import { HlmSeparator } from '@spartan-ng/helm/separator';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
-import { concatMap, from, of, toArray } from 'rxjs';
+import { concatMap, forkJoin, from, of, toArray } from 'rxjs';
 import {
   CategoryApiResponse,
   NoteApiResponse,
   NoteCreatePayload,
+  NoteFileResponse,
   NoteImageResponse,
   NoteUpdatePayload,
 } from '../../../../core/models/note.model';
@@ -90,6 +91,7 @@ export class SellerNoteFormComponent implements OnChanges {
 
   selectedFileName = '';
   selectedFile: File | null = null;
+  fileError = '';
   noteImages: NoteImageResponse[] = [];
   pendingImages: PendingNoteImage[] = [];
   imageUploading = false;
@@ -115,6 +117,7 @@ export class SellerNoteFormComponent implements OnChanges {
     if (changes['editingNote']) {
       this.clearPendingImages();
       this.imageError = '';
+      this.fileError = '';
       this.selectedFile = null;
 
       if (this.editingNote) {
@@ -191,10 +194,28 @@ export class SellerNoteFormComponent implements OnChanges {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) {
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
+    if (!file) return;
+
+    this.fileError = '';
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (!isPdf) {
+      this.fileError = 'Only PDF files are supported.';
+      input.value = '';
+      return;
     }
+    if (file.size === 0) {
+      this.fileError = 'Selected PDF file is empty.';
+      input.value = '';
+      return;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      this.fileError = `File "${file.name}" exceeds the 50 MB limit.`;
+      input.value = '';
+      return;
+    }
+
+    this.selectedFile = file;
+    this.selectedFileName = file.name;
   }
 
   onNoteImagesSelected(event: Event): void {
@@ -342,19 +363,48 @@ export class SellerNoteFormComponent implements OnChanges {
       };
 
       this.isSubmitting = true;
+      const pendingFile = this.selectedFile;
       this.notesService.updateNote(noteId, updatePayload).subscribe({
         next: (updated) => {
-          this.isSubmitting = false;
-          this.saved.emit({
-            apiNote: updated,
-            isEdit: true,
-            course: raw.course,
-            university: raw.university,
-            color: raw.color,
-            badge: raw.badge,
-            message: 'Note updated successfully.',
+          const fileUpload$ = pendingFile
+            ? this.notesService.uploadNoteFile(noteId, pendingFile, true)
+            : of(null as NoteFileResponse | null);
+
+          fileUpload$.subscribe({
+            next: (uploadedFile) => {
+              this.isSubmitting = false;
+              this.selectedFile = null;
+              const mergedFiles = uploadedFile
+                ? [uploadedFile, ...updated.files.filter((f) => f.id !== uploadedFile.id)]
+                : updated.files;
+              this.saved.emit({
+                apiNote: { ...updated, files: mergedFiles },
+                isEdit: true,
+                course: raw.course,
+                university: raw.university,
+                color: raw.color,
+                badge: raw.badge,
+                message: 'Note updated successfully.',
+              });
+              this.cdr.markForCheck();
+            },
+            error: (fileErr) => {
+              this.isSubmitting = false;
+              this.saved.emit({
+                apiNote: updated,
+                isEdit: true,
+                course: raw.course,
+                university: raw.university,
+                color: raw.color,
+                badge: raw.badge,
+                message: this.authService.extractErrorMessage(
+                  fileErr,
+                  'Note updated, but the PDF file failed to upload. Edit the note to retry.',
+                ),
+              });
+              this.cdr.markForCheck();
+            },
           });
-          this.cdr.markForCheck();
         },
         error: (err) => {
           this.isSubmitting = false;
@@ -376,37 +426,36 @@ export class SellerNoteFormComponent implements OnChanges {
       original_price: originalPrice,
       currency: 'NPR',
       status: raw.status,
-      files: this.selectedFile
-        ? [
-            {
-              file_name: this.selectedFile.name,
-              file_key: `notes/files/${Date.now()}-${this.selectedFile.name}`,
-              file_type: this.selectedFile.type || 'application/pdf',
-              file_size: Math.max(this.selectedFile.size, 1),
-              is_primary: true,
-            },
-          ]
-        : [],
+      files: [],
     };
 
     this.isSubmitting = true;
+    const pendingFile = this.selectedFile;
     this.notesService.createNote(createPayload).subscribe({
       next: (created) => {
         const filesToUpload = this.pendingImages.map((p) => p.file);
-        const upload$ = filesToUpload.length
+        const imagesUpload$ = filesToUpload.length
           ? from(filesToUpload).pipe(
               concatMap((file, index) => this.notesService.uploadNoteImage(created.id, file, undefined, index)),
               toArray(),
             )
           : of([] as NoteImageResponse[]);
 
-        upload$.subscribe({
-          next: (uploadedImages) => {
+        const fileUpload$ = pendingFile
+          ? this.notesService.uploadNoteFile(created.id, pendingFile, true)
+          : of(null as NoteFileResponse | null);
+
+        forkJoin({ file: fileUpload$, images: imagesUpload$ }).subscribe({
+          next: ({ file: uploadedFile, images: uploadedImages }) => {
             this.isSubmitting = false;
             this.selectedFile = null;
             this.clearPendingImages();
             this.saved.emit({
-              apiNote: { ...created, images: uploadedImages },
+              apiNote: {
+                ...created,
+                files: uploadedFile ? [uploadedFile] : created.files,
+                images: uploadedImages,
+              },
               isEdit: false,
               course: raw.course,
               university: raw.university,
@@ -419,7 +468,7 @@ export class SellerNoteFormComponent implements OnChanges {
             });
             this.cdr.markForCheck();
           },
-          error: (imgErr) => {
+          error: (uploadErr) => {
             this.isSubmitting = false;
             this.selectedFile = null;
             this.clearPendingImages();
@@ -431,8 +480,8 @@ export class SellerNoteFormComponent implements OnChanges {
               color: raw.color,
               badge: raw.badge,
               message: this.authService.extractErrorMessage(
-                imgErr,
-                'Note created, but some images failed to upload. Edit the note to retry.',
+                uploadErr,
+                'Note created, but some files or images failed to upload. Edit the note to retry.',
               ),
             });
             this.cdr.markForCheck();

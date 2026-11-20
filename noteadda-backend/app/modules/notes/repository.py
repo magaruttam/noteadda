@@ -188,5 +188,32 @@ class NoteRepository:
         await db.delete(image)
         await db.flush()
 
+    async def clear_primary_file(self, db: AsyncSession, note_id: int) -> None:
+        stmt = select(NoteFile).where(NoteFile.note_id == note_id, NoteFile.is_primary.is_(True))
+        result = await db.execute(stmt)
+        for existing in result.scalars().all():
+            existing.is_primary = False
+        await db.flush()
+
+    async def add_file(self, db: AsyncSession, note_file: NoteFile) -> NoteFile:
+        db.add(note_file)
+        await db.flush()
+        await db.refresh(note_file)
+        return note_file
+
+    async def get_file_by_id(
+        self, db: AsyncSession, note_id: int, file_id: int
+    ) -> NoteFile | None:
+        stmt = select(NoteFile).where(
+            NoteFile.id == file_id,
+            NoteFile.note_id == note_id,
+        )
+        result = await db.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def delete_file(self, db: AsyncSession, note_file: NoteFile) -> None:
+        await db.delete(note_file)
+        await db.flush()
+
 
 note_repository = NoteRepository()

@@ -222,13 +222,13 @@ class NoteService:
         current_user: User,
     ) -> None:
         note = await self._get_owned_note(db, note_id, current_user, action="delete")
-        image_keys = [img.image_key for img in note.images]
+        object_keys = [img.image_key for img in note.images] + [f.file_key for f in note.files]
         await self.repo.delete(db, note)
-        for key in image_keys:
+        for key in object_keys:
             try:
                 await storage_service.delete_object(key)
             except Exception:
-                logger.warning("Failed to delete note image '%s' from R2", key, exc_info=True)
+                logger.warning("Failed to delete note object '%s' from R2", key, exc_info=True)
 
     async def upload_note_image(
         self,
@@ -312,6 +312,62 @@ class NoteService:
             await storage_service.delete_object(key)
         except Exception:
             logger.warning("Failed to delete note image '%s' from R2", key, exc_info=True)
+
+    async def upload_note_file(
+        self,
+        db: AsyncSession,
+        *,
+        note_id: int,
+        file: UploadFile,
+        is_primary: bool = True,
+        current_user: User,
+    ) -> NoteFile:
+        """Upload a study note document to R2 and save its metadata."""
+        await self._get_owned_note(db, note_id, current_user, action="update")
+        uploaded = await storage_service.upload_file(file, folder=f"notes/{note_id}/files")
+
+        try:
+            if is_primary:
+                await self.repo.clear_primary_file(db, note_id)
+            note_file = NoteFile(
+                note_id=note_id,
+                file_name=uploaded.file_name[:255],
+                file_key=uploaded.key,
+                file_type=uploaded.file_type[:50],
+                file_size=uploaded.file_size,
+                is_primary=is_primary,
+            )
+            return await self.repo.add_file(db, note_file)
+        except Exception:
+            try:
+                await storage_service.delete_object(uploaded.key)
+            except Exception:
+                logger.warning("Failed to clean up R2 object '%s' after DB error", uploaded.key, exc_info=True)
+            raise
+
+    async def delete_note_file(
+        self,
+        db: AsyncSession,
+        *,
+        note_id: int,
+        file_id: int,
+        current_user: User,
+    ) -> None:
+        """Delete a single file from a note and remove it from R2."""
+        await self._get_owned_note(db, note_id, current_user, action="update")
+        note_file = await self.repo.get_file_by_id(db, note_id, file_id)
+        if not note_file:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Note file not found",
+            )
+
+        key = note_file.file_key
+        await self.repo.delete_file(db, note_file)
+        try:
+            await storage_service.delete_object(key)
+        except Exception:
+            logger.warning("Failed to delete note file '%s' from R2", key, exc_info=True)
 
     async def list_reviews(self, db: AsyncSession, note_id: int) -> Sequence[NoteReview]:
         await self.get_note(db, note_id)
